@@ -1,0 +1,174 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: nodepredictions.prediction.crane.io
+spec:
+  group: prediction.crane.io
+  names:
+    kind: NodePrediction
+    listKind: NodePredictionList
+    plural: nodepredictions
+    singular: nodeprediction
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NodePrediction is the node prediction resource. it is associated
+          with a node.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NodePredictionResourceSpec
+            properties:
+              metricPredictionConfigs:
+                description: MetricPredictionConfigs is the prediction configs of
+                  metric. each metric has its config for different prediction behaviors
+                items:
+                  properties:
+                    dsp:
+                      properties:
+                        estimators:
+                          description: Estimators
+                          properties:
+                            fft:
+                              properties:
+                                highFrequencyThreshold:
+                                  type: string
+                                lowAmplitudeThreshold:
+                                  type: string
+                                marginFraction:
+                                  type: string
+                                maxNumOfSpectrumItems:
+                                  format: int32
+                                  type: integer
+                                minNumOfSpectrumItems:
+                                  format: int32
+                                  type: integer
+                              required:
+                              - highFrequencyThreshold
+                              - lowAmplitudeThreshold
+                              - marginFraction
+                              - maxNumOfSpectrumItems
+                              - minNumOfSpectrumItems
+                              type: object
+                            maxValue:
+                              type: object
+                          type: object
+                        historyLength:
+                          description: HistoryLength describes how long back should
+                            be queried against provider to get historical metrics
+                            for prediction.
+                          type: string
+                        sampleInterval:
+                          description: SampleInterval is the sampling interval of
+                            metrics.
+                          type: string
+                      required:
+                      - estimators
+                      - historyLength
+                      - sampleInterval
+                      type: object
+                    metricName:
+                      type: string
+                    percentile:
+                      properties:
+                        histogram:
+                          properties:
+                            bucketSize:
+                              type: string
+                            bucketSizeGrowthRatio:
+                              type: string
+                            epsilon:
+                              type: string
+                            firstBucketSize:
+                              type: string
+                            halfLife:
+                              type: string
+                            maxValue:
+                              type: string
+                          required:
+                          - bucketSize
+                          - bucketSizeGrowthRatio
+                          - epsilon
+                          - firstBucketSize
+                          - halfLife
+                          - maxValue
+                          type: object
+                        minSampleWeight:
+                          type: string
+                        sampleInterval:
+                          type: string
+                      required:
+                      - histogram
+                      - minSampleWeight
+                      - sampleInterval
+                      type: object
+                  required:
+                  - metricName
+                  type: object
+                type: array
+              mode:
+                description: Mode is the prediction time series mode
+                type: string
+              period:
+                description: Period is the prediction time series interval or step.
+                type: string
+            required:
+            - metricPredictionConfigs
+            - mode
+            - period
+            type: object
+          status:
+            description: NodePredictionResourceStatus
+            properties:
+              consumed:
+                additionalProperties:
+                  description: TimeSeries
+                  items:
+                    description: Vector
+                    properties:
+                      timestamp:
+                        format: int64
+                        type: integer
+                      value:
+                        description: CRD not support float64
+                        type: string
+                    required:
+                    - timestamp
+                    - value
+                    type: object
+                  type: array
+                description: Consumed is the predicted resource usage in next resolution
+                  point based on past time series.
+                type: object
+            required:
+            - consumed
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
