@@ -8,46 +8,16 @@ set -o pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "${REPO_ROOT}"
 
-echo "Generating with deepcopy-gen"
-GO111MODULE=on go install k8s.io/code-generator/cmd/deepcopy-gen
-export GOPATH=$(go env GOPATH | awk -F ':' '{print $1}')
-export PATH=$PATH:$GOPATH/bin
-deepcopy-gen \
-  --go-header-file hack/boilerplate/boilerplate.go.txt \
-  --input-dirs=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-package=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-file-base=zz_generated.deepcopy
+SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+CODEGEN_PKG=${CODEGEN_PKG:-$(
+  cd "${SCRIPT_ROOT}"
+  go mod vendor
+  ls -d -1 ./vendor/k8s.io/code-generator
+)}
 
-echo "Generating with register-gen"
-GO111MODULE=on go install k8s.io/code-generator/cmd/register-gen
-register-gen \
-  --go-header-file hack/boilerplate/boilerplate.go.txt \
-  --input-dirs=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-package=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-file-base=zz_generated.register
-
-echo "Generating with client-gen"
-GO111MODULE=on go install k8s.io/code-generator/cmd/client-gen
-client-gen \
-  --go-header-file hack/boilerplate/boilerplate.go.txt \
-  --input-base="" \
-  --input=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-package=github.com/gocrane-io/api/pkg/generated/clientset \
-  --clientset-name=versioned
-
-echo "Generating with lister-gen"
-GO111MODULE=on go install k8s.io/code-generator/cmd/lister-gen
-lister-gen \
-  --go-header-file hack/boilerplate/boilerplate.go.txt \
-  --input-dirs=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --output-package=github.com/gocrane-io/api/pkg/generated/listers
-
-
-echo "Generating with informer-gen"
-GO111MODULE=on go install k8s.io/code-generator/cmd/informer-gen
-informer-gen \
-  --go-header-file hack/boilerplate/boilerplate.go.txt \
-  --input-dirs=github.com/gocrane-io/api/prediction/v1alpha1 \
-  --versioned-clientset-package=github.com/gocrane-io/api/pkg/generated/clientset/versioned \
-  --listers-package=github.com/gocrane-io/api/pkg/generated/listers \
-  --output-package=github.com/gocrane-io/api/pkg/generated/informers
+bash "${CODEGEN_PKG}/generate-groups.sh" all \
+  github.com/gocrane-io/api/pkg/generated \
+  github.com/gocrane-io/api \
+  "autoscaling:v1alpha1 prediction:v1alpha1" \
+  --output-base "$(dirname "${BASH_SOURCE[0]}")/../../../.." \
+  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate/boilerplate.go.txt"
