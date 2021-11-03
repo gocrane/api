@@ -50,9 +50,9 @@ type PredictionConfig struct {
 // PredictionAlgorithm defines the algorithm to predict resources
 type PredictionAlgorithm struct {
 	// +optional
-	DSP *predictionv1alpha1.DspConfig `json:"dsp,omitempty"`
+	DSP *predictionv1alpha1.Dsp `json:"dsp,omitempty"`
 	// +optional
-	Percentile *predictionv1alpha1.PercentileConfig `json:"percentile,omitempty"`
+	Percentile *predictionv1alpha1.Percentile `json:"percentile,omitempty"`
 }
 
 type AdvancedHorizontalPodAutoscalerStatus struct {
