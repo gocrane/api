@@ -2,7 +2,6 @@ package v1alpha1
 
 import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -143,7 +142,7 @@ type PodGroupPredictionCondition struct {
 	Type PodGroupPredictionConditionType `json:"type,omitempty"`
 	// Status is the status of the condition.
 	// Can be True, False, Unknown.
-	Status v1.ConditionStatus `json:"status,omitempty"`
+	Status metav1.ConditionStatus `json:"status,omitempty"`
 	// Last time we probed the condition.
 	// +optional
 	LastProbeTime metav1.Time `json:"lastProbeTime,omitempty"`
