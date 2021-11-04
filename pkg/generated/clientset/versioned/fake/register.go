@@ -3,6 +3,7 @@
 package fake
 
 import (
+	autoscalingv1alpha1 "github.com/gocrane-io/api/autoscaling/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane-io/api/prediction/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -15,6 +16,7 @@ var scheme = runtime.NewScheme()
 var codecs = serializer.NewCodecFactory(scheme)
 
 var localSchemeBuilder = runtime.SchemeBuilder{
+	autoscalingv1alpha1.AddToScheme,
 	predictionv1alpha1.AddToScheme,
 }
 
