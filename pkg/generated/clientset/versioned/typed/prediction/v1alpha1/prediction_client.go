@@ -19,8 +19,8 @@ type PredictionV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *PredictionV1alpha1Client) NodePredictions(namespace string) NodePredictionInterface {
-	return newNodePredictions(c, namespace)
+func (c *PredictionV1alpha1Client) NodePredictions() NodePredictionInterface {
+	return newNodePredictions(c)
 }
 
 func (c *PredictionV1alpha1Client) PodGroupPredictions(namespace string) PodGroupPredictionInterface {

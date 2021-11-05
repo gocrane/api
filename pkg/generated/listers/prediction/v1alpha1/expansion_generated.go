@@ -6,10 +6,6 @@ package v1alpha1
 // NodePredictionLister.
 type NodePredictionListerExpansion interface{}
 
-// NodePredictionNamespaceListerExpansion allows custom methods to be added to
-// NodePredictionNamespaceLister.
-type NodePredictionNamespaceListerExpansion interface{}
-
 // PodGroupPredictionListerExpansion allows custom methods to be added to
 // PodGroupPredictionLister.
 type PodGroupPredictionListerExpansion interface{}

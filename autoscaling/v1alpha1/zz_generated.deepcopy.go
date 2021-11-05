@@ -150,12 +150,12 @@ func (in *PredictionAlgorithm) DeepCopyInto(out *PredictionAlgorithm) {
 	*out = *in
 	if in.DSP != nil {
 		in, out := &in.DSP, &out.DSP
-		*out = new(predictionv1alpha1.DspConfig)
+		*out = new(predictionv1alpha1.Dsp)
 		(*in).DeepCopyInto(*out)
 	}
 	if in.Percentile != nil {
 		in, out := &in.Percentile, &out.Percentile
-		*out = new(predictionv1alpha1.PercentileConfig)
+		*out = new(predictionv1alpha1.Percentile)
 		**out = **in
 	}
 	return

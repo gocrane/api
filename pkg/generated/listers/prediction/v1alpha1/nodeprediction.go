@@ -15,8 +15,9 @@ type NodePredictionLister interface {
 	// List lists all NodePredictions in the indexer.
 	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.NodePrediction, err error)
-	// NodePredictions returns an object that can list and get NodePredictions.
-	NodePredictions(namespace string) NodePredictionNamespaceLister
+	// Get retrieves the NodePrediction from the index for a given name.
+	// Objects returned here must be treated as read-only.
+	Get(name string) (*v1alpha1.NodePrediction, error)
 	NodePredictionListerExpansion
 }
 
@@ -38,41 +39,9 @@ func (s *nodePredictionLister) List(selector labels.Selector) (ret []*v1alpha1.N
 	return ret, err
 }
 
-// NodePredictions returns an object that can list and get NodePredictions.
-func (s *nodePredictionLister) NodePredictions(namespace string) NodePredictionNamespaceLister {
-	return nodePredictionNamespaceLister{indexer: s.indexer, namespace: namespace}
-}
-
-// NodePredictionNamespaceLister helps list and get NodePredictions.
-// All objects returned here must be treated as read-only.
-type NodePredictionNamespaceLister interface {
-	// List lists all NodePredictions in the indexer for a given namespace.
-	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.NodePrediction, err error)
-	// Get retrieves the NodePrediction from the indexer for a given namespace and name.
-	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1alpha1.NodePrediction, error)
-	NodePredictionNamespaceListerExpansion
-}
-
-// nodePredictionNamespaceLister implements the NodePredictionNamespaceLister
-// interface.
-type nodePredictionNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all NodePredictions in the indexer for a given namespace.
-func (s nodePredictionNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.NodePrediction, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.NodePrediction))
-	})
-	return ret, err
-}
-
-// Get retrieves the NodePrediction from the indexer for a given namespace and name.
-func (s nodePredictionNamespaceLister) Get(name string) (*v1alpha1.NodePrediction, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
+// Get retrieves the NodePrediction from the index for a given name.
+func (s *nodePredictionLister) Get(name string) (*v1alpha1.NodePrediction, error) {
+	obj, exists, err := s.indexer.GetByKey(name)
 	if err != nil {
 		return nil, err
 	}
