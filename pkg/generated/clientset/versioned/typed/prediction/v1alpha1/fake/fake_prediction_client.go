@@ -12,8 +12,8 @@ type FakePredictionV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakePredictionV1alpha1) NodePredictions(namespace string) v1alpha1.NodePredictionInterface {
-	return &FakeNodePredictions{c, namespace}
+func (c *FakePredictionV1alpha1) NodePredictions() v1alpha1.NodePredictionInterface {
+	return &FakeNodePredictions{c}
 }
 
 func (c *FakePredictionV1alpha1) PodGroupPredictions(namespace string) v1alpha1.PodGroupPredictionInterface {

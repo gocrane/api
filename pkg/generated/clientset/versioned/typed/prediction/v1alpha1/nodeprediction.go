@@ -17,7 +17,7 @@ import (
 // NodePredictionsGetter has a method to return a NodePredictionInterface.
 // A group's client should implement this interface.
 type NodePredictionsGetter interface {
-	NodePredictions(namespace string) NodePredictionInterface
+	NodePredictions() NodePredictionInterface
 }
 
 // NodePredictionInterface has methods to work with NodePrediction resources.
@@ -37,14 +37,12 @@ type NodePredictionInterface interface {
 // nodePredictions implements NodePredictionInterface
 type nodePredictions struct {
 	client rest.Interface
-	ns     string
 }
 
 // newNodePredictions returns a NodePredictions
-func newNodePredictions(c *PredictionV1alpha1Client, namespace string) *nodePredictions {
+func newNodePredictions(c *PredictionV1alpha1Client) *nodePredictions {
 	return &nodePredictions{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -52,7 +50,6 @@ func newNodePredictions(c *PredictionV1alpha1Client, namespace string) *nodePred
 func (c *nodePredictions) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodePrediction, err error) {
 	result = &v1alpha1.NodePrediction{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -69,7 +66,6 @@ func (c *nodePredictions) List(ctx context.Context, opts v1.ListOptions) (result
 	}
 	result = &v1alpha1.NodePredictionList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -86,7 +82,6 @@ func (c *nodePredictions) Watch(ctx context.Context, opts v1.ListOptions) (watch
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -97,7 +92,6 @@ func (c *nodePredictions) Watch(ctx context.Context, opts v1.ListOptions) (watch
 func (c *nodePredictions) Create(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.CreateOptions) (result *v1alpha1.NodePrediction, err error) {
 	result = &v1alpha1.NodePrediction{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(nodePrediction).
@@ -110,7 +104,6 @@ func (c *nodePredictions) Create(ctx context.Context, nodePrediction *v1alpha1.N
 func (c *nodePredictions) Update(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.UpdateOptions) (result *v1alpha1.NodePrediction, err error) {
 	result = &v1alpha1.NodePrediction{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		Name(nodePrediction.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -125,7 +118,6 @@ func (c *nodePredictions) Update(ctx context.Context, nodePrediction *v1alpha1.N
 func (c *nodePredictions) UpdateStatus(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.UpdateOptions) (result *v1alpha1.NodePrediction, err error) {
 	result = &v1alpha1.NodePrediction{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		Name(nodePrediction.Name).
 		SubResource("status").
@@ -139,7 +131,6 @@ func (c *nodePredictions) UpdateStatus(ctx context.Context, nodePrediction *v1al
 // Delete takes name of the nodePrediction and deletes it. Returns an error if one occurs.
 func (c *nodePredictions) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		Name(name).
 		Body(&opts).
@@ -154,7 +145,6 @@ func (c *nodePredictions) DeleteCollection(ctx context.Context, opts v1.DeleteOp
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -167,7 +157,6 @@ func (c *nodePredictions) DeleteCollection(ctx context.Context, opts v1.DeleteOp
 func (c *nodePredictions) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodePrediction, err error) {
 	result = &v1alpha1.NodePrediction{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("nodepredictions").
 		Name(name).
 		SubResource(subresources...).

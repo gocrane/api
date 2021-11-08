@@ -15,6 +15,13 @@ const (
 	ResourceMemory ResourceName = "memory"
 )
 
+type AlgorithmType string
+
+const (
+	AlgorithmTypePercentile AlgorithmType = "percentile"
+	AlgorithmTypeDSP        AlgorithmType = "dsp"
+)
+
 // PredictionMode represents the prediction time series mode.
 type PredictionMode string
 
@@ -26,9 +33,11 @@ const (
 )
 
 // +genclient
+// +genclient:nonNamespaced
+// +kubebuilder:resource:scope=Cluster
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// NodePrediction is the node prediction resource. it is associated with a node.
+// NodePrediction is the node prediction resource, which is associated with a node.
 type NodePrediction struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -39,20 +48,20 @@ type NodePrediction struct {
 	Status NodePredictionResourceStatus `json:"status"`
 }
 
-// NodePredictionResourceSpec
+// NodePredictionResourceSpec is the specification of a node prediction.
 type NodePredictionResourceSpec struct {
 	// Period is the prediction time series interval or step.
-	Period metav1.Duration `json:"period"`
+	Period metav1.Duration `json:"period,omitempty"`
 	// Mode is the prediction time series mode
-	Mode PredictionMode `json:"mode"`
+	Mode PredictionMode `json:"mode,omitempty"`
 	// MetricPredictionConfigs is the prediction configs of metric. each metric has its config for different prediction behaviors
-	MetricPredictionConfigs []AlgorithmProviderConfig `json:"metricPredictionConfigs"`
+	MetricPredictionConfigs []metricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
 }
 
-// NodePredictionResourceStatus
+// NodePredictionResourceStatus represents information about the status of NodePrediction
 type NodePredictionResourceStatus struct {
-	// Consumed is the predicted resource usage in next resolution point based on past time series.
-	Consumed Prediction `json:"consumed"`
+	// NextPossible is the predicted resource usage in next resolution point based on previous series.
+	NextPossible Prediction `json:"nextPossible,omitempty"`
 }
 
 // +genclient
@@ -64,49 +73,52 @@ type PodGroupPrediction struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec PodGroupPredictionSpec `json:"spec"`
+	Spec PodGroupPredictionSpec `json:"spec,omitempty"`
 
 	// +optional
-	Status PodGroupPredictionStatus `json:"status"`
+	Status PodGroupPredictionStatus `json:"status,omitempty"`
 }
 
 type PredictionStatus string
 
 const (
-	// PredictionStatusCharging means no valid prediction series is available, just wait to predicting.
-	PredictionStatusCharging PredictionStatus = "Charging"
-	// PredictionStatusPredicting means the prediction routine is ongoing and the prediction data is valid.
+	// PredictionStatusPending - no valid prediction series available, wait for prediction.
+	PredictionStatusPending PredictionStatus = "Pending"
+	// PredictionStatusPredicting - prediction is on the way, result is ready and value is valid.
 	PredictionStatusPredicting PredictionStatus = "Predicting"
-	// PredictionStatusNotStarted means the prediction routine has not started yet.
+	// PredictionStatusNotStarted - the prediction has not start.
 	PredictionStatusNotStarted PredictionStatus = "NotStarted"
-	// PredictionStatusFinished means the prediction has finished.
-	PredictionStatusFinished PredictionStatus = "Finished"
+	// PredictionStatusCompleted - the prediction has competed.
+	PredictionStatusCompleted PredictionStatus = "Completed"
 )
 
 // PodGroupPredictionSpec is a description of a PodGroupPrediction.
 type PodGroupPredictionSpec struct {
-	// Prediction start time. If not specified, the prediction routine will start as soon as the CR is created.
+	// Prediction start time. If not specified, the prediction starts from the object creationTimestamp.
 	// +optional
-	Start *metav1.Time `json:"start"`
-	// Prediction end time, after which the prediction routine will stop, and the prediction data will not get updated any more.
-	// If not specified, the prediction process will keep running forever.
+	Start *metav1.Time `json:"start,omitempty"`
+	// Prediction end time. If current time is after end, the prediction will be stopped and the status will not be updated afterward.
+	// If end is null, the prediction will never stop.
 	// +optional
-	End *metav1.Time `json:"end"`
-	// PredictionLength, for example, 24-hours means predicting time series in next 24 hours. This should be used only for PredictionModeRange.
-	PredictionLength metav1.Duration `json:"predictionLength"`
-	// Prediction mode
-	Mode PredictionMode `json:"mode"`
-	// Pods is a list of pod names that belong to this pod group. If not specified then WorkloadRef is invalid. the aggregator aggregate priority is  Pods > WorkloadRef > LabelSelector
+	End *metav1.Time `json:"end,omitempty"`
+	// PredictionWindow, for example, 24-hours means predicting time series in next 24 hours.
+	// This should be used only for PredictionModeRange.
+	PredictionWindow metav1.Duration `json:"predictionWindow,omitempty"`
+	// Mode is the prediction time series mode. instant or range
+	Mode PredictionMode `json:"mode,omitempty,omitempty"`
+	// Pods is a list of pod names that belong to this pod group.
+	// If not specified then WorkloadRef is invalid.
+	// The aggregator aggregate priority is  Pods > WorkloadRef > LabelSelector
 	// +optional
-	Pods []string `json:"pods"`
+	Pods []string `json:"pods,omitempty"`
 	// WorkloadRef is a ref of workload(deployment/statefulsets).
 	// +optional
-	WorkloadRef *autoscalingv2.CrossVersionObjectReference `json:"workloadRef"`
+	WorkloadRef *autoscalingv2.CrossVersionObjectReference `json:"workloadRef,omitempty"`
 	// LabelSelector is the aggregator label selector. aggregator group all data by same key . for example, [online: label=v1] denotes all pods with label label=v1 will aggregate by sum all the resources.
 	// +optional
-	LabelSelector metav1.LabelSelector `json:"labelSelector"`
+	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
 	// MetricPredictionConfigs is the prediction configs of metric. each metric has its config for different prediction behaviors
-	MetricPredictionConfigs []AlgorithmProviderConfig `json:"metricPredictionConfigs"`
+	MetricPredictionConfigs []metricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
 }
 
 // PodGroupPredictionStatus
@@ -166,8 +178,8 @@ type TimeSeries []*Vector
 // Vector
 type Vector struct {
 	// CRD not support float64
-	Value     string `json:"value"`
-	Timestamp int64  `json:"timestamp"`
+	Value     string `json:"value,omitempty"`
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -190,51 +202,52 @@ type PodGroupPredictionList struct {
 	Items []PodGroupPrediction `json:"items"`
 }
 
-type AlgorithmProviderConfig struct {
-	MetricName string `json:"metricName"`
+type metricPredictionConfig struct {
+	MetricName    string        `json:"metricName,omitempty"`
+	AlgorithmType AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
-	DSP *DspConfig `json:"dsp"`
+	DSP *Dsp `json:"dsp,omitempty"`
 	// +optional
-	Percentile *PercentileConfig `json:"percentile"`
+	Percentile *Percentile `json:"percentile,omitempty"`
 }
 
-type DspConfig struct {
+type Dsp struct {
 	// SampleInterval is the sampling interval of metrics.
-	SampleInterval string `json:"sampleInterval"`
+	SampleInterval string `json:"sampleInterval,omitempty"`
 	// HistoryLength describes how long back should be queried against provider to get historical metrics for prediction.
-	HistoryLength string `json:"historyLength"`
-	// Estimators
-	Estimators *EstimatorConfigs `json:"estimators"`
+	HistoryLength string `json:"historyLength,omitempty"`
+	// Estimator
+	Estimator Estimator `json:"estimators,omitempty"`
 }
 
-type EstimatorConfigs struct {
+type Estimator struct {
 	// +optional
-	MaxValue *MaxValueEstimatorConfig `json:"maxValue"`
+	MaxValueEstimators []*MaxValueEstimator `json:"maxValue,omitempty"`
 	// +optional
-	FFT *FFTEstimatorConfig `json:"fft"`
+	FFTEstimators []*FFTEstimator `json:"fft,omitempty"`
 }
 
-type MaxValueEstimatorConfig struct{}
+type MaxValueEstimator struct{}
 
-type FFTEstimatorConfig struct {
-	MarginFraction         string `json:"marginFraction"`
-	LowAmplitudeThreshold  string `json:"lowAmplitudeThreshold"`
-	HighFrequencyThreshold string `json:"highFrequencyThreshold"`
-	MinNumOfSpectrumItems  int32  `json:"minNumOfSpectrumItems"`
-	MaxNumOfSpectrumItems  int32  `json:"maxNumOfSpectrumItems"`
+type FFTEstimator struct {
+	MarginFraction         string `json:"marginFraction,omitempty"`
+	LowAmplitudeThreshold  string `json:"lowAmplitudeThreshold,omitempty"`
+	HighFrequencyThreshold string `json:"highFrequencyThreshold,omitempty"`
+	MinNumOfSpectrumItems  int32  `json:"minNumOfSpectrumItems,omitempty"`
+	MaxNumOfSpectrumItems  int32  `json:"maxNumOfSpectrumItems,omitempty"`
 }
 
-type PercentileConfig struct {
-	SampleInterval  string          `json:"sampleInterval"`
-	Histogram       HistogramConfig `json:"histogram"`
-	MinSampleWeight string          `json:"minSampleWeight"`
+type Percentile struct {
+	SampleInterval  string          `json:"sampleInterval,omitempty"`
+	Histogram       HistogramConfig `json:"histogram,omitempty"`
+	MinSampleWeight string          `json:"minSampleWeight,omitempty"`
 }
 
 type HistogramConfig struct {
-	MaxValue              string `json:"maxValue"`
-	Epsilon               string `json:"epsilon"`
-	HalfLife              string `json:"halfLife"`
-	BucketSize            string `json:"bucketSize"`
-	FirstBucketSize       string `json:"firstBucketSize"`
-	BucketSizeGrowthRatio string `json:"bucketSizeGrowthRatio"`
+	MaxValue              string `json:"maxValue,omitempty"`
+	Epsilon               string `json:"epsilon,omitempty"`
+	HalfLife              string `json:"halfLife,omitempty"`
+	BucketSize            string `json:"bucketSize,omitempty"`
+	FirstBucketSize       string `json:"firstBucketSize,omitempty"`
+	BucketSizeGrowthRatio string `json:"bucketSizeGrowthRatio,omitempty"`
 }

@@ -26,33 +26,32 @@ type NodePredictionInformer interface {
 type nodePredictionInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
-	namespace        string
 }
 
 // NewNodePredictionInformer constructs a new informer for NodePrediction type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewNodePredictionInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredNodePredictionInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewNodePredictionInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredNodePredictionInformer(client, resyncPeriod, indexers, nil)
 }
 
 // NewFilteredNodePredictionInformer constructs a new informer for NodePrediction type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredNodePredictionInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredNodePredictionInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PredictionV1alpha1().NodePredictions(namespace).List(context.TODO(), options)
+				return client.PredictionV1alpha1().NodePredictions().List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.PredictionV1alpha1().NodePredictions(namespace).Watch(context.TODO(), options)
+				return client.PredictionV1alpha1().NodePredictions().Watch(context.TODO(), options)
 			},
 		},
 		&predictionv1alpha1.NodePrediction{},
@@ -62,7 +61,7 @@ func NewFilteredNodePredictionInformer(client versioned.Interface, namespace str
 }
 
 func (f *nodePredictionInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredNodePredictionInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+	return NewFilteredNodePredictionInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
 func (f *nodePredictionInformer) Informer() cache.SharedIndexInformer {

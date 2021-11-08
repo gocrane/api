@@ -17,7 +17,6 @@ import (
 // FakeNodePredictions implements NodePredictionInterface
 type FakeNodePredictions struct {
 	Fake *FakePredictionV1alpha1
-	ns   string
 }
 
 var nodepredictionsResource = schema.GroupVersionResource{Group: "prediction.crane.io", Version: "v1alpha1", Resource: "nodepredictions"}
@@ -27,8 +26,7 @@ var nodepredictionsKind = schema.GroupVersionKind{Group: "prediction.crane.io", 
 // Get takes name of the nodePrediction, and returns the corresponding nodePrediction object, and an error if there is any.
 func (c *FakeNodePredictions) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodePrediction, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(nodepredictionsResource, c.ns, name), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootGetAction(nodepredictionsResource, name), &v1alpha1.NodePrediction{})
 	if obj == nil {
 		return nil, err
 	}
@@ -38,8 +36,7 @@ func (c *FakeNodePredictions) Get(ctx context.Context, name string, options v1.G
 // List takes label and field selectors, and returns the list of NodePredictions that match those selectors.
 func (c *FakeNodePredictions) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.NodePredictionList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(nodepredictionsResource, nodepredictionsKind, c.ns, opts), &v1alpha1.NodePredictionList{})
-
+		Invokes(testing.NewRootListAction(nodepredictionsResource, nodepredictionsKind, opts), &v1alpha1.NodePredictionList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -60,15 +57,13 @@ func (c *FakeNodePredictions) List(ctx context.Context, opts v1.ListOptions) (re
 // Watch returns a watch.Interface that watches the requested nodePredictions.
 func (c *FakeNodePredictions) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(nodepredictionsResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(nodepredictionsResource, opts))
 }
 
 // Create takes the representation of a nodePrediction and creates it.  Returns the server's representation of the nodePrediction, and an error, if there is any.
 func (c *FakeNodePredictions) Create(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.CreateOptions) (result *v1alpha1.NodePrediction, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(nodepredictionsResource, c.ns, nodePrediction), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootCreateAction(nodepredictionsResource, nodePrediction), &v1alpha1.NodePrediction{})
 	if obj == nil {
 		return nil, err
 	}
@@ -78,8 +73,7 @@ func (c *FakeNodePredictions) Create(ctx context.Context, nodePrediction *v1alph
 // Update takes the representation of a nodePrediction and updates it. Returns the server's representation of the nodePrediction, and an error, if there is any.
 func (c *FakeNodePredictions) Update(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.UpdateOptions) (result *v1alpha1.NodePrediction, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(nodepredictionsResource, c.ns, nodePrediction), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootUpdateAction(nodepredictionsResource, nodePrediction), &v1alpha1.NodePrediction{})
 	if obj == nil {
 		return nil, err
 	}
@@ -90,8 +84,7 @@ func (c *FakeNodePredictions) Update(ctx context.Context, nodePrediction *v1alph
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (c *FakeNodePredictions) UpdateStatus(ctx context.Context, nodePrediction *v1alpha1.NodePrediction, opts v1.UpdateOptions) (*v1alpha1.NodePrediction, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(nodepredictionsResource, "status", c.ns, nodePrediction), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootUpdateSubresourceAction(nodepredictionsResource, "status", nodePrediction), &v1alpha1.NodePrediction{})
 	if obj == nil {
 		return nil, err
 	}
@@ -101,14 +94,13 @@ func (c *FakeNodePredictions) UpdateStatus(ctx context.Context, nodePrediction *
 // Delete takes name of the nodePrediction and deletes it. Returns an error if one occurs.
 func (c *FakeNodePredictions) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(nodepredictionsResource, c.ns, name), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootDeleteAction(nodepredictionsResource, name), &v1alpha1.NodePrediction{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeNodePredictions) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(nodepredictionsResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(nodepredictionsResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.NodePredictionList{})
 	return err
@@ -117,8 +109,7 @@ func (c *FakeNodePredictions) DeleteCollection(ctx context.Context, opts v1.Dele
 // Patch applies the patch and returns the patched nodePrediction.
 func (c *FakeNodePredictions) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodePrediction, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(nodepredictionsResource, c.ns, name, pt, data, subresources...), &v1alpha1.NodePrediction{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(nodepredictionsResource, name, pt, data, subresources...), &v1alpha1.NodePrediction{})
 	if obj == nil {
 		return nil, err
 	}

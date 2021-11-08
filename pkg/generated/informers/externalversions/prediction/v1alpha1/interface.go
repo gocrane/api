@@ -27,7 +27,7 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 
 // NodePredictions returns a NodePredictionInformer.
 func (v *version) NodePredictions() NodePredictionInformer {
-	return &nodePredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+	return &nodePredictionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // PodGroupPredictions returns a PodGroupPredictionInformer.
