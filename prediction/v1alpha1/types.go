@@ -55,7 +55,7 @@ type NodePredictionResourceSpec struct {
 	// Mode is the prediction time series mode
 	Mode PredictionMode `json:"mode,omitempty"`
 	// MetricPredictionConfigs is the prediction configs of metric. each metric has its config for different prediction behaviors
-	MetricPredictionConfigs []metricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
+	MetricPredictionConfigs []MetricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
 }
 
 // NodePredictionResourceStatus represents information about the status of NodePrediction
@@ -66,6 +66,9 @@ type NodePredictionResourceStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:webhooks:path=/mutate-podgroupprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=podgrouppredictions,verbs=create;update,versions=v1alpha1,name=prediction.crane.io_podgrouppredictions_webhook,sideEffects=none,admissionReviewVersions=v1
+// +kubebuilder:webhooks:verbs=create;update,path=/validate-podgroupprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=podgrouppredictions,versions=v1,name=prediction.crane.io_podgrouppredictions_webhook,sideEffects=none,admissionReviewVersions=v1
+// +kubebuilder:subresource:status
 
 // PodGroupPrediction is a prediction on the resource consumed by a pod group.
 // In kubernetes context, a pod group often refers to a batch of pods that satisfy a label selector.
@@ -118,7 +121,7 @@ type PodGroupPredictionSpec struct {
 	// +optional
 	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
 	// MetricPredictionConfigs is the prediction configs of metric. each metric has its config for different prediction behaviors
-	MetricPredictionConfigs []metricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
+	MetricPredictionConfigs []MetricPredictionConfig `json:"metricPredictionConfigs,omitempty"`
 }
 
 // PodGroupPredictionStatus
@@ -202,7 +205,7 @@ type PodGroupPredictionList struct {
 	Items []PodGroupPrediction `json:"items"`
 }
 
-type metricPredictionConfig struct {
+type MetricPredictionConfig struct {
 	MetricName    string        `json:"metricName,omitempty"`
 	AlgorithmType AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
