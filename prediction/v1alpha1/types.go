@@ -69,6 +69,7 @@ type NodePredictionResourceStatus struct {
 // +kubebuilder:webhooks:path=/mutate-podgroupprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=podgrouppredictions,verbs=create;update,versions=v1alpha1,name=prediction.crane.io_podgrouppredictions_webhook,sideEffects=none,admissionReviewVersions=v1
 // +kubebuilder:webhooks:verbs=create;update,path=/validate-podgroupprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=podgrouppredictions,versions=v1,name=prediction.crane.io_podgrouppredictions_webhook,sideEffects=none,admissionReviewVersions=v1
 // +kubebuilder:subresource:status
+// +kubebuilder:object:root=true
 
 // PodGroupPrediction is a prediction on the resource consumed by a pod group.
 // In kubernetes context, a pod group often refers to a batch of pods that satisfy a label selector.
@@ -108,7 +109,7 @@ type PodGroupPredictionSpec struct {
 	// This should be used only for PredictionModeRange.
 	PredictionWindow metav1.Duration `json:"predictionWindow,omitempty"`
 	// Mode is the prediction time series mode. instant or range
-	Mode PredictionMode `json:"mode,omitempty,omitempty"`
+	Mode PredictionMode `json:"mode,omitempty"`
 	// Pods is a list of pod names that belong to this pod group.
 	// If not specified then WorkloadRef is invalid.
 	// The aggregator aggregate priority is  Pods > WorkloadRef > LabelSelector
