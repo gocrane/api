@@ -1,37 +1,19 @@
 name: Go
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [pull_request]
+
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
-    - name: Build
-      run: go build -v ./... | tee output.txt
-
-    - name: Test
-      run: go test -v ./... | tee output.txt
-      
-    - name: "Post output to PR"
-      uses: EliLillyCo/github-actions-post-to-pr@main
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        post_to_pr_definition: |
-          [
-            {
-              "message_file": "./output.txt",
-              "title": "Build Result"
-            }
-          ]
+      - name: Build
+        run: make all

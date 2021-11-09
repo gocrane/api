@@ -18,6 +18,6 @@ CODEGEN_PKG=${CODEGEN_PKG:-$(
 bash "${CODEGEN_PKG}/generate-groups.sh" all \
   github.com/gocrane-io/api/pkg/generated \
   github.com/gocrane-io/api \
-  "autoscaling:v1alpha1 prediction:v1alpha1 qep/v1alpha1" \
+  "autoscaling:v1alpha1 prediction:v1alpha1 ensurance:v1alpha1" \
   --output-base "$(dirname "${BASH_SOURCE[0]}")/../../../.." \
   --go-header-file "${SCRIPT_ROOT}/hack/boilerplate/boilerplate.go.txt"
