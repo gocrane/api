@@ -3,16 +3,7 @@ package v1alpha1
 import (
 	"time"
 
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-const (
-	// HighestLevel is the highest level for pod.
-	HighestLevel = int32(9999)
-
-	// LowestLevel is the lowest level pod.
-	LowestLevel = int32(0)
 )
 
 // URIScheme identifies the scheme used for connection to a host for Get actions
@@ -24,60 +15,6 @@ const (
 	// URISchemeHTTPS means that the scheme used will be https://
 	URISchemeHTTPS URIScheme = "HTTPS"
 )
-
-// +genclient
-// +genclient:nonNamespaced
-// +kubebuilder:resource:scope=Cluster
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// ServiceLevel defines the service level for pods
-type ServiceLevel struct {
-	metav1.TypeMeta `json:",inline"`
-	// +optional
-	metav1.ObjectMeta `json:"metadata,omitempty"`
-
-	Spec ServiceLevelSpec `json:"spec"`
-
-	Status ServiceLevelStatus `json:"status,omitempty"`
-}
-
-type ServiceLevelSpec struct {
-	// The value of pods level. This is the actual level that pods
-	// receive when they have the name of this class in their pod ensurance policy.
-	// Integer value range （0～9999), the highest level is 9999.
-	// The priority is PodQOSClassValue+Value
-	// Example: pod qos guaranteed, value 11 , priority 20011
-	// Example: pod qos burstable, value 10 , priority 10010
-	// Example: pod qos bestEffort, value 19 , priority 19
-	Value int32 `json:"value,omitempty"`
-
-	// The pod qos class is define the pod's qos class,which is align with k8s's pod qos class
-	// The service level value for pod qos : (guaranteed 20000, burstable 10000, besteffort 0)
-	PodQosClass v1.PodQOSClass `json:"podQosClass,omitempty"`
-
-	// QosClassDefault specifies whether this serviceLevel should be considered as
-	// the default level for pods that do not selected by any serviceLevel object.
-	// +optional
-	QosClassDefault bool `json:"qosClassDefault,omitempty"`
-
-	// Description is an arbitrary string that usually provides guidelines on
-	// when this qos level class should be used.
-	// +optional
-	Description string `json:"description,omitempty"`
-}
-
-// ServiceLevelStatus defines the desired status of ServiceLevel
-type ServiceLevelStatus struct {
-}
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// ServiceLevelList contains a list of ServiceLevel
-type ServiceLevelList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ServiceLevel `json:"items"`
-}
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -93,9 +30,6 @@ type PodQOSEnsurancePolicy struct {
 
 // PodQOSEnsurancePolicySpec defines the desired status of PodQOSEnsurancePolicy
 type PodQOSEnsurancePolicySpec struct {
-
-	// service level for pods
-	ServiceLevelName string `json:"serviceLevelName"`
 
 	// select pod used labels
 	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
