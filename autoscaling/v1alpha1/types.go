@@ -4,20 +4,21 @@ import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	predictionv1alpha1 "github.com/gocrane-io/api/prediction/v1alpha1"
+	predictionapi "github.com/gocrane-io/api/prediction/v1alpha1"
 )
 
 // AdvancedHorizontalPodAutoscalerSpec defines the desired spec of AdvancedHorizontalPodAutoscaler
 type AdvancedHorizontalPodAutoscalerSpec struct {
 	// ScaleTargetRef is the reference to the workload that should be scaled.
 	ScaleTargetRef autoscalingv2.CrossVersionObjectReference `json:"scaleTargetRef"`
-	// MinReplicaCount is the lower limit replicas to the scale target which the autoscaler can scale down to.
-	// the default MinReplicaCount is 1.
+	// MinReplicas is the lower limit replicas to the scale target which the autoscaler can scale down to.
+	// the default MinReplicas is 1.
 	// +optional
-	MinReplicaCount *int32 `json:"minReplicaCount,omitempty"`
-	// MaxReplicaCount is the upper limit replicas to the scale target which the autoscaler can scale up to.
-	// It cannot be less that MinReplicaCount.
-	MaxReplicaCount int32 `json:"maxReplicaCount"`
+	// +kubebuilder:default=1
+	MinReplicas *int32 `json:"minReplicas,omitempty"`
+	// MaxReplicas is the upper limit replicas to the scale target which the autoscaler can scale up to.
+	// It cannot be less that MinReplicas.
+	MaxReplicas int32 `json:"maxReplicas"`
 	// metrics contains the specifications for which to use to calculate the
 	// desired replica count (the maximum replica count across all metrics will
 	// be used).  The desired replica count is calculated multiplying the
@@ -35,12 +36,14 @@ type AdvancedHorizontalPodAutoscalerSpec struct {
 	Behavior *autoscalingv2.HorizontalPodAutoscalerBehavior `json:"behavior,omitempty"`
 	// PredictionConfig defines config for predict resources.
 	// If unspecified, defaults don't enable prediction.
-	PredictionConfig PredictionConfig `json:"predictionConfig,omitempty"`
+	PredictionConfig *PredictionConfig `json:"predictionConfig,omitempty"`
 }
 
 // PredictionConfig defines config for predict resources
 type PredictionConfig struct {
-	// PredictionWindow is the time window to predict metrics in the future.
+	// PredictionWindow is the time window seconds to predict metrics in the future.
+	// +optional
+	// +kubebuilder:default=600
 	PredictionWindow *int32 `json:"predictionWindow,omitempty"`
 	// PredictionAlgorithm contains all algorithm config that provider by prediction api.
 	// +optional
@@ -49,19 +52,21 @@ type PredictionConfig struct {
 
 // PredictionAlgorithm defines the algorithm to predict resources
 type PredictionAlgorithm struct {
+	// AlgorithmType specifies algorithm to predict resource
+	AlgorithmType predictionapi.AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
-	DSP *predictionv1alpha1.Dsp `json:"dsp,omitempty"`
+	DSP *predictionapi.Dsp `json:"dsp,omitempty"`
 	// +optional
-	Percentile *predictionv1alpha1.Percentile `json:"percentile,omitempty"`
+	Percentile *predictionapi.Percentile `json:"percentile,omitempty"`
 }
 
 type AdvancedHorizontalPodAutoscalerStatus struct {
-	// ExpectReplicaCount is the expected replica count to scale to.
+	// ExpectReplicas is the expected replicas to scale to.
 	// +optional
-	ExpectReplicaCount *int32 `json:"expectReplicaCount,omitempty"`
-	// CurrentReplicaCount is the current replica count to the scale target.
+	ExpectReplicas *int32 `json:"expectReplicas,omitempty"`
+	// CurrentReplicas is the current replicas to the scale target.
 	// +optional
-	CurrentReplicaCount *int32 `json:"currentReplicaCount,omitempty"`
+	CurrentReplicas *int32 `json:"currentReplicas,omitempty"`
 	// LastScaleTime indicate the last time to execute scaling.
 	// +optional
 	LastScaleTime *metav1.Time `json:"lastScaleTime,omitempty"`
@@ -78,9 +83,11 @@ type AdvancedHorizontalPodAutoscaler struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec AdvancedHorizontalPodAutoscalerSpec `json:"spec"`
+	// +optional
+	Spec AdvancedHorizontalPodAutoscalerSpec `json:"spec,omitempty"`
 
-	Status AdvancedHorizontalPodAutoscalerStatus `json:"status"`
+	// +optional
+	Status AdvancedHorizontalPodAutoscalerStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
