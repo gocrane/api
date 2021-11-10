@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	autoscalingv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
+	ensurancev1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
@@ -15,6 +16,7 @@ import (
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface
+	EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Interface
 	PredictionV1alpha1() predictionv1alpha1.PredictionV1alpha1Interface
 }
 
@@ -23,12 +25,18 @@ type Interface interface {
 type Clientset struct {
 	*discovery.DiscoveryClient
 	autoscalingV1alpha1 *autoscalingv1alpha1.AutoscalingV1alpha1Client
+	ensuranceV1alpha1   *ensurancev1alpha1.EnsuranceV1alpha1Client
 	predictionV1alpha1  *predictionv1alpha1.PredictionV1alpha1Client
 }
 
 // AutoscalingV1alpha1 retrieves the AutoscalingV1alpha1Client
 func (c *Clientset) AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface {
 	return c.autoscalingV1alpha1
+}
+
+// EnsuranceV1alpha1 retrieves the EnsuranceV1alpha1Client
+func (c *Clientset) EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Interface {
+	return c.ensuranceV1alpha1
 }
 
 // PredictionV1alpha1 retrieves the PredictionV1alpha1Client
@@ -61,6 +69,10 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	cs.ensuranceV1alpha1, err = ensurancev1alpha1.NewForConfig(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
 	cs.predictionV1alpha1, err = predictionv1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
@@ -78,6 +90,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.NewForConfigOrDie(c)
+	cs.ensuranceV1alpha1 = ensurancev1alpha1.NewForConfigOrDie(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
@@ -88,6 +101,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.New(c)
+	cs.ensuranceV1alpha1 = ensurancev1alpha1.New(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)

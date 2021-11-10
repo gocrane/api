@@ -6,6 +6,8 @@ import (
 	clientset "github.com/gocrane-io/api/pkg/generated/clientset/versioned"
 	autoscalingv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
 	fakeautoscalingv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1/fake"
+	ensurancev1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
+	fakeensurancev1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1/fake"
 	predictionv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
 	fakepredictionv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -68,6 +70,11 @@ var (
 // AutoscalingV1alpha1 retrieves the AutoscalingV1alpha1Client
 func (c *Clientset) AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface {
 	return &fakeautoscalingv1alpha1.FakeAutoscalingV1alpha1{Fake: &c.Fake}
+}
+
+// EnsuranceV1alpha1 retrieves the EnsuranceV1alpha1Client
+func (c *Clientset) EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Interface {
+	return &fakeensurancev1alpha1.FakeEnsuranceV1alpha1{Fake: &c.Fake}
 }
 
 // PredictionV1alpha1 retrieves the PredictionV1alpha1Client

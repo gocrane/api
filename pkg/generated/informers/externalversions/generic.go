@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/gocrane-io/api/autoscaling/v1alpha1"
+	ensurancev1alpha1 "github.com/gocrane-io/api/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane-io/api/prediction/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
@@ -40,6 +41,12 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 	// Group=autoscaling.crane.io, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("advancedhorizontalpodautoscalers"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().AdvancedHorizontalPodAutoscalers().Informer()}, nil
+
+		// Group=ensurance.crane.io, Version=v1alpha1
+	case ensurancev1alpha1.SchemeGroupVersion.WithResource("nodeqosensurancepolicies"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().NodeQOSEnsurancePolicies().Informer()}, nil
+	case ensurancev1alpha1.SchemeGroupVersion.WithResource("podqosensurancepolicies"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().PodQOSEnsurancePolicies().Informer()}, nil
 
 		// Group=prediction.crane.io, Version=v1alpha1
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("nodepredictions"):

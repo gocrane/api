@@ -9,6 +9,7 @@ import (
 
 	versioned "github.com/gocrane-io/api/pkg/generated/clientset/versioned"
 	autoscaling "github.com/gocrane-io/api/pkg/generated/informers/externalversions/autoscaling"
+	ensurance "github.com/gocrane-io/api/pkg/generated/informers/externalversions/ensurance"
 	internalinterfaces "github.com/gocrane-io/api/pkg/generated/informers/externalversions/internalinterfaces"
 	prediction "github.com/gocrane-io/api/pkg/generated/informers/externalversions/prediction"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -158,11 +159,16 @@ type SharedInformerFactory interface {
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
 	Autoscaling() autoscaling.Interface
+	Ensurance() ensurance.Interface
 	Prediction() prediction.Interface
 }
 
 func (f *sharedInformerFactory) Autoscaling() autoscaling.Interface {
 	return autoscaling.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Ensurance() ensurance.Interface {
+	return ensurance.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Prediction() prediction.Interface {
