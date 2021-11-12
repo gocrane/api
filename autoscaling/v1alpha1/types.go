@@ -2,7 +2,12 @@ package v1alpha1
 
 import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
+	_ "k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	_ "k8s.io/metrics/pkg/apis/external_metrics"
+	_ "k8s.io/metrics/pkg/apis/external_metrics/v1beta1"
+	_ "k8s.io/metrics/pkg/apis/metrics"
+	_ "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 
 	predictionapi "github.com/gocrane-io/api/prediction/v1alpha1"
 )
