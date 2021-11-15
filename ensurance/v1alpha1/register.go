@@ -44,6 +44,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&PodQOSEnsurancePolicyList{},
 		&NodeQOSEnsurancePolicy{},
 		&NodeQOSEnsurancePolicyList{},
+		&AvoidanceAction{},
+		&AvoidanceActionList{},
 	)
 
 	// AddToGroupVersion allows the serialization of client types like ListOptions.
