@@ -8,7 +8,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	"github.com/gocrane-io/api/prediction/v1alpha1"
+	"github.com/gocrane/api/prediction/v1alpha1"
 )
 
 // ValidatingAdmission validates cluster object when creating/updating/deleting.

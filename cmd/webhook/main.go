@@ -7,7 +7,7 @@ import (
 	apiserver "k8s.io/apiserver/pkg/server"
 	"k8s.io/component-base/logs"
 
-	"github.com/gocrane-io/api/cmd/webhook/app"
+	"github.com/gocrane/api/cmd/webhook/app"
 )
 
 func main() {

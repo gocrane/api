@@ -11,10 +11,10 @@ ifeq ($(GIT_DIFF), 1)
 endif
 BUILDDATE = $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 
-LDFLAGS := "-X github.com/gocrane-io/api/pkg/version.gitVersion=$(GIT_VERSION) \
-                      -X github.com/gocrane-io/api/pkg/version.gitCommit=$(GIT_COMMIT_HASH) \
-                      -X github.com/gocrane-io/api/pkg/version.gitTreeState=$(GIT_TREESTATE) \
-                      -X github.com/gocrane-io/api/pkg/version.buildDate=$(BUILDDATE)"
+LDFLAGS := "-X github.com/gocrane/api/pkg/version.gitVersion=$(GIT_VERSION) \
+                      -X github.com/gocrane/api/pkg/version.gitCommit=$(GIT_COMMIT_HASH) \
+                      -X github.com/gocrane/api/pkg/version.gitTreeState=$(GIT_TREESTATE) \
+                      -X github.com/gocrane/api/pkg/version.buildDate=$(BUILDDATE)"
 
 # Images management
 REGISTRY?="ccr.ccs.tencentyun.com/kube-orm"

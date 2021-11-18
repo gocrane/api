@@ -1,13 +1,12 @@
-module github.com/gocrane-io/api
+module github.com/gocrane/api
 
 go 1.16
 
 require (
-	github.com/kr/pty v1.1.5 // indirect
+	github.com/gocrane/api v0.0.4
 	github.com/onsi/ginkgo v1.16.5
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/objx v0.2.0 // indirect
 	k8s.io/api v0.22.3
 	k8s.io/apimachinery v0.22.3
 	k8s.io/apiserver v0.22.2
@@ -18,6 +17,5 @@ require (
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e
 	k8s.io/metrics v0.22.1
 	sigs.k8s.io/controller-runtime v0.10.2
-	sigs.k8s.io/custom-metrics-apiserver v1.22.0 // indirect
 
 )

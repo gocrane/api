@@ -3,7 +3,7 @@ package podgroupprediction
 import (
 	"context"
 	"encoding/json"
-	predictionv1alpha1 "github.com/gocrane-io/api/prediction/v1alpha1"
+	predictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
 	"net/http"
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
