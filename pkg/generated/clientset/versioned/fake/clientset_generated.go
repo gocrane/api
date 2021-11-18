@@ -3,13 +3,13 @@
 package fake
 
 import (
-	clientset "github.com/gocrane-io/api/pkg/generated/clientset/versioned"
-	autoscalingv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
-	fakeautoscalingv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1/fake"
-	ensurancev1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
-	fakeensurancev1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1/fake"
-	predictionv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
-	fakepredictionv1alpha1 "github.com/gocrane-io/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1/fake"
+	clientset "github.com/gocrane/api/pkg/generated/clientset/versioned"
+	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
+	fakeautoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1/fake"
+	ensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
+	fakeensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1/fake"
+	predictionv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
+	fakepredictionv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
