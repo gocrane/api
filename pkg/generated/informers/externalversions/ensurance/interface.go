@@ -3,8 +3,8 @@
 package ensurance
 
 import (
-	v1alpha1 "github.com/gocrane-io/api/pkg/generated/informers/externalversions/ensurance/v1alpha1"
-	internalinterfaces "github.com/gocrane-io/api/pkg/generated/informers/externalversions/internalinterfaces"
+	v1alpha1 "github.com/gocrane/api/pkg/generated/informers/externalversions/ensurance/v1alpha1"
+	internalinterfaces "github.com/gocrane/api/pkg/generated/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.

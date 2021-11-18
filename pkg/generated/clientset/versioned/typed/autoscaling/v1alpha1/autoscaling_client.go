@@ -3,8 +3,8 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/gocrane-io/api/autoscaling/v1alpha1"
-	"github.com/gocrane-io/api/pkg/generated/clientset/versioned/scheme"
+	v1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
+	"github.com/gocrane/api/pkg/generated/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 

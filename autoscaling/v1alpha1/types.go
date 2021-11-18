@@ -10,7 +10,7 @@ import (
 	_ "k8s.io/metrics/pkg/apis/metrics"
 	_ "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 
-	predictionapi "github.com/gocrane-io/api/prediction/v1alpha1"
+	predictionapi "github.com/gocrane/api/prediction/v1alpha1"
 )
 
 // AdvancedHorizontalPodAutoscalerSpec defines the desired spec of AdvancedHorizontalPodAutoscaler

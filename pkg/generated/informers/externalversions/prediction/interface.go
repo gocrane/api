@@ -3,8 +3,8 @@
 package prediction
 
 import (
-	internalinterfaces "github.com/gocrane-io/api/pkg/generated/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/gocrane-io/api/pkg/generated/informers/externalversions/prediction/v1alpha1"
+	internalinterfaces "github.com/gocrane/api/pkg/generated/informers/externalversions/internalinterfaces"
+	v1alpha1 "github.com/gocrane/api/pkg/generated/informers/externalversions/prediction/v1alpha1"
 )
 
 // Interface provides access to each of this group's versions.

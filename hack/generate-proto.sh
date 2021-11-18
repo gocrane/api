@@ -14,8 +14,8 @@ GO111MODULE=on go install k8s.io/code-generator/cmd/go-to-protobuf
 GO111MODULE=on go install github.com/gogo/protobuf/protoc-gen-gogo
 
 PACKAGES=(
-  github.com/gocrane-io/api/prediction/v1alpha1
-  github.com/gocrane-io/api/ensurance/v1alpha1
+  github.com/gocrane/api/prediction/v1alpha1
+  github.com/gocrane/api/ensurance/v1alpha1
 )
 
 APIMACHINERY_PKGS=(

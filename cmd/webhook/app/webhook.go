@@ -16,10 +16,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	"github.com/gocrane-io/api/cmd/webhook/app/options"
-	"github.com/gocrane-io/api/pkg/version"
-	"github.com/gocrane-io/api/pkg/webhooks/podgroupprediction"
-	podgrouppredictionv1alpha1 "github.com/gocrane-io/api/prediction/v1alpha1"
+	"github.com/gocrane/api/cmd/webhook/app/options"
+	"github.com/gocrane/api/pkg/version"
+	"github.com/gocrane/api/pkg/webhooks/podgroupprediction"
+	podgrouppredictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
 )
 
 // aggregatedScheme aggregates Kubernetes and extended schemes.

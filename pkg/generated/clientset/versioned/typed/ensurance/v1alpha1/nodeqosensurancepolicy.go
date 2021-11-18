@@ -6,8 +6,8 @@ import (
 	"context"
 	"time"
 
-	v1alpha1 "github.com/gocrane-io/api/ensurance/v1alpha1"
-	scheme "github.com/gocrane-io/api/pkg/generated/clientset/versioned/scheme"
+	v1alpha1 "github.com/gocrane/api/ensurance/v1alpha1"
+	scheme "github.com/gocrane/api/pkg/generated/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
