@@ -13,6 +13,15 @@ import (
 	predictionapi "github.com/gocrane/api/prediction/v1alpha1"
 )
 
+type ScaleStrategy string
+
+const (
+	// ScaleStrategyAuto execute scale based on metrics.
+	ScaleStrategyAuto ScaleStrategy = "Auto"
+	// ScaleStrategyManual execute scale manually.
+	ScaleStrategyManual ScaleStrategy = "Manual"
+)
+
 // AdvancedHorizontalPodAutoscalerSpec defines the desired spec of AdvancedHorizontalPodAutoscaler
 type AdvancedHorizontalPodAutoscalerSpec struct {
 	// ScaleTargetRef is the reference to the workload that should be scaled.
@@ -25,6 +34,18 @@ type AdvancedHorizontalPodAutoscalerSpec struct {
 	// MaxReplicas is the upper limit replicas to the scale target which the autoscaler can scale up to.
 	// It cannot be less that MinReplicas.
 	MaxReplicas int32 `json:"maxReplicas"`
+	// ScaleStrategy indicate the strategy to scaling target, value can be "Auto" and "Manual"
+	// the default ScaleStrategy is Auto.
+	// +optional
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=Auto;Manual
+	// +kubebuilder:default=Auto
+	ScaleStrategy ScaleStrategy `json:"scaleStrategy"`
+	// SpecificReplicas specify the target replicas if ScaleStrategy is Manual
+	// If not set, when ScaleStrategy is setting to Manual, it will just stop scaling
+	// +optional
+	// +kubebuilder:validation:Type=integer
+	SpecificReplicas *int32 `json:"specificReplicas"`
 	// metrics contains the specifications for which to use to calculate the
 	// desired replica count (the maximum replica count across all metrics will
 	// be used).  The desired replica count is calculated multiplying the
@@ -49,7 +70,8 @@ type AdvancedHorizontalPodAutoscalerSpec struct {
 type PredictionConfig struct {
 	// PredictionWindow is the time window seconds to predict metrics in the future.
 	// +optional
-	// +kubebuilder:default=600
+	// +kubebuilder:validation:Type=integer
+	// +kubebuilder:default=3600
 	PredictionWindow *int32 `json:"predictionWindow,omitempty"`
 	// PredictionAlgorithm contains all algorithm config that provider by prediction api.
 	// +optional
@@ -83,6 +105,15 @@ type AdvancedHorizontalPodAutoscalerStatus struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=ahpa
+// +kubebuilder:printcolumn:name="STRATEGY",type="string",JSONPath=".spec.scaleStrategy",description="The scale strategy of ahpa."
+// +kubebuilder:printcolumn:name="MINPODS",type="integer",JSONPath=".spec.minReplicas",description="The min replicas of target workload."
+// +kubebuilder:printcolumn:name="MAXPODS",type="integer",JSONPath=".spec.maxReplicas",description="The max replicas of target workload."
+// +kubebuilder:printcolumn:name="SPECIFICPODS",type="integer",JSONPath=".spec.scaleStrategy",description="The specific replicas of target workload."
+// +kubebuilder:printcolumn:name="REPLICAS",type="integer",JSONPath=".status.desiredReplicas",description="The desired replicas of target workload."
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
 // AdvancedHorizontalPodAutoscaler is the Schema for the advancedhorizontalpodautoscaler API
 type AdvancedHorizontalPodAutoscaler struct {
@@ -97,6 +128,7 @@ type AdvancedHorizontalPodAutoscaler struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
 
 // AdvancedHorizontalPodAutoscalerList contains a list of AdvancedHorizontalPodAutoscaler
 type AdvancedHorizontalPodAutoscalerList struct {
