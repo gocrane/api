@@ -584,7 +584,7 @@ spec:
                 format: int32
                 type: integer
               lastScaleTime:
-                description: LastScaleTime indicate the last time to execute scaling.
+                description: LastScaleTime indicates the last time to execute scaling.
                 format: date-time
                 type: string
             type: object
