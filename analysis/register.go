@@ -1,6 +1,6 @@
-package recommendation
+package analysis
 
 // GroupName is the group name used in this package
 const (
-	GroupName = "recommendation.crane.io"
+	GroupName = "analysis.crane.io"
 )
