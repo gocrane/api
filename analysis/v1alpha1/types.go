@@ -6,18 +6,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type RecommendationType string
+type Type string
 
 const (
-	RecommendationTypeAdvancedHPA RecommendationType = "AdvancedHPA"
-	RecommendationTypeResource    RecommendationType = "Resource"
-)
-
-type AnalyticsType string
-
-const (
-	AnalyticsTypeAdvancedHPA AnalyticsType = "HPA"
-	AnalyticsTypeResource    AnalyticsType = "Resource"
+	TypeHPA      Type = "HPA"
+	TypeResource Type = "Resource"
 )
 
 // +genclient
@@ -27,7 +20,11 @@ const (
 type Recommendation struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	// +optional
 	Spec RecommendationSpec `json:"spec,omitempty"`
+
+	// +optional
 	Status RecommendationStatus `json:"status,omitempty"`
 }
 
@@ -39,7 +36,7 @@ type RecommendationSpec struct {
 
 	// +required
 	// +kubebuilder:validation:Required
-	Type      RecommendationType                        `json:"type"`
+	Type Type `json:"type"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -58,11 +55,11 @@ type RecommendationStatus struct {
 
 	// LastUpdateTime is last time we got an update on this status.
 	// +optional
-	LastUpdateTime  metav1.Time `json:"lastUpdateTime,omitempty"`
+	LastUpdateTime metav1.Time `json:"lastUpdateTime,omitempty"`
 
 	// ValidityPeriod is the suggested validity period (e.g. 24h) of this recommendation since LastUpdateTime.
 	// +optional
-	ValidityPeriod  metav1.Duration `json:"ValidityPeriod,omitempty"`
+	ValidityPeriod metav1.Duration `json:"ValidityPeriod,omitempty"`
 }
 
 type AdvancedHorizontalPodAutoscalerRecommendation struct {
@@ -81,11 +78,11 @@ type ResourceRequestRecommendation struct {
 type ContainerRecommendation struct {
 	// +required
 	// +kubebuilder:validation:Required
-	ContainerName string              `json:"containerName"`
+	ContainerName string `json:"containerName"`
 
 	// +required
 	// +kubebuilder:validation:Required
-	Target        corev1.ResourceList `json:"target"`
+	Target corev1.ResourceList `json:"target"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -106,7 +103,11 @@ type RecommendationList struct {
 type Analytics struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec AnalyticsSpec `json:"spec,omitempty"`
+
+	// +optional
+	Spec AnalyticsSpec `json:"spec"`
+
+	// +optional
 	Status AnalyticsStatus `json:"status,omitempty"`
 }
 
@@ -115,7 +116,7 @@ type AnalyticsSpec struct {
 	// Type is the analytics type, including HPA and resource.
 	// +required
 	// +kubebuilder:validation:Required
-	Type AnalyticsType `json:"type"`
+	Type Type `json:"type"`
 
 	// ResourceSelector indicates how to select resources(e.g. a set of Deployments) for the analytics.
 	// +required
@@ -146,12 +147,6 @@ type AnalyticsStatus struct {
 
 // ResourceSelector describes how the resources will be selected.
 type ResourceSelector struct {
-	// +optional
-	APIGroup string `json:"apiGroup,omitempty"`
-
-	// +optional
-	Kind string `json:"kind,omitempty"`
-
 	// +optional
 	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
 }
