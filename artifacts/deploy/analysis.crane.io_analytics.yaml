@@ -32,9 +32,10 @@ spec:
           spec:
             description: AnalyticsSpec describes the analytics type, what the analysis is for and how often the analysis routine runs.
             properties:
-              interval:
-                description: Interval is the time interval between two continuous analysis. Setting interval to 0 means this is a one-off analysis.
-                type: string
+              intervalSeconds:
+                description: IntervalSeconds is the duration in seconds between two continuous analysis. Setting it to 0 means this is a one-off analysis.
+                format: int64
+                type: integer
               resourceSelectors:
                 description: ResourceSelector indicates how to select resources(e.g. a set of Deployments) for the analytics.
                 items:

@@ -123,10 +123,10 @@ type AnalyticsSpec struct {
 	// +kubebuilder:validation:Required
 	ResourceSelectors []ResourceSelector `json:"resourceSelectors"`
 
-	// Interval is the time interval between two continuous analysis. Setting interval to 0 means this is a one-off analysis.
+	// IntervalSeconds is the duration in seconds between two continuous analysis. Setting it to 0 means this is a one-off analysis.
 	// +required
 	// +kubebuilder:validation:Required
-	Interval metav1.Duration `json:"interval,omitempty"`
+	IntervalSeconds *int64 `json:"intervalSeconds,omitempty"`
 }
 
 // AnalyticsStatus represents the current state of an analytics item.

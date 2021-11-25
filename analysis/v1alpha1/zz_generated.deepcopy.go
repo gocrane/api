@@ -107,7 +107,11 @@ func (in *AnalyticsSpec) DeepCopyInto(out *AnalyticsSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
-	out.Interval = in.Interval
+	if in.IntervalSeconds != nil {
+		in, out := &in.IntervalSeconds, &out.IntervalSeconds
+		*out = new(int64)
+		**out = **in
+	}
 	return
 }
 
