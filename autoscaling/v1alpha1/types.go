@@ -61,18 +61,18 @@ type AdvancedHorizontalPodAutoscalerSpec struct {
 	// If not set, the default HPAScalingRules for scale up and scale down are used.
 	// +optional
 	Behavior *autoscalingv2.HorizontalPodAutoscalerBehavior `json:"behavior,omitempty"`
-	// PredictionConfig defines config for predict resources.
+	// Prediction defines configurations for predict resources.
 	// If unspecified, defaults don't enable prediction.
-	PredictionConfig *PredictionConfig `json:"predictionConfig,omitempty"`
+	Prediction *Prediction `json:"prediction,omitempty"`
 }
 
-// PredictionConfig defines config for predict resources
-type PredictionConfig struct {
-	// PredictionWindow is the time window seconds to predict metrics in the future.
+// Prediction defines configurations for predict resources
+type Prediction struct {
+	// PredictionWindowSeconds is the time window seconds to predict metrics in the future.
 	// +optional
 	// +kubebuilder:validation:Type=integer
 	// +kubebuilder:default=3600
-	PredictionWindow *int32 `json:"predictionWindow,omitempty"`
+	PredictionWindowSeconds *int32 `json:"predictionWindowSeconds,omitempty"`
 	// PredictionAlgorithm contains all algorithm config that provider by prediction api.
 	// +optional
 	PredictionAlgorithm *PredictionAlgorithm `json:"predictionAlgorithm,omitempty"`
@@ -87,6 +87,16 @@ type PredictionAlgorithm struct {
 	// +optional
 	Percentile *predictionapi.Percentile `json:"percentile,omitempty"`
 }
+
+type ConditionType string
+
+const (
+	// PredictionReady indicates that the prediction is ready.
+	// For enabled prediction advanced-hpa.
+	PredictionReady ConditionType = "PredictionReady"
+	// Ready indicates that whole autoscaling is running as expect.
+	Ready ConditionType = "Ready"
+)
 
 type AdvancedHorizontalPodAutoscalerStatus struct {
 	// ExpectReplicas is the expected replicas to scale to.
@@ -111,8 +121,8 @@ type AdvancedHorizontalPodAutoscalerStatus struct {
 // +kubebuilder:printcolumn:name="STRATEGY",type="string",JSONPath=".spec.scaleStrategy",description="The scale strategy of ahpa."
 // +kubebuilder:printcolumn:name="MINPODS",type="integer",JSONPath=".spec.minReplicas",description="The min replicas of target workload."
 // +kubebuilder:printcolumn:name="MAXPODS",type="integer",JSONPath=".spec.maxReplicas",description="The max replicas of target workload."
-// +kubebuilder:printcolumn:name="SPECIFICPODS",type="integer",JSONPath=".spec.scaleStrategy",description="The specific replicas of target workload."
-// +kubebuilder:printcolumn:name="REPLICAS",type="integer",JSONPath=".status.desiredReplicas",description="The desired replicas of target workload."
+// +kubebuilder:printcolumn:name="SPECIFICPODS",type="integer",JSONPath=".spec.specificReplicas",description="The specific replicas of target workload."
+// +kubebuilder:printcolumn:name="REPLICAS",type="integer",JSONPath=".status.expectReplicas",description="The desired replicas of target workload."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
 // AdvancedHorizontalPodAutoscaler is the Schema for the advancedhorizontalpodautoscaler API
