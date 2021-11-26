@@ -32,11 +32,11 @@ spec:
       name: MAXPODS
       type: integer
     - description: The specific replicas of target workload.
-      jsonPath: .spec.scaleStrategy
+      jsonPath: .spec.specificReplicas
       name: SPECIFICPODS
       type: integer
     - description: The desired replicas of target workload.
-      jsonPath: .status.desiredReplicas
+      jsonPath: .status.expectReplicas
       name: REPLICAS
       type: integer
     - description: CreationTimestamp is a timestamp representing the server time when
@@ -667,8 +667,8 @@ spec:
                   is 1.
                 format: int32
                 type: integer
-              predictionConfig:
-                description: PredictionConfig defines config for predict resources.
+              prediction:
+                description: Prediction defines configurations for predict resources.
                   If unspecified, defaults don't enable prediction.
                 properties:
                   predictionAlgorithm:
@@ -739,10 +739,10 @@ spec:
                             type: string
                         type: object
                     type: object
-                  predictionWindow:
+                  predictionWindowSeconds:
                     default: 3600
-                    description: PredictionWindow is the time window seconds to predict
-                      metrics in the future.
+                    description: PredictionWindowSeconds is the time window seconds
+                      to predict metrics in the future.
                     format: int32
                     type: integer
                 type: object
