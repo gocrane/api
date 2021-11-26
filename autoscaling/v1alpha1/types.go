@@ -95,7 +95,7 @@ type AdvancedHorizontalPodAutoscalerStatus struct {
 	// CurrentReplicas is the current replicas to the scale target.
 	// +optional
 	CurrentReplicas *int32 `json:"currentReplicas,omitempty"`
-	// LastScaleTime indicate the last time to execute scaling.
+	// LastScaleTime indicates the last time to execute scaling.
 	// +optional
 	LastScaleTime *metav1.Time `json:"lastScaleTime,omitempty"`
 	// Conditions is an array of current autoscaler conditions.
