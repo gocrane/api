@@ -377,9 +377,11 @@ type QueryCondition struct {
 type Operator string
 
 const (
-	OperatorEqual      Operator = "="
-	OperatorEqualRegex Operator = "=~"
-	OperatorIn         Operator = "in"
+	OperatorEqual         Operator = "="
+	OperatorNotEqual      Operator = "!="
+	OperatorRegexMatch    Operator = "=~"
+	OperatorNotRegexMatch Operator = "!~"
+	OperatorIn            Operator = "in"
 )
 
 // Algorithm describe the algorithm params
