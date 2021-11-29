@@ -125,7 +125,11 @@ spec:
                             maxValue:
                               type: string
                           type: object
+                        marginFraction:
+                          type: string
                         minSampleWeight:
+                          type: string
+                        percentile:
                           type: string
                         sampleInterval:
                           type: string

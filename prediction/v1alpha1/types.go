@@ -210,12 +210,12 @@ type MetricPredictionConfig struct {
 	MetricName    string        `json:"metricName,omitempty"`
 	AlgorithmType AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
-	DSP *Dsp `json:"dsp,omitempty"`
+	DSP *DSP `json:"dsp,omitempty"`
 	// +optional
 	Percentile *Percentile `json:"percentile,omitempty"`
 }
 
-type Dsp struct {
+type DSP struct {
 	// SampleInterval is the sampling interval of metrics.
 	SampleInterval string `json:"sampleInterval,omitempty"`
 	// HistoryLength describes how long back should be queried against provider to get historical metrics for prediction.
@@ -237,14 +237,16 @@ type FFTEstimator struct {
 	MarginFraction         string `json:"marginFraction,omitempty"`
 	LowAmplitudeThreshold  string `json:"lowAmplitudeThreshold,omitempty"`
 	HighFrequencyThreshold string `json:"highFrequencyThreshold,omitempty"`
-	MinNumOfSpectrumItems  int32  `json:"minNumOfSpectrumItems,omitempty"`
-	MaxNumOfSpectrumItems  int32  `json:"maxNumOfSpectrumItems,omitempty"`
+	MinNumOfSpectrumItems  *int32 `json:"minNumOfSpectrumItems,omitempty"`
+	MaxNumOfSpectrumItems  *int32 `json:"maxNumOfSpectrumItems,omitempty"`
 }
 
 type Percentile struct {
 	SampleInterval  string          `json:"sampleInterval,omitempty"`
 	Histogram       HistogramConfig `json:"histogram,omitempty"`
 	MinSampleWeight string          `json:"minSampleWeight,omitempty"`
+	MarginFraction  string          `json:"marginFraction,omitempty"`
+	Percentile      string          `json:"percentile,omitempty"`
 }
 
 type HistogramConfig struct {
@@ -278,9 +280,9 @@ type TimeSeriesPrediction struct {
 type TimeSeriesPredictionSpec struct {
 	// PredictionMetrics is an array of PredictionMetric
 	PredictionMetrics []PredictionMetric `json:"predictionMetrics,omitempty"`
-	// PredictionCycleSeconds is the prediction time series length, typically it is an cycle of your time series. which is at least 1d now.
-	// Predicted time series has timestamp it self, the prediction timeseries may includes old timestamps when you consume the TimeSeriesPredictionStatus.PredictionMetrics, you must deal with it when it is old time.
-	PredictionCycleSeconds int32 `json:"predictionCycleSeconds,omitempty"`
+
+	// PredictionWindowSeconds is a time window in seconds, indicating how long to predict in the future.
+	PredictionWindowSeconds int32 `json:"predictionWindowSeconds,omitempty"`
 }
 
 // TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
@@ -345,15 +347,19 @@ type PredictionMetric struct {
 
 // MetricSelector
 type MetricSelector struct {
-	// MetricName is the name of your metric, such as K8sContainerCpuCoreUsed or something else.
+	// MetricName is the name of the metric.
+	// +required
+	// +kubebuilder:validation:Required
 	MetricName string `json:"metricName,omitempty"`
-	// QueryConditions is the query condition, this is used for tencent cloud monitoring and other non-prometheus style monitoring system.
+
+	// QueryConditions is a query condition list.
+	// + optional
 	QueryConditions []QueryCondition `json:"labels,omitempty"`
 }
 
 // Query
 type Query struct {
-	// Expression is the expression of your metric query, only supports prometheus now.
+	// Expression is the query expression. For prometheus, it is promQL.
 	Expression string `json:"expression,omitempty"`
 }
 
@@ -382,7 +388,7 @@ type Algorithm struct {
 	AlgorithmType AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
 	// DSP is an algorithm which use FFT to deal with time series, typically it is used to predict some periodic time series
-	DSP *Dsp `json:"dsp,omitempty"`
+	DSP *DSP `json:"dsp,omitempty"`
 	// +optional
 	// Percentile is an algorithm which use exponential time decay histogram, it can predict a reasonable value according your history time series
 	Percentile *Percentile `json:"percentile,omitempty"`
@@ -402,7 +408,7 @@ type MetricTimeSeries struct {
 // Sample pairs a Value with a Timestamp.
 type Sample struct {
 	Value     string `json:"value,omitempty"`
-	Timestamp int64  	`json:"timestamp,omitempty"`
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
 // A Label is a Name and Value pair that provides additional information about the metric.
