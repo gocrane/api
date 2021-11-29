@@ -255,3 +255,170 @@ type HistogramConfig struct {
 	FirstBucketSize       string `json:"firstBucketSize,omitempty"`
 	BucketSizeGrowthRatio string `json:"bucketSizeGrowthRatio,omitempty"`
 }
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:webhooks:path=/mutate-timeseriesprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,verbs=create;update,versions=v1alpha1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
+// +kubebuilder:webhooks:verbs=create;update,path=/validate-timeseriesprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,versions=v1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
+// +kubebuilder:subresource:status
+// +kubebuilder:object:root=true
+
+// TimeSeriesPrediction is a prediction for a time series.
+type TimeSeriesPrediction struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec TimeSeriesPredictionSpec `json:"spec,omitempty"`
+
+	// +optional
+	Status TimeSeriesPredictionStatus `json:"status,omitempty"`
+}
+
+// TimeSeriesPredictionSpec is a description of a TimeSeriesPrediction.
+type TimeSeriesPredictionSpec struct {
+	// PredictionMetrics is an array of PredictionMetric
+	PredictionMetrics []PredictionMetric `json:"predictionMetrics,omitempty"`
+	// PredictionCycleSeconds is the prediction time series length, typically it is an cycle of your time series. which is at least 1d now.
+	// Predicted time series has timestamp it self, the prediction timeseries may includes old timestamps when you consume the TimeSeriesPredictionStatus.PredictionMetrics, you must deal with it when it is old time.
+	PredictionCycleSeconds int32 `json:"predictionCycleSeconds,omitempty"`
+}
+
+// TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
+type TimeSeriesPredictionStatus struct {
+	// PredictionMetrics is a map, key is the metric name in your TimeSeriesPredictionSpec.PredictionMetric spec. value is an array of predicted time series.
+	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
+	PredictionMetrics map[string]MetricTimeSeriesList `json:"predictionMetrics,omitempty"`
+
+	// Conditions is the condition of TimeSeriesPrediction
+	Conditions []TimeSeriesPredictionCondition `json:"conditions,omitempty"`
+}
+
+// TimeSeriesPredictionCondition contains details for the current condition of this TimeSeriesPrediction.
+type TimeSeriesPredictionCondition struct {
+	// Type is the type of the condition.
+	Type PredictionConditionType `json:"type,omitempty"`
+	// Status is the status of the condition.
+	// Can be True, False, Unknown.
+	Status metav1.ConditionStatus `json:"status,omitempty"`
+	// Last time we probed the condition.
+	// +optional
+	LastProbeTime metav1.Time `json:"lastProbeTime,omitempty"`
+	// Last time the condition transitioned from one status to another.
+	// +optional
+	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
+	// Unique, one-word, CamelCase reason for the condition's last transition.
+	// +optional
+	Reason string `json:"reason,omitempty"`
+	// Human-readable message indicating details about last transition.
+	// +optional
+	Message string `json:"message,omitempty"`
+}
+
+// PredictionConditionType is a valid value for TimeSeriesPredictionCondition.Type
+type PredictionConditionType string
+
+// These are valid conditions of TimeSeriesPrediction.
+const (
+	// TimeSeriesPredictionConditionCharging means no valid prediction series is available, just wait to predict.
+	TimeSeriesPredictionConditionCharging PredictionConditionType = "Charging"
+	// TimeSeriesPredictionConditionPredicting means the prediction routine is ongoing and the prediction data is valid.
+	TimeSeriesPredictionConditionPredicting PredictionConditionType = "Predicting"
+	// TimeSeriesPredictionConditionNotReady means the prediction has some exception, and it is not ready
+	TimeSeriesPredictionConditionNotReady PredictionConditionType = "NotReady"
+)
+
+// PredictionMetric describe what metric of your time series prediction, how to query, use which algorithm to predict.
+type PredictionMetric struct {
+	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
+	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// following QueryExpressions depend on your crane system data source configured when the system start.
+	// if you use different sources with your system start params, it is not valid.
+	// +optional
+	// MetricSelector is a query expression of non-prometheus style, usually is api style
+	MetricSelector *MetricSelector `json:"metricSelector,omitempty"`
+	// +optional
+	// Query is a query expression of DSL style, such as prometheus query language
+	Query *Query `json:"query,omitempty"`
+	// Algorithm is the algorithm used by this prediction metric.
+	Algorithm Algorithm `json:"algorithm,omitempty"`
+}
+
+// MetricSelector
+type MetricSelector struct {
+	// MetricName is the name of your metric, such as K8sContainerCpuCoreUsed or something else.
+	MetricName string `json:"metricName,omitempty"`
+	// QueryConditions is the query condition, this is used for tencent cloud monitoring and other non-prometheus style monitoring system.
+	QueryConditions []QueryCondition `json:"labels,omitempty"`
+}
+
+// Query
+type Query struct {
+	// Expression is the expression of your metric query, only supports prometheus now.
+	Expression string `json:"expression,omitempty"`
+}
+
+// QueryCondition is a key, operator, value triple.
+// E.g. 'namespace = default', 'role in [Admin, Developer]'
+type QueryCondition struct {
+	// Key is the key of the query condition
+	Key string `json:"key,omitempty"`
+	// Operator
+	Operator Operator `json:"operator,omitempty"`
+	// Value is the query value list.
+	Value []string `json:"value,omitempty"`
+}
+
+type Operator string
+
+const (
+	OperatorEqual      Operator = "="
+	OperatorEqualRegex Operator = "=~"
+	OperatorIn         Operator = "in"
+)
+
+// Algorithm describe the algorithm params
+type Algorithm struct {
+	// AlgorithmType is the algorithm type, currently supports dsp and percentile.
+	AlgorithmType AlgorithmType `json:"algorithmType,omitempty"`
+	// +optional
+	// DSP is an algorithm which use FFT to deal with time series, typically it is used to predict some periodic time series
+	DSP *Dsp `json:"dsp,omitempty"`
+	// +optional
+	// Percentile is an algorithm which use exponential time decay histogram, it can predict a reasonable value according your history time series
+	Percentile *Percentile `json:"percentile,omitempty"`
+}
+
+type MetricTimeSeriesList []*MetricTimeSeries
+
+// MetricTimeSeries is a stream of samples that belong to a metric with a set of labels
+type MetricTimeSeries struct {
+	// A collection of Labels that are attached by monitoring system as metadata
+	// for the metrics, which are known as dimensions.
+	Labels []Label `json:"labels,omitempty"`
+	// A collection of Samples in chronological order.
+	Samples []Sample `json:"samples,omitempty"`
+}
+
+// Sample pairs a Value with a Timestamp.
+type Sample struct {
+	Value     string `json:"value,omitempty"`
+	Timestamp int64  	`json:"timestamp,omitempty"`
+}
+
+// A Label is a Name and Value pair that provides additional information about the metric.
+// It is metadata for the metric. For example, Kubernetes pod metrics always have
+// 'namespace' label that represents which namespace it belongs to.
+type Label struct {
+	Name  string `json:"name,omitempty"`
+	Value string `json:"value,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// TimeSeriesPredictionList is a list of NodePrediction resources
+type TimeSeriesPredictionList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []TimeSeriesPrediction `json:"items"`
+}
