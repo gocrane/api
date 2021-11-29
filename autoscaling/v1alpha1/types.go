@@ -83,7 +83,7 @@ type PredictionAlgorithm struct {
 	// AlgorithmType specifies algorithm to predict resource
 	AlgorithmType predictionapi.AlgorithmType `json:"algorithmType,omitempty"`
 	// +optional
-	DSP *predictionapi.Dsp `json:"dsp,omitempty"`
+	DSP *predictionapi.DSP `json:"dsp,omitempty"`
 	// +optional
 	Percentile *predictionapi.Percentile `json:"percentile,omitempty"`
 }

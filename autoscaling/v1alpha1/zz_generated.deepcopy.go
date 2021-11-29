@@ -184,7 +184,7 @@ func (in *PredictionAlgorithm) DeepCopyInto(out *PredictionAlgorithm) {
 	*out = *in
 	if in.DSP != nil {
 		in, out := &in.DSP, &out.DSP
-		*out = new(predictionv1alpha1.Dsp)
+		*out = new(predictionv1alpha1.DSP)
 		(*in).DeepCopyInto(*out)
 	}
 	if in.Percentile != nil {
