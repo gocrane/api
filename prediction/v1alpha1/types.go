@@ -281,12 +281,6 @@ type TimeSeriesPredictionSpec struct {
 	// PredictionCycleSeconds is the prediction time series length, typically it is an cycle of your time series. which is at least 1d now.
 	// Predicted time series has timestamp it self, the prediction timeseries may includes old timestamps when you consume the TimeSeriesPredictionStatus.PredictionMetrics, you must deal with it when it is old time.
 	PredictionCycleSeconds int32 `json:"predictionCycleSeconds,omitempty"`
-	// RefreshFrequencySeconds is the update frequency of the TimeSeriesPrediction status
-	// When you create the TimeSeriesPrediction, it will do predict immediately and update the status of the crd, but it may has no prediction data available because insufficient history data or some other reasons.
-	// Then next RefreshFrequencySeconds it will do prediction again and update the status of the crd.
-	// RefreshFrequencySeconds must less than PredictionCycleSeconds. typically it is 1h, 30m, half of your PredictionCycleSeconds.
-	// Do not set it too small, such as 1s, 1min, 5min, because the predicted data may has no changes in short periods.
-	RefreshFrequencySeconds int32 `json:"refreshFrequencySeconds,omitempty"`
 }
 
 // TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
@@ -340,27 +334,27 @@ type PredictionMetric struct {
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
-	// CloudMonitorSource is a query expression of non-prometheus style
-	CloudMonitorSource *CloudMonitorQueryExpression `json:"cloudMonitorSource,omitempty"`
+	// MetricSelector is a query expression of non-prometheus style, usually is api style
+	MetricSelector *MetricSelector `json:"metricSelector,omitempty"`
 	// +optional
-	// PrometheusSource is a query expression of prometheus query
-	PrometheusSource *PrometheusQueryExpression `json:"prometheusSource,omitempty"`
+	// Query is a query expression of DSL style, such as prometheus query language
+	Query *Query `json:"query,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
 }
 
-// CloudMonitorQueryExpression
-type CloudMonitorQueryExpression struct {
+// MetricSelector
+type MetricSelector struct {
 	// MetricName is the name of your metric, such as K8sContainerCpuCoreUsed or something else.
 	MetricName string `json:"metricName,omitempty"`
 	// QueryConditions is the query condition, this is used for tencent cloud monitoring and other non-prometheus style monitoring system.
 	QueryConditions []QueryCondition `json:"labels,omitempty"`
 }
 
-// PrometheusQueryExpression
-type PrometheusQueryExpression struct {
-	// QueryExpr is the expression of your metric query, only supports prometheus now.
-	QueryExpr string `json:"queryExpr,omitempty"`
+// Query
+type Query struct {
+	// Expression is the expression of your metric query, only supports prometheus now.
+	Expression string `json:"expression,omitempty"`
 }
 
 // QueryCondition is a key, operator, value triple.
@@ -408,7 +402,7 @@ type MetricTimeSeries struct {
 // Sample pairs a Value with a Timestamp.
 type Sample struct {
 	Value     string `json:"value,omitempty"`
-	Timestamp int64  `json:"timestamp,omitempty"`
+	Timestamp int64  	`json:"timestamp,omitempty"`
 }
 
 // A Label is a Name and Value pair that provides additional information about the metric.

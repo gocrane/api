@@ -106,8 +106,8 @@ spec:
                               type: string
                           type: object
                       type: object
-                    cloudMonitorSource:
-                      description: following QueryExpressions depend on your crane system data source configured when the system start. if you use different sources with your system start params, it is not valid. CloudMonitorSource is a query expression of non-prometheus style
+                    metricSelector:
+                      description: following QueryExpressions depend on your crane system data source configured when the system start. if you use different sources with your system start params, it is not valid. MetricSelector is a query expression of non-prometheus style, usually is api style
                       properties:
                         labels:
                           description: QueryConditions is the query condition, this is used for tencent cloud monitoring and other non-prometheus style monitoring system.
@@ -131,11 +131,11 @@ spec:
                           description: MetricName is the name of your metric, such as K8sContainerCpuCoreUsed or something else.
                           type: string
                       type: object
-                    prometheusSource:
-                      description: PrometheusSource is a query expression of prometheus query
+                    query:
+                      description: Query is a query expression of DSL style, such as prometheus query language
                       properties:
-                        queryExpr:
-                          description: QueryExpr is the expression of your metric query, only supports prometheus now.
+                        expression:
+                          description: Expression is the expression of your metric query, only supports prometheus now.
                           type: string
                       type: object
                     resourceIdentifier:
@@ -143,10 +143,6 @@ spec:
                       type: string
                   type: object
                 type: array
-              refreshFrequencySeconds:
-                description: RefreshFrequencySeconds is the update frequency of the TimeSeriesPrediction status When you create the TimeSeriesPrediction, it will do predict immediately and update the status of the crd, but it may has no prediction data available because insufficient history data or some other reasons. Then next RefreshFrequencySeconds it will do prediction again and update the status of the crd. RefreshFrequencySeconds must less than PredictionCycleSeconds. typically it is 1h, 30m, half of your PredictionCycleSeconds. Do not set it too small, such as 1s, 1min, 5min, because the predicted data may has no changes in short periods.
-                format: int32
-                type: integer
             type: object
           status:
             description: TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
