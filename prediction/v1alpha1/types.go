@@ -221,10 +221,10 @@ type DSP struct {
 	// HistoryLength describes how long back should be queried against provider to get historical metrics for prediction.
 	HistoryLength string `json:"historyLength,omitempty"`
 	// Estimator
-	Estimator Estimator `json:"estimators,omitempty"`
+	Estimators Estimators `json:"estimators,omitempty"`
 }
 
-type Estimator struct {
+type Estimators struct {
 	// +optional
 	MaxValueEstimators []*MaxValueEstimator `json:"maxValue,omitempty"`
 	// +optional
