@@ -62,6 +62,9 @@ spec:
                               type: array
                             maxValue:
                               items:
+                                properties:
+                                  marginFraction:
+                                    type: string
                                 type: object
                               type: array
                           type: object

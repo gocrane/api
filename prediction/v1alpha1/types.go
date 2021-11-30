@@ -231,7 +231,9 @@ type Estimators struct {
 	FFTEstimators []*FFTEstimator `json:"fft,omitempty"`
 }
 
-type MaxValueEstimator struct{}
+type MaxValueEstimator struct{
+	MarginFraction string `json:"marginFraction,omitempty"`
+}
 
 type FFTEstimator struct {
 	MarginFraction         string `json:"marginFraction,omitempty"`
