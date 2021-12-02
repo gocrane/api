@@ -22,8 +22,8 @@ const (
 	ScaleStrategyManual ScaleStrategy = "Manual"
 )
 
-// AdvancedHorizontalPodAutoscalerSpec defines the desired spec of AdvancedHorizontalPodAutoscaler
-type AdvancedHorizontalPodAutoscalerSpec struct {
+// EffectiveHorizontalPodAutoscalerSpec defines the desired spec of EffectiveHorizontalPodAutoscaler
+type EffectiveHorizontalPodAutoscalerSpec struct {
 	// ScaleTargetRef is the reference to the workload that should be scaled.
 	ScaleTargetRef autoscalingv2.CrossVersionObjectReference `json:"scaleTargetRef"`
 	// MinReplicas is the lower limit replicas to the scale target which the autoscaler can scale down to.
@@ -92,13 +92,13 @@ type ConditionType string
 
 const (
 	// PredictionReady indicates that the prediction is ready.
-	// For enabled prediction advanced-hpa.
+	// For enabled prediction effective-hpa.
 	PredictionReady ConditionType = "PredictionReady"
 	// Ready indicates that whole autoscaling is running as expect.
 	Ready ConditionType = "Ready"
 )
 
-type AdvancedHorizontalPodAutoscalerStatus struct {
+type EffectiveHorizontalPodAutoscalerStatus struct {
 	// ExpectReplicas is the expected replicas to scale to.
 	// +optional
 	ExpectReplicas *int32 `json:"expectReplicas,omitempty"`
@@ -117,7 +117,7 @@ type AdvancedHorizontalPodAutoscalerStatus struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:shortName=ahpa
+// +kubebuilder:resource:shortName=ehpa
 // +kubebuilder:printcolumn:name="STRATEGY",type="string",JSONPath=".spec.scaleStrategy",description="The scale strategy of ahpa."
 // +kubebuilder:printcolumn:name="MINPODS",type="integer",JSONPath=".spec.minReplicas",description="The min replicas of target workload."
 // +kubebuilder:printcolumn:name="MAXPODS",type="integer",JSONPath=".spec.maxReplicas",description="The max replicas of target workload."
@@ -125,25 +125,78 @@ type AdvancedHorizontalPodAutoscalerStatus struct {
 // +kubebuilder:printcolumn:name="REPLICAS",type="integer",JSONPath=".status.expectReplicas",description="The desired replicas of target workload."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
-// AdvancedHorizontalPodAutoscaler is the Schema for the advancedhorizontalpodautoscaler API
-type AdvancedHorizontalPodAutoscaler struct {
+// EffectiveHorizontalPodAutoscaler is the Schema for the effectivehorizontalpodautoscaler API
+type EffectiveHorizontalPodAutoscaler struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// +optional
-	Spec AdvancedHorizontalPodAutoscalerSpec `json:"spec,omitempty"`
+	Spec EffectiveHorizontalPodAutoscalerSpec `json:"spec,omitempty"`
 
 	// +optional
-	Status AdvancedHorizontalPodAutoscalerStatus `json:"status,omitempty"`
+	Status EffectiveHorizontalPodAutoscalerStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 
-// AdvancedHorizontalPodAutoscalerList contains a list of AdvancedHorizontalPodAutoscaler
-type AdvancedHorizontalPodAutoscalerList struct {
+// EffectiveHorizontalPodAutoscalerList contains a list of EffectiveHorizontalPodAutoscaler
+type EffectiveHorizontalPodAutoscalerList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
 
-	Items []AdvancedHorizontalPodAutoscaler `json:"items"`
+	Items []EffectiveHorizontalPodAutoscaler `json:"items"`
+}
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector
+// +kubebuilder:resource:shortName=subs
+// +kubebuilder:printcolumn:name="REPLICAS",type="integer",JSONPath=".status.replicas",description="The replicas presents the dryRun result."
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
+
+// Substitute is the Schema for the Substitute API
+type Substitute struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	// +optional
+	Spec SubstituteSpec `json:"spec,omitempty"`
+
+	// +optional
+	Status SubstituteStatus `json:"status,omitempty"`
+}
+
+// SubstituteSpec defines the desired spec of Substitute
+type SubstituteSpec struct {
+	// Replicas is used by presents dryRun replicas for SubstituteTargetRef.
+	// +optional
+	Replicas *int32 `json:"replicas,omitempty"`
+
+	// SubstituteTargetRef is the reference to the workload that should be Substituted.
+	SubstituteTargetRef autoscalingv2.CrossVersionObjectReference `json:"substituteTargetRef"`
+}
+
+// SubstituteStatus defines the status of Substitute
+type SubstituteStatus struct {
+	// LabelSelector is label selectors that is sync with SubstituteTargetRef's labelSelector which used by HPA.
+	// +optional
+	LabelSelector string `json:"labelSelector,omitempty"`
+
+	// Replicas is used by presents dryRun replicas for SubstituteTargetRef.
+	// status.replicas should be equal to spec.replicas.
+	Replicas int32 `json:"replicas,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+
+// SubstituteList contains a list of Substitute
+type SubstituteList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []Substitute `json:"items"`
 }

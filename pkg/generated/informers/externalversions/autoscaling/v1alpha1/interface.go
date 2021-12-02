@@ -8,8 +8,10 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// AdvancedHorizontalPodAutoscalers returns a AdvancedHorizontalPodAutoscalerInformer.
-	AdvancedHorizontalPodAutoscalers() AdvancedHorizontalPodAutoscalerInformer
+	// EffectiveHorizontalPodAutoscalers returns a EffectiveHorizontalPodAutoscalerInformer.
+	EffectiveHorizontalPodAutoscalers() EffectiveHorizontalPodAutoscalerInformer
+	// Substitutes returns a SubstituteInformer.
+	Substitutes() SubstituteInformer
 }
 
 type version struct {
@@ -23,7 +25,12 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// AdvancedHorizontalPodAutoscalers returns a AdvancedHorizontalPodAutoscalerInformer.
-func (v *version) AdvancedHorizontalPodAutoscalers() AdvancedHorizontalPodAutoscalerInformer {
-	return &advancedHorizontalPodAutoscalerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// EffectiveHorizontalPodAutoscalers returns a EffectiveHorizontalPodAutoscalerInformer.
+func (v *version) EffectiveHorizontalPodAutoscalers() EffectiveHorizontalPodAutoscalerInformer {
+	return &effectiveHorizontalPodAutoscalerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// Substitutes returns a SubstituteInformer.
+func (v *version) Substitutes() SubstituteInformer {
+	return &substituteInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
