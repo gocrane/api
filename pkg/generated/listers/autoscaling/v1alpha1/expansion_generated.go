@@ -2,10 +2,18 @@
 
 package v1alpha1
 
-// AdvancedHorizontalPodAutoscalerListerExpansion allows custom methods to be added to
-// AdvancedHorizontalPodAutoscalerLister.
-type AdvancedHorizontalPodAutoscalerListerExpansion interface{}
+// EffectiveHorizontalPodAutoscalerListerExpansion allows custom methods to be added to
+// EffectiveHorizontalPodAutoscalerLister.
+type EffectiveHorizontalPodAutoscalerListerExpansion interface{}
 
-// AdvancedHorizontalPodAutoscalerNamespaceListerExpansion allows custom methods to be added to
-// AdvancedHorizontalPodAutoscalerNamespaceLister.
-type AdvancedHorizontalPodAutoscalerNamespaceListerExpansion interface{}
+// EffectiveHorizontalPodAutoscalerNamespaceListerExpansion allows custom methods to be added to
+// EffectiveHorizontalPodAutoscalerNamespaceLister.
+type EffectiveHorizontalPodAutoscalerNamespaceListerExpansion interface{}
+
+// SubstituteListerExpansion allows custom methods to be added to
+// SubstituteLister.
+type SubstituteListerExpansion interface{}
+
+// SubstituteNamespaceListerExpansion allows custom methods to be added to
+// SubstituteNamespaceLister.
+type SubstituteNamespaceListerExpansion interface{}

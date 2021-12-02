@@ -10,7 +10,8 @@ import (
 
 type AutoscalingV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	AdvancedHorizontalPodAutoscalersGetter
+	EffectiveHorizontalPodAutoscalersGetter
+	SubstitutesGetter
 }
 
 // AutoscalingV1alpha1Client is used to interact with features provided by the autoscaling.crane.io group.
@@ -18,8 +19,12 @@ type AutoscalingV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *AutoscalingV1alpha1Client) AdvancedHorizontalPodAutoscalers(namespace string) AdvancedHorizontalPodAutoscalerInterface {
-	return newAdvancedHorizontalPodAutoscalers(c, namespace)
+func (c *AutoscalingV1alpha1Client) EffectiveHorizontalPodAutoscalers(namespace string) EffectiveHorizontalPodAutoscalerInterface {
+	return newEffectiveHorizontalPodAutoscalers(c, namespace)
+}
+
+func (c *AutoscalingV1alpha1Client) Substitutes(namespace string) SubstituteInterface {
+	return newSubstitutes(c, namespace)
 }
 
 // NewForConfig creates a new AutoscalingV1alpha1Client for the given config.

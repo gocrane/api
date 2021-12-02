@@ -2,4 +2,6 @@
 
 package v1alpha1
 
-type AdvancedHorizontalPodAutoscalerExpansion interface{}
+type EffectiveHorizontalPodAutoscalerExpansion interface{}
+
+type SubstituteExpansion interface{}

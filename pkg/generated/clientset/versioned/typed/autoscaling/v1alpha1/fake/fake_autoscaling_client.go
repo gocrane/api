@@ -12,8 +12,12 @@ type FakeAutoscalingV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeAutoscalingV1alpha1) AdvancedHorizontalPodAutoscalers(namespace string) v1alpha1.AdvancedHorizontalPodAutoscalerInterface {
-	return &FakeAdvancedHorizontalPodAutoscalers{c, namespace}
+func (c *FakeAutoscalingV1alpha1) EffectiveHorizontalPodAutoscalers(namespace string) v1alpha1.EffectiveHorizontalPodAutoscalerInterface {
+	return &FakeEffectiveHorizontalPodAutoscalers{c, namespace}
+}
+
+func (c *FakeAutoscalingV1alpha1) Substitutes(namespace string) v1alpha1.SubstituteInterface {
+	return &FakeSubstitutes{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
