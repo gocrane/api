@@ -41,6 +41,12 @@ spec:
                 items:
                   description: ResourceSelector describes how the resources will be selected.
                   properties:
+                    apiVersion:
+                      description: API version of the resource, e.g. "apps/v1"
+                      type: string
+                    kind:
+                      description: Kind of the resource, e.g. Deployment
+                      type: string
                     labelSelector:
                       description: A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
                       properties:
@@ -71,6 +77,11 @@ spec:
                           description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                           type: object
                       type: object
+                    name:
+                      description: Name of the resource.
+                      type: string
+                  required:
+                  - kind
                   type: object
                 type: array
               type:
