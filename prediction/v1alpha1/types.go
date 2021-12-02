@@ -294,41 +294,17 @@ type TimeSeriesPredictionStatus struct {
 	PredictionMetrics map[string]MetricTimeSeriesList `json:"predictionMetrics,omitempty"`
 
 	// Conditions is the condition of TimeSeriesPrediction
-	Conditions []TimeSeriesPredictionCondition `json:"conditions,omitempty"`
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
-// TimeSeriesPredictionCondition contains details for the current condition of this TimeSeriesPrediction.
-type TimeSeriesPredictionCondition struct {
-	// Type is the type of the condition.
-	Type PredictionConditionType `json:"type,omitempty"`
-	// Status is the status of the condition.
-	// Can be True, False, Unknown.
-	Status metav1.ConditionStatus `json:"status,omitempty"`
-	// Last time we probed the condition.
-	// +optional
-	LastProbeTime metav1.Time `json:"lastProbeTime,omitempty"`
-	// Last time the condition transitioned from one status to another.
-	// +optional
-	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
-	// Unique, one-word, CamelCase reason for the condition's last transition.
-	// +optional
-	Reason string `json:"reason,omitempty"`
-	// Human-readable message indicating details about last transition.
-	// +optional
-	Message string `json:"message,omitempty"`
-}
 
 // PredictionConditionType is a valid value for TimeSeriesPredictionCondition.Type
 type PredictionConditionType string
 
 // These are valid conditions of TimeSeriesPrediction.
 const (
-	// TimeSeriesPredictionConditionCharging means no valid prediction series is available, just wait to predict.
-	TimeSeriesPredictionConditionCharging PredictionConditionType = "Charging"
-	// TimeSeriesPredictionConditionPredicting means the prediction routine is ongoing and the prediction data is valid.
-	TimeSeriesPredictionConditionPredicting PredictionConditionType = "Predicting"
-	// TimeSeriesPredictionConditionNotReady means the prediction has some exception, and it is not ready
-	TimeSeriesPredictionConditionNotReady PredictionConditionType = "NotReady"
+	// TimeSeriesPredictionConditionReady means the prediction data is available to consume
+	TimeSeriesPredictionConditionReady PredictionConditionType = "Ready"
 )
 
 // PredictionMetric describe what metric of your time series prediction, how to query, use which algorithm to predict.
