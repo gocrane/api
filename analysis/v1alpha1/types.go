@@ -147,6 +147,17 @@ type AnalyticsStatus struct {
 
 // ResourceSelector describes how the resources will be selected.
 type ResourceSelector struct {
+	// Kind of the resource, e.g. Deployment
+	Kind string `json:"kind"`
+
+	// API version of the resource, e.g. "apps/v1"
+	// +optional
+	APIVersion string `json:"apiVersion,omitempty"`
+
+	// Name of the resource.
+	// +optional
+	Name string `json:"name,omitempty"`
+
 	// +optional
 	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
 }
