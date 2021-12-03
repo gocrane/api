@@ -44,6 +44,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&PodGroupPredictionList{},
 		&NodePrediction{},
 		&NodePredictionList{},
+		&TimeSeriesPrediction{},
+		&TimeSeriesPredictionList{},
 	)
 	// AddToGroupVersion allows the serialization of client types like ListOptions.
 	v1.AddToGroupVersion(scheme, SchemeGroupVersion)
