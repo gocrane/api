@@ -18,8 +18,8 @@ type ScaleStrategy string
 const (
 	// ScaleStrategyAuto execute scale based on metrics.
 	ScaleStrategyAuto ScaleStrategy = "Auto"
-	// ScaleStrategyManual execute scale manually.
-	ScaleStrategyManual ScaleStrategy = "Manual"
+	// ScaleStrategyPreview is the preview for ScaleStrategyAuto.
+	ScaleStrategyPreview ScaleStrategy = "Preview"
 )
 
 // EffectiveHorizontalPodAutoscalerSpec defines the desired spec of EffectiveHorizontalPodAutoscaler
@@ -34,15 +34,15 @@ type EffectiveHorizontalPodAutoscalerSpec struct {
 	// MaxReplicas is the upper limit replicas to the scale target which the autoscaler can scale up to.
 	// It cannot be less that MinReplicas.
 	MaxReplicas int32 `json:"maxReplicas"`
-	// ScaleStrategy indicate the strategy to scaling target, value can be "Auto" and "Manual"
+	// ScaleStrategy indicate the strategy to scaling target, value can be "Auto" and "Preview"
 	// the default ScaleStrategy is Auto.
 	// +optional
 	// +kubebuilder:validation:Type=string
-	// +kubebuilder:validation:Enum=Auto;Manual
+	// +kubebuilder:validation:Enum=Auto;Preview
 	// +kubebuilder:default=Auto
 	ScaleStrategy ScaleStrategy `json:"scaleStrategy"`
-	// SpecificReplicas specify the target replicas if ScaleStrategy is Manual
-	// If not set, when ScaleStrategy is setting to Manual, it will just stop scaling
+	// SpecificReplicas specify the target replicas if ScaleStrategy is Preview
+	// If not set, when ScaleStrategy is setting to Preview, it will just stop scaling
 	// +optional
 	// +kubebuilder:validation:Type=integer
 	SpecificReplicas *int32 `json:"specificReplicas"`
