@@ -231,7 +231,7 @@ type Estimators struct {
 	FFTEstimators []*FFTEstimator `json:"fft,omitempty"`
 }
 
-type MaxValueEstimator struct{
+type MaxValueEstimator struct {
 	MarginFraction string `json:"marginFraction,omitempty"`
 }
 
@@ -282,7 +282,6 @@ type TimeSeriesPrediction struct {
 type TimeSeriesPredictionSpec struct {
 	// PredictionMetrics is an array of PredictionMetric
 	PredictionMetrics []PredictionMetric `json:"predictionMetrics,omitempty"`
-
 	// PredictionWindowSeconds is a time window in seconds, indicating how long to predict in the future.
 	PredictionWindowSeconds int32 `json:"predictionWindowSeconds,omitempty"`
 }
@@ -292,11 +291,12 @@ type TimeSeriesPredictionStatus struct {
 	// PredictionMetrics is a map, key is the metric name in your TimeSeriesPredictionSpec.PredictionMetric spec. value is an array of predicted time series.
 	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
 	PredictionMetrics map[string]MetricTimeSeriesList `json:"predictionMetrics,omitempty"`
-
+	// MetricPredictedDataList is an array of predicted time series of all PredictionMetrics, the MetricPredictedData.
+	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
+	MetricPredictedDataList []*MetricPredictedData `json:"metricPredictedDataList,omitempty"`
 	// Conditions is the condition of TimeSeriesPrediction
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
-
 
 // PredictionConditionType is a valid value for TimeSeriesPredictionCondition.Type
 type PredictionConditionType string
@@ -311,6 +311,9 @@ const (
 type PredictionMetric struct {
 	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// +optional
+	// WorkloadResource is used to predict a workload metric, such as cpu, memory
+	WorkloadResource *WorkloadResource `json:"workloadRef,omitempty"`
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
@@ -321,6 +324,22 @@ type PredictionMetric struct {
 	Query *Query `json:"query,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
+}
+
+// WorkloadResource is a workload reference to describe a workload resource to predict, now resource only supports cpu or memory
+type WorkloadResource struct {
+	// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+	Kind string `json:"kind,omitempty"`
+	// Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+	Name string `json:"name,omitempty"`
+	// API version of the referent
+	// +optional
+	APIVersion string `json:"apiVersion,omitempty"`
+	// Namespace of the referent, if not defined, use the TimeSeriesPrediction's namespace;
+	// +optional
+	Namespace string `json:"namespace,omitempty"`
+	// Resource is cpu or memory
+	Resource ResourceName `json:"resource,omitempty"`
 }
 
 // MetricSelector
@@ -375,6 +394,15 @@ type Algorithm struct {
 }
 
 type MetricTimeSeriesList []*MetricTimeSeries
+
+// MetricPredictedData is predicted data of an metric, which denote a metric by ResourceIdentifier in the PredictionMetric
+type MetricPredictedData struct {
+	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now.
+	// such as cpu, memory
+	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// Prediction is the predicted time series data of the metric
+	Prediction []*MetricTimeSeries `json:"prediction,omitempty"`
+}
 
 // MetricTimeSeries is a stream of samples that belong to a metric with a set of labels
 type MetricTimeSeries struct {
