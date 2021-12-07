@@ -311,8 +311,13 @@ const (
 type PredictionMetric struct {
 	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// !!! NOTE following NodeResource、WorkloadResource、MetricSelector、Query is exclusive options.
+	// !!! Must configure only one
 	// +optional
-	// WorkloadResource is used to predict a workload metric, such as cpu, memory
+	// NodeResource is used to predict a node metric, only support cpu, memory
+	NodeResource *NodeResource	`json:"nodeResource,omitempty"`
+	// +optional
+	// WorkloadResource is used to predict a workload metric, only support cpu, memory
 	WorkloadResource *WorkloadResource `json:"workloadRef,omitempty"`
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
@@ -324,6 +329,13 @@ type PredictionMetric struct {
 	Query *Query `json:"query,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
+}
+
+type NodeResource struct {
+	// Name of the node; More info: http://kubernetes.io/docs/user-guide/identifiers#names
+	Name string `json:"name,omitempty"`
+	// Resource is cpu or memory
+	Resource ResourceName `json:"resource,omitempty"`
 }
 
 // WorkloadResource is a workload reference to describe a workload resource to predict, now resource only supports cpu or memory
