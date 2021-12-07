@@ -134,6 +134,16 @@ spec:
                           description: MetricName is the name of the metric.
                           type: string
                       type: object
+                    nodeResource:
+                      description: '!!! NOTE following NodeResource、WorkloadResource、MetricSelector、Query is exclusive options. !!! Must configure only one NodeResource is used to predict a node metric, only support cpu, memory'
+                      properties:
+                        name:
+                          description: 'Name of the node; More info: http://kubernetes.io/docs/user-guide/identifiers#names'
+                          type: string
+                        resource:
+                          description: Resource is cpu or memory
+                          type: string
+                      type: object
                     query:
                       description: Query is a query expression of DSL style, such as prometheus query language
                       properties:
@@ -145,7 +155,7 @@ spec:
                       description: ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
                       type: string
                     workloadRef:
-                      description: WorkloadResource is used to predict a workload metric, such as cpu, memory
+                      description: WorkloadResource is used to predict a workload metric, only support cpu, memory
                       properties:
                         apiVersion:
                           description: API version of the referent
