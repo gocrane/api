@@ -253,10 +253,15 @@ type HistogramConfig struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=tsp
+// +kubebuilder:printcolumn:name="TargetRefName",type="string",JSONPath=".spec.targetRef.name",description="The target ref name of tsp."
+// +kubebuilder:printcolumn:name="TargetRefKind",type="string",JSONPath=".spec.targetRef.kind",description="The target ref kind of tsp."
+// +kubebuilder:printcolumn:name="PredictionWindowSeconds",type="integer",JSONPath=".spec.PredictionWindowSeconds",description="The predictionWindowSeconds of tsp."
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 // +kubebuilder:webhooks:path=/mutate-timeseriesprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,verbs=create;update,versions=v1alpha1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
 // +kubebuilder:webhooks:verbs=create;update,path=/validate-timeseriesprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,versions=v1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
-// +kubebuilder:subresource:status
-// +kubebuilder:object:root=true
 
 // TimeSeriesPrediction is a prediction for a time series.
 type TimeSeriesPrediction struct {
@@ -282,9 +287,8 @@ type TimeSeriesPredictionSpec struct {
 
 // TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
 type TimeSeriesPredictionStatus struct {
-	// MetricPredictedDataList is an array of predicted time series of all PredictionMetrics, the MetricPredictedData.
-	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
-	MetricPredictedDataList []*MetricPredictedData `json:"metricPredictedDataList,omitempty"`
+	// PredictionMetrics is an array of PredictionMetricStatus of all PredictionMetrics, PredictionMetricStatus include predicted time series data
+	PredictionMetrics []PredictionMetricStatus `json:"predictionMetrics,omitempty"`
 	// Conditions is the condition of TimeSeriesPrediction
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
@@ -302,19 +306,19 @@ const (
 type PredictionMetric struct {
 	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
-	// Type is the type of metric, now support Resource、Selector、Query
+	// Type is the type of metric, now support ResourceQuery、ExpressionQuery、RawQuery
 	Type MetricType `json:"type,omitempty"`
 	// +optional
-	// Resource is a kubernetes built in metric, only support cpu, memory
-	Resource *v1.ResourceName `json:"resource,omitempty"`
+	// ResourceQuery is a kubernetes built in metric, only support cpu, memory
+	ResourceQuery *v1.ResourceName `json:"resourceQuery,omitempty"`
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
-	// Selector is a query expression of non-prometheus style, usually is api style
-	Selector *MetricSelector `json:"selector,omitempty"`
+	// ExpressionQuery is a query expression of non-prometheus style, usually is api style
+	ExpressionQuery *ExpressionQuery `json:"expressionQuery,omitempty"`
 	// +optional
-	// Query is a query expression of DSL style, such as prometheus query language
-	Query *Query `json:"query,omitempty"`
+	// RawQuery is a query expression of DSL style, such as prometheus query language
+	RawQuery *RawQuery `json:"rawQuery,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
 }
@@ -323,16 +327,16 @@ type PredictionMetric struct {
 type MetricType string
 
 const (
-	// ResourceMetricType is kubernetes built in metric, only support cpu and memory now.
-	ResourceMetricType MetricType = "Resource"
-	// SelectorMetricType is an selector style metric, it queried from a system which supports it.
-	SelectorMetricType MetricType = "ExpressionQuery"
-	// QueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
-	QueryMetricType MetricType = "RawQuery"
+	// ResourceQueryMetricType is kubernetes built in metric, only support cpu and memory now.
+	ResourceQueryMetricType MetricType = "ResourceQuery"
+	// ExpressionQueryMetricType is an selector style metric, it queried from a system which supports it.
+	ExpressionQueryMetricType MetricType = "ExpressionQuery"
+	// RawQueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
+	RawQueryMetricType MetricType = "RawQuery"
 )
 
-// MetricSelector
-type MetricSelector struct {
+// ExpressionQuery
+type ExpressionQuery struct {
 	// MetricName is the name of the metric.
 	// +required
 	// +kubebuilder:validation:Required
@@ -343,8 +347,8 @@ type MetricSelector struct {
 	QueryConditions []QueryCondition `json:"labels,omitempty"`
 }
 
-// Query
-type Query struct {
+// RawQuery
+type RawQuery struct {
 	// Expression is the query expression. For prometheus, it is promQL.
 	Expression string `json:"expression,omitempty"`
 }
@@ -385,8 +389,8 @@ type Algorithm struct {
 type MetricTimeSeriesList []*MetricTimeSeries
 
 // MetricPredictedData is predicted data of an metric, which denote a metric by ResourceIdentifier in the PredictionMetric
-type MetricPredictedData struct {
-	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now.
+type PredictionMetricStatus struct {
+	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now.
 	// such as cpu, memory
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
 	// Prediction is the predicted time series data of the metric
