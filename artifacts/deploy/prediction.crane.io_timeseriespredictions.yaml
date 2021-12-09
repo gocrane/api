@@ -13,10 +13,29 @@ spec:
     kind: TimeSeriesPrediction
     listKind: TimeSeriesPredictionList
     plural: timeseriespredictions
+    shortNames:
+    - tsp
     singular: timeseriesprediction
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - description: The target ref name of tsp.
+      jsonPath: .spec.targetRef.name
+      name: TargetRefName
+      type: string
+    - description: The target ref kind of tsp.
+      jsonPath: .spec.targetRef.kind
+      name: TargetRefKind
+      type: string
+    - description: The predictionWindowSeconds of tsp.
+      jsonPath: .spec.PredictionWindowSeconds
+      name: PredictionWindowSeconds
+      type: integer
+    - description: CreationTimestamp is a timestamp representing the server time when this object was created.
+      jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: TimeSeriesPrediction is a prediction for a time series.
@@ -109,8 +128,8 @@ spec:
                               type: string
                           type: object
                       type: object
-                    metricSelector:
-                      description: following QueryExpressions depend on your crane system data source configured when the system start. if you use different sources with your system start params, it is not valid. MetricSelector is a query expression of non-prometheus style, usually is api style
+                    expressionQuery:
+                      description: following QueryExpressions depend on your crane system data source configured when the system start. if you use different sources with your system start params, it is not valid. ExpressionQuery is a query expression of non-prometheus style, usually is api style
                       properties:
                         labels:
                           description: QueryConditions is a query condition list.
@@ -134,51 +153,53 @@ spec:
                           description: MetricName is the name of the metric.
                           type: string
                       type: object
-                    nodeResource:
-                      description: '!!! NOTE following NodeResource、WorkloadResource、MetricSelector、Query is exclusive options. !!! Must configure only one NodeResource is used to predict a node metric, only support cpu, memory'
-                      properties:
-                        name:
-                          description: 'Name of the node; More info: http://kubernetes.io/docs/user-guide/identifiers#names'
-                          type: string
-                        resource:
-                          description: Resource is cpu or memory
-                          type: string
-                      type: object
-                    query:
-                      description: Query is a query expression of DSL style, such as prometheus query language
+                    rawQuery:
+                      description: RawQuery is a query expression of DSL style, such as prometheus query language
                       properties:
                         expression:
                           description: Expression is the query expression. For prometheus, it is promQL.
                           type: string
                       type: object
                     resourceIdentifier:
-                      description: ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
+                      description: ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
                       type: string
-                    workloadRef:
-                      description: WorkloadResource is used to predict a workload metric, only support cpu, memory
-                      properties:
-                        apiVersion:
-                          description: API version of the referent
-                          type: string
-                        kind:
-                          description: 'Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"'
-                          type: string
-                        name:
-                          description: 'Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names'
-                          type: string
-                        namespace:
-                          description: Namespace of the referent, if not defined, use the TimeSeriesPrediction's namespace;
-                          type: string
-                        resource:
-                          description: Resource is cpu or memory
-                          type: string
-                      type: object
+                    resourceQuery:
+                      description: ResourceQuery is a kubernetes built in metric, only support cpu, memory
+                      type: string
+                    type:
+                      description: Type is the type of metric, now support ResourceQuery、ExpressionQuery、RawQuery
+                      type: string
                   type: object
                 type: array
               predictionWindowSeconds:
                 description: PredictionWindowSeconds is a time window in seconds, indicating how long to predict in the future.
                 format: int32
                 type: integer
+              targetRef:
+                description: Target is the target referent of time series prediction. each TimeSeriesPrediction associate with just only one target ref. all metrics in PredictionMetricConfigurations is about the TargetRef
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                    type: string
+                  kind:
+                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  name:
+                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                    type: string
+                  namespace:
+                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                    type: string
+                  resourceVersion:
+                    description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                    type: string
+                  uid:
+                    description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                    type: string
+                type: object
             type: object
           status:
             description: TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
@@ -227,8 +248,8 @@ spec:
                   - type
                   type: object
                 type: array
-              metricPredictedDataList:
-                description: MetricPredictedDataList is an array of predicted time series of all PredictionMetrics, the MetricPredictedData. Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
+              predictionMetrics:
+                description: PredictionMetrics is an array of PredictionMetricStatus of all PredictionMetrics, PredictionMetricStatus include predicted time series data
                 items:
                   description: MetricPredictedData is predicted data of an metric, which denote a metric by ResourceIdentifier in the PredictionMetric
                   properties:
@@ -263,42 +284,10 @@ spec:
                         type: object
                       type: array
                     resourceIdentifier:
-                      description: ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. such as cpu, memory
+                      description: ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. such as cpu, memory
                       type: string
                   type: object
                 type: array
-              predictionMetrics:
-                additionalProperties:
-                  items:
-                    description: MetricTimeSeries is a stream of samples that belong to a metric with a set of labels
-                    properties:
-                      labels:
-                        description: A collection of Labels that are attached by monitoring system as metadata for the metrics, which are known as dimensions.
-                        items:
-                          description: A Label is a Name and Value pair that provides additional information about the metric. It is metadata for the metric. For example, Kubernetes pod metrics always have 'namespace' label that represents which namespace it belongs to.
-                          properties:
-                            name:
-                              type: string
-                            value:
-                              type: string
-                          type: object
-                        type: array
-                      samples:
-                        description: A collection of Samples in chronological order.
-                        items:
-                          description: Sample pairs a Value with a Timestamp.
-                          properties:
-                            timestamp:
-                              format: int64
-                              type: integer
-                            value:
-                              type: string
-                          type: object
-                        type: array
-                    type: object
-                  type: array
-                description: PredictionMetrics is a map, key is the metric name in your TimeSeriesPredictionSpec.PredictionMetric spec. value is an array of predicted time series. Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
-                type: object
             type: object
         type: object
     served: true
