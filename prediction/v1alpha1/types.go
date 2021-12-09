@@ -6,16 +6,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ResourceName represents the name of the resource.
-type ResourceName string
-
-const (
-	// ResourceCPU represents CPU in milli cores (1 core = 1000 milli cores).
-	ResourceCPU ResourceName = "cpu"
-	// ResourceMemory represents memory in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024).
-	ResourceMemory ResourceName = "memory"
-)
-
 type AlgorithmType string
 
 const (
@@ -282,10 +272,7 @@ type TimeSeriesPrediction struct {
 // TimeSeriesPredictionSpec is a description of a TimeSeriesPrediction.
 type TimeSeriesPredictionSpec struct {
 	// PredictionMetrics is an array of PredictionMetric
-	// deprecated
 	PredictionMetrics []PredictionMetric `json:"predictionMetrics,omitempty"`
-	// PredictionMetricConfigurations is an array of PredictionMetricConfiguration
-	PredictionMetricConfigurations []PredictionMetricConfiguration `json:"predictionMetricConfigurations,omitempty"`
 	// Target is the target referent of time series prediction. each TimeSeriesPrediction associate with just only one target ref.
 	// all metrics in PredictionMetricConfigurations is about the TargetRef
 	TargetRef v1.ObjectReference `json:"targetRef,omitempty"`
@@ -295,10 +282,6 @@ type TimeSeriesPredictionSpec struct {
 
 // TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
 type TimeSeriesPredictionStatus struct {
-	// PredictionMetrics is a map, key is the metric name in your TimeSeriesPredictionSpec.PredictionMetric spec. value is an array of predicted time series.
-	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
-	// deprecated
-	PredictionMetrics map[string]MetricTimeSeriesList `json:"predictionMetrics,omitempty"`
 	// MetricPredictedDataList is an array of predicted time series of all PredictionMetrics, the MetricPredictedData.
 	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
 	MetricPredictedDataList []*MetricPredictedData `json:"metricPredictedDataList,omitempty"`
@@ -317,36 +300,13 @@ const (
 
 // PredictionMetric describe what metric of your time series prediction, how to query, use which algorithm to predict.
 type PredictionMetric struct {
-	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
-	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
-	// !!! NOTE following NodeResource、WorkloadResource、MetricSelector、Query is exclusive options.
-	// !!! Must configure only one
-	// +optional
-	// NodeResource is used to predict a node metric, only support cpu, memory
-	NodeResource *NodeResource `json:"nodeResource,omitempty"`
-	// +optional
-	// WorkloadResource is used to predict a workload metric, only support cpu, memory
-	WorkloadResource *WorkloadResource `json:"workloadRef,omitempty"`
-	// following QueryExpressions depend on your crane system data source configured when the system start.
-	// if you use different sources with your system start params, it is not valid.
-	// +optional
-	// MetricSelector is a query expression of non-prometheus style, usually is api style
-	MetricSelector *MetricSelector `json:"metricSelector,omitempty"`
-	// +optional
-	// Query is a query expression of DSL style, such as prometheus query language
-	Query *Query `json:"query,omitempty"`
-	// Algorithm is the algorithm used by this prediction metric.
-	Algorithm Algorithm `json:"algorithm,omitempty"`
-}
-
-type PredictionMetricConfiguration struct {
 	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
 	// Type is the type of metric, now support Resource、Selector、Query
 	Type MetricType `json:"type,omitempty"`
 	// +optional
 	// Resource is a kubernetes built in metric, only support cpu, memory
-	Resource *ResourceName `json:"resource,omitempty"`
+	Resource *v1.ResourceName `json:"resource,omitempty"`
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
@@ -366,33 +326,10 @@ const (
 	// ResourceMetricType is kubernetes built in metric, only support cpu and memory now.
 	ResourceMetricType MetricType = "Resource"
 	// SelectorMetricType is an selector style metric, it queried from a system which supports it.
-	SelectorMetricType MetricType = "Selector"
+	SelectorMetricType MetricType = "ExpressionQuery"
 	// QueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
-	QueryMetricType    MetricType = "Query"
+	QueryMetricType MetricType = "RawQuery"
 )
-
-type NodeResource struct {
-	// Name of the node; More info: http://kubernetes.io/docs/user-guide/identifiers#names
-	Name string `json:"name,omitempty"`
-	// Resource is cpu or memory
-	Resource ResourceName `json:"resource,omitempty"`
-}
-
-// WorkloadResource is a workload reference to describe a workload resource to predict, now resource only supports cpu or memory
-type WorkloadResource struct {
-	// Kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
-	Kind string `json:"kind,omitempty"`
-	// Name of the referent; More info: http://kubernetes.io/docs/user-guide/identifiers#names
-	Name string `json:"name,omitempty"`
-	// API version of the referent
-	// +optional
-	APIVersion string `json:"apiVersion,omitempty"`
-	// Namespace of the referent, if not defined, use the TimeSeriesPrediction's namespace;
-	// +optional
-	Namespace string `json:"namespace,omitempty"`
-	// Resource is cpu or memory
-	Resource ResourceName `json:"resource,omitempty"`
-}
 
 // MetricSelector
 type MetricSelector struct {
