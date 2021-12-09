@@ -359,11 +359,15 @@ type PredictionMetricConfiguration struct {
 	Algorithm Algorithm `json:"algorithm,omitempty"`
 }
 
+// MetricType is the type of metric
 type MetricType string
 
 const (
+	// ResourceMetricType is kubernetes built in metric, only support cpu and memory now.
 	ResourceMetricType MetricType = "Resource"
+	// SelectorMetricType is an selector style metric, it queried from a system which supports it.
 	SelectorMetricType MetricType = "Selector"
+	// QueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
 	QueryMetricType    MetricType = "Query"
 )
 
