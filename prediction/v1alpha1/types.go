@@ -24,6 +24,38 @@ const (
 )
 
 // +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=cnp
+// +kubebuilder:subresource:status
+
+// ClusterNodePrediction must be created in crane root namespace
+// as TimeSeriesPrediction is a namespaced object now
+type ClusterNodePrediction struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   ClusterNodePredictionSpec   `json:"spec,omitempty"`
+	Status ClusterNodePredictionStatus `json:"status,omitempty"`
+}
+
+type ClusterNodePredictionSpec struct {
+	NodeSelector       map[string]string   `json:"nodeSelector,omitempty"`
+	PredictionTemplate *PredictionTemplate `json:"template,omitempty"`
+}
+
+type ClusterNodePredictionStatus struct {
+	DesiredNumberCreated int                `json:"desiredNumberCreated,omitempty"`
+	CurrentNumberCreated int                `json:"currentNumberCreated,omitempty"`
+	Conditions           []metav1.Condition `json:"conditions,omitempty"`
+}
+
+type PredictionTemplate struct {
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+	Spec              TimeSeriesPredictionSpec `json:"spec,omitempty"`
+}
+
+// +genclient
 // +genclient:nonNamespaced
 // +kubebuilder:resource:scope=Cluster
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
