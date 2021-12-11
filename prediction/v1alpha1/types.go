@@ -300,7 +300,7 @@ type HistogramConfig struct {
 // +kubebuilder:resource:shortName=tsp
 // +kubebuilder:printcolumn:name="TargetRefName",type="string",JSONPath=".spec.targetRef.name",description="The target ref name of tsp."
 // +kubebuilder:printcolumn:name="TargetRefKind",type="string",JSONPath=".spec.targetRef.kind",description="The target ref kind of tsp."
-// +kubebuilder:printcolumn:name="PredictionWindowSeconds",type="integer",JSONPath=".spec.PredictionWindowSeconds",description="The predictionWindowSeconds of tsp."
+// +kubebuilder:printcolumn:name="PredictionWindowSeconds",type="integer",JSONPath=".spec.predictionWindowSeconds",description="The predictionWindowSeconds of tsp."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 // +kubebuilder:webhooks:path=/mutate-timeseriesprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,verbs=create;update,versions=v1alpha1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
 // +kubebuilder:webhooks:verbs=create;update,path=/validate-timeseriesprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,versions=v1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
