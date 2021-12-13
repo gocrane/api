@@ -41,9 +41,9 @@ type RecommendationSpec struct {
 
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
-	// AdvancedHPA is the recommendation for advanced HPA.
+	// EffectiveHPA is the recommendation for effective HPA.
 	// +optional
-	AdvancedHPA *AdvancedHorizontalPodAutoscalerRecommendation `json:"advancedHPA,omitempty"`
+	EffectiveHPA *EffectiveHorizontalPodAutoscalerRecommendation `json:"effectiveHPA,omitempty"`
 
 	// ResourceRequest is the recommendation for containers' cpu/mem requests.
 	// +optional
@@ -62,7 +62,7 @@ type RecommendationStatus struct {
 	ValidityPeriod metav1.Duration `json:"ValidityPeriod,omitempty"`
 }
 
-type AdvancedHorizontalPodAutoscalerRecommendation struct {
+type EffectiveHorizontalPodAutoscalerRecommendation struct {
 	// +optional
 	MinReplicas *int32 `json:"minReplicas,omitempty"`
 

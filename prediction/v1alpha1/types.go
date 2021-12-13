@@ -2,17 +2,8 @@ package v1alpha1
 
 import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-// ResourceName represents the name of the resource.
-type ResourceName string
-
-const (
-	// ResourceCPU represents CPU in milli cores (1 core = 1000 milli cores).
-	ResourceCPU ResourceName = "cpu"
-	// ResourceMemory represents memory in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024).
-	ResourceMemory ResourceName = "memory"
 )
 
 type AlgorithmType string
@@ -31,6 +22,48 @@ const (
 	// PredictionModeRange means predicting a time series during a range of time in the future.
 	PredictionModeRange = "range"
 )
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// ClusterNodePredictionList is a list of TimeSeriesPrediction resources
+type ClusterNodePredictionList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []ClusterNodePrediction `json:"items"`
+}
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=cnp
+// +kubebuilder:subresource:status
+
+// ClusterNodePrediction must be created in crane root namespace
+// as TimeSeriesPrediction is a namespaced object now
+type ClusterNodePrediction struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   ClusterNodePredictionSpec   `json:"spec,omitempty"`
+	Status ClusterNodePredictionStatus `json:"status,omitempty"`
+}
+
+type ClusterNodePredictionSpec struct {
+	NodeSelector       map[string]string   `json:"nodeSelector,omitempty"`
+	PredictionTemplate *PredictionTemplate `json:"template,omitempty"`
+}
+
+type ClusterNodePredictionStatus struct {
+	DesiredNumberCreated int                `json:"desiredNumberCreated,omitempty"`
+	CurrentNumberCreated int                `json:"currentNumberCreated,omitempty"`
+	Conditions           []metav1.Condition `json:"conditions,omitempty"`
+}
+
+type PredictionTemplate struct {
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+	Spec              TimeSeriesPredictionSpec `json:"spec,omitempty"`
+}
 
 // +genclient
 // +genclient:nonNamespaced
@@ -231,7 +264,7 @@ type Estimators struct {
 	FFTEstimators []*FFTEstimator `json:"fft,omitempty"`
 }
 
-type MaxValueEstimator struct{
+type MaxValueEstimator struct {
 	MarginFraction string `json:"marginFraction,omitempty"`
 }
 
@@ -262,10 +295,15 @@ type HistogramConfig struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:shortName=tsp
+// +kubebuilder:printcolumn:name="TargetRefName",type="string",JSONPath=".spec.targetRef.name",description="The target ref name of tsp."
+// +kubebuilder:printcolumn:name="TargetRefKind",type="string",JSONPath=".spec.targetRef.kind",description="The target ref kind of tsp."
+// +kubebuilder:printcolumn:name="PredictionWindowSeconds",type="integer",JSONPath=".spec.predictionWindowSeconds",description="The predictionWindowSeconds of tsp."
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 // +kubebuilder:webhooks:path=/mutate-timeseriesprediction,mutating=true,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,verbs=create;update,versions=v1alpha1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
 // +kubebuilder:webhooks:verbs=create;update,path=/validate-timeseriesprediction,mutating=false,failurePolicy=fail,groups=prediction.crane.io,resources=timeseriesprediction,versions=v1,name=timeseriespredictions.webhook.prediction.crane.io,sideEffects=none,admissionReviewVersions=v1
-// +kubebuilder:subresource:status
-// +kubebuilder:object:root=true
 
 // TimeSeriesPrediction is a prediction for a time series.
 type TimeSeriesPrediction struct {
@@ -282,40 +320,19 @@ type TimeSeriesPrediction struct {
 type TimeSeriesPredictionSpec struct {
 	// PredictionMetrics is an array of PredictionMetric
 	PredictionMetrics []PredictionMetric `json:"predictionMetrics,omitempty"`
-
+	// Target is the target referent of time series prediction. each TimeSeriesPrediction associate with just only one target ref.
+	// all metrics in PredictionMetricConfigurations is about the TargetRef
+	TargetRef v1.ObjectReference `json:"targetRef,omitempty"`
 	// PredictionWindowSeconds is a time window in seconds, indicating how long to predict in the future.
 	PredictionWindowSeconds int32 `json:"predictionWindowSeconds,omitempty"`
 }
 
 // TimeSeriesPredictionStatus is the status of a TimeSeriesPrediction.
 type TimeSeriesPredictionStatus struct {
-	// PredictionMetrics is a map, key is the metric name in your TimeSeriesPredictionSpec.PredictionMetric spec. value is an array of predicted time series.
-	// Note!!, the MetricTimeSeries maybe only has one instant sample value rather then a range values, which is depend on your PredictionMetric.Algorithm
-	PredictionMetrics map[string]MetricTimeSeriesList `json:"predictionMetrics,omitempty"`
-
+	// PredictionMetrics is an array of PredictionMetricStatus of all PredictionMetrics, PredictionMetricStatus include predicted time series data
+	PredictionMetrics []PredictionMetricStatus `json:"predictionMetrics,omitempty"`
 	// Conditions is the condition of TimeSeriesPrediction
-	Conditions []TimeSeriesPredictionCondition `json:"conditions,omitempty"`
-}
-
-// TimeSeriesPredictionCondition contains details for the current condition of this TimeSeriesPrediction.
-type TimeSeriesPredictionCondition struct {
-	// Type is the type of the condition.
-	Type PredictionConditionType `json:"type,omitempty"`
-	// Status is the status of the condition.
-	// Can be True, False, Unknown.
-	Status metav1.ConditionStatus `json:"status,omitempty"`
-	// Last time we probed the condition.
-	// +optional
-	LastProbeTime metav1.Time `json:"lastProbeTime,omitempty"`
-	// Last time the condition transitioned from one status to another.
-	// +optional
-	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
-	// Unique, one-word, CamelCase reason for the condition's last transition.
-	// +optional
-	Reason string `json:"reason,omitempty"`
-	// Human-readable message indicating details about last transition.
-	// +optional
-	Message string `json:"message,omitempty"`
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // PredictionConditionType is a valid value for TimeSeriesPredictionCondition.Type
@@ -323,32 +340,45 @@ type PredictionConditionType string
 
 // These are valid conditions of TimeSeriesPrediction.
 const (
-	// TimeSeriesPredictionConditionCharging means no valid prediction series is available, just wait to predict.
-	TimeSeriesPredictionConditionCharging PredictionConditionType = "Charging"
-	// TimeSeriesPredictionConditionPredicting means the prediction routine is ongoing and the prediction data is valid.
-	TimeSeriesPredictionConditionPredicting PredictionConditionType = "Predicting"
-	// TimeSeriesPredictionConditionNotReady means the prediction has some exception, and it is not ready
-	TimeSeriesPredictionConditionNotReady PredictionConditionType = "NotReady"
+	// TimeSeriesPredictionConditionReady means the prediction data is available to consume
+	TimeSeriesPredictionConditionReady PredictionConditionType = "Ready"
 )
 
 // PredictionMetric describe what metric of your time series prediction, how to query, use which algorithm to predict.
 type PredictionMetric struct {
-	// ResourceIdentifier is a resource to identify the metric, but now it is just a identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
+	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// Type is the type of metric, now support ResourceQuery、ExpressionQuery、RawQuery
+	Type MetricType `json:"type,omitempty"`
+	// +optional
+	// ResourceQuery is a kubernetes built in metric, only support cpu, memory
+	ResourceQuery *v1.ResourceName `json:"resourceQuery,omitempty"`
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
-	// MetricSelector is a query expression of non-prometheus style, usually is api style
-	MetricSelector *MetricSelector `json:"metricSelector,omitempty"`
+	// ExpressionQuery is a query expression of non-prometheus style, usually is api style
+	ExpressionQuery *ExpressionQuery `json:"expressionQuery,omitempty"`
 	// +optional
-	// Query is a query expression of DSL style, such as prometheus query language
-	Query *Query `json:"query,omitempty"`
+	// RawQuery is a query expression of DSL style, such as prometheus query language
+	RawQuery *RawQuery `json:"rawQuery,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
 }
 
-// MetricSelector
-type MetricSelector struct {
+// MetricType is the type of metric
+type MetricType string
+
+const (
+	// ResourceQueryMetricType is kubernetes built in metric, only support cpu and memory now.
+	ResourceQueryMetricType MetricType = "ResourceQuery"
+	// ExpressionQueryMetricType is an selector style metric, it queried from a system which supports it.
+	ExpressionQueryMetricType MetricType = "ExpressionQuery"
+	// RawQueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
+	RawQueryMetricType MetricType = "RawQuery"
+)
+
+// ExpressionQuery
+type ExpressionQuery struct {
 	// MetricName is the name of the metric.
 	// +required
 	// +kubebuilder:validation:Required
@@ -359,8 +389,8 @@ type MetricSelector struct {
 	QueryConditions []QueryCondition `json:"labels,omitempty"`
 }
 
-// Query
-type Query struct {
+// RawQuery
+type RawQuery struct {
 	// Expression is the query expression. For prometheus, it is promQL.
 	Expression string `json:"expression,omitempty"`
 }
@@ -399,6 +429,15 @@ type Algorithm struct {
 }
 
 type MetricTimeSeriesList []*MetricTimeSeries
+
+// MetricPredictedData is predicted data of an metric, which denote a metric by ResourceIdentifier in the PredictionMetric
+type PredictionMetricStatus struct {
+	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now.
+	// such as cpu, memory
+	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
+	// Prediction is the predicted time series data of the metric
+	Prediction []*MetricTimeSeries `json:"prediction,omitempty"`
+}
 
 // MetricTimeSeries is a stream of samples that belong to a metric with a set of labels
 type MetricTimeSeries struct {

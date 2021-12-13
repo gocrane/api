@@ -39,8 +39,10 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=autoscaling.crane.io, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("advancedhorizontalpodautoscalers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().AdvancedHorizontalPodAutoscalers().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("effectivehorizontalpodautoscalers"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().EffectiveHorizontalPodAutoscalers().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("substitutes"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().Substitutes().Informer()}, nil
 
 		// Group=ensurance.crane.io, Version=v1alpha1
 	case ensurancev1alpha1.SchemeGroupVersion.WithResource("nodeqosensurancepolicies"):
