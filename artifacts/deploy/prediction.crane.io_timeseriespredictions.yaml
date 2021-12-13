@@ -28,7 +28,7 @@ spec:
       name: TargetRefKind
       type: string
     - description: The predictionWindowSeconds of tsp.
-      jsonPath: .spec.PredictionWindowSeconds
+      jsonPath: .spec.predictionWindowSeconds
       name: PredictionWindowSeconds
       type: integer
     - description: CreationTimestamp is a timestamp representing the server time when

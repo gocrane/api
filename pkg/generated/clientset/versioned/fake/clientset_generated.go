@@ -4,6 +4,8 @@ package fake
 
 import (
 	clientset "github.com/gocrane/api/pkg/generated/clientset/versioned"
+	analysisv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/analysis/v1alpha1"
+	fakeanalysisv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/analysis/v1alpha1/fake"
 	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
 	fakeautoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1/fake"
 	ensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
@@ -66,6 +68,11 @@ var (
 	_ clientset.Interface = &Clientset{}
 	_ testing.FakeClient  = &Clientset{}
 )
+
+// AnalysisV1alpha1 retrieves the AnalysisV1alpha1Client
+func (c *Clientset) AnalysisV1alpha1() analysisv1alpha1.AnalysisV1alpha1Interface {
+	return &fakeanalysisv1alpha1.FakeAnalysisV1alpha1{Fake: &c.Fake}
+}
 
 // AutoscalingV1alpha1 retrieves the AutoscalingV1alpha1Client
 func (c *Clientset) AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface {

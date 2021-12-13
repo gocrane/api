@@ -8,10 +8,14 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
+	// ClusterNodePredictions returns a ClusterNodePredictionInformer.
+	ClusterNodePredictions() ClusterNodePredictionInformer
 	// NodePredictions returns a NodePredictionInformer.
 	NodePredictions() NodePredictionInformer
 	// PodGroupPredictions returns a PodGroupPredictionInformer.
 	PodGroupPredictions() PodGroupPredictionInformer
+	// TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
+	TimeSeriesPredictions() TimeSeriesPredictionInformer
 }
 
 type version struct {
@@ -25,6 +29,11 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
+// ClusterNodePredictions returns a ClusterNodePredictionInformer.
+func (v *version) ClusterNodePredictions() ClusterNodePredictionInformer {
+	return &clusterNodePredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
 // NodePredictions returns a NodePredictionInformer.
 func (v *version) NodePredictions() NodePredictionInformer {
 	return &nodePredictionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
@@ -33,4 +42,9 @@ func (v *version) NodePredictions() NodePredictionInformer {
 // PodGroupPredictions returns a PodGroupPredictionInformer.
 func (v *version) PodGroupPredictions() PodGroupPredictionInformer {
 	return &podGroupPredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
+func (v *version) TimeSeriesPredictions() TimeSeriesPredictionInformer {
+	return &timeSeriesPredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

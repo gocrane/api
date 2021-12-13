@@ -10,13 +10,19 @@ import (
 
 type PredictionV1alpha1Interface interface {
 	RESTClient() rest.Interface
+	ClusterNodePredictionsGetter
 	NodePredictionsGetter
 	PodGroupPredictionsGetter
+	TimeSeriesPredictionsGetter
 }
 
 // PredictionV1alpha1Client is used to interact with features provided by the prediction.crane.io group.
 type PredictionV1alpha1Client struct {
 	restClient rest.Interface
+}
+
+func (c *PredictionV1alpha1Client) ClusterNodePredictions(namespace string) ClusterNodePredictionInterface {
+	return newClusterNodePredictions(c, namespace)
 }
 
 func (c *PredictionV1alpha1Client) NodePredictions() NodePredictionInterface {
@@ -25,6 +31,10 @@ func (c *PredictionV1alpha1Client) NodePredictions() NodePredictionInterface {
 
 func (c *PredictionV1alpha1Client) PodGroupPredictions(namespace string) PodGroupPredictionInterface {
 	return newPodGroupPredictions(c, namespace)
+}
+
+func (c *PredictionV1alpha1Client) TimeSeriesPredictions(namespace string) TimeSeriesPredictionInterface {
+	return newTimeSeriesPredictions(c, namespace)
 }
 
 // NewForConfig creates a new PredictionV1alpha1Client for the given config.

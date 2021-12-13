@@ -37,6 +37,10 @@ type RecommendationSpec struct {
 	// +required
 	// +kubebuilder:validation:Required
 	Type Type `json:"type"`
+
+	// IntervalSeconds is the duration in seconds between two continuous recommendation actions. Setting it to 0 means this is a one-off recommendation.
+	// +optional
+	IntervalSeconds *int64 `json:"intervalSeconds,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -57,9 +61,9 @@ type RecommendationStatus struct {
 	// +optional
 	LastUpdateTime metav1.Time `json:"lastUpdateTime,omitempty"`
 
-	// ValidityPeriod is the suggested validity period (e.g. 24h) of this recommendation since LastUpdateTime.
+	// ExpiredTime is the recommendation's suggested expired time.
 	// +optional
-	ValidityPeriod metav1.Duration `json:"ValidityPeriod,omitempty"`
+	ExpiredTime metav1.Time `json:"expiredTime,omitempty"`
 }
 
 type EffectiveHorizontalPodAutoscalerRecommendation struct {

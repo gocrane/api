@@ -5,7 +5,8 @@ package externalversions
 import (
 	"fmt"
 
-	v1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
+	v1alpha1 "github.com/gocrane/api/analysis/v1alpha1"
+	autoscalingv1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
 	ensurancev1alpha1 "github.com/gocrane/api/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -38,10 +39,14 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=autoscaling.crane.io, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("effectivehorizontalpodautoscalers"):
+	// Group=analysis.crane.io, Version=v1alpha1
+	case v1alpha1.SchemeGroupVersion.WithResource("recommendations"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().Recommendations().Informer()}, nil
+
+		// Group=autoscaling.crane.io, Version=v1alpha1
+	case autoscalingv1alpha1.SchemeGroupVersion.WithResource("effectivehorizontalpodautoscalers"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().EffectiveHorizontalPodAutoscalers().Informer()}, nil
-	case v1alpha1.SchemeGroupVersion.WithResource("substitutes"):
+	case autoscalingv1alpha1.SchemeGroupVersion.WithResource("substitutes"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().Substitutes().Informer()}, nil
 
 		// Group=ensurance.crane.io, Version=v1alpha1
@@ -51,10 +56,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().PodQOSEnsurancePolicies().Informer()}, nil
 
 		// Group=prediction.crane.io, Version=v1alpha1
+	case predictionv1alpha1.SchemeGroupVersion.WithResource("clusternodepredictions"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().ClusterNodePredictions().Informer()}, nil
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("nodepredictions"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().NodePredictions().Informer()}, nil
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("podgrouppredictions"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().PodGroupPredictions().Informer()}, nil
+	case predictionv1alpha1.SchemeGroupVersion.WithResource("timeseriespredictions"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().TimeSeriesPredictions().Informer()}, nil
 
 	}
 
