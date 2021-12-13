@@ -37,6 +37,12 @@ spec:
             description: RecommendationSpec describes the recommendation type and
               what the recommendation is for.
             properties:
+              intervalSeconds:
+                description: IntervalSeconds is the duration in seconds between two
+                  continuous recommendation actions. Setting it to 0 means this is
+                  a one-off recommendation.
+                format: int64
+                type: integer
               targetRef:
                 description: CrossVersionObjectReference contains enough information
                   to let you identify the referred resource.
@@ -63,10 +69,6 @@ spec:
           status:
             description: RecommendationStatus represents the current state of a recommendation.
             properties:
-              ValidityPeriod:
-                description: ValidityPeriod is the suggested validity period (e.g.
-                  24h) of this recommendation since LastUpdateTime.
-                type: string
               conditions:
                 description: Conditions is an array of current recommendation conditions.
                 items:
@@ -147,6 +149,11 @@ spec:
                     format: int32
                     type: integer
                 type: object
+              expiredTime:
+                description: ExpiredTime is the recommendation's suggested expired
+                  time.
+                format: date-time
+                type: string
               lastUpdateTime:
                 description: LastUpdateTime is last time we got an update on this
                   status.

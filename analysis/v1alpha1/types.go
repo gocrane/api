@@ -61,7 +61,7 @@ type RecommendationStatus struct {
 	// +optional
 	LastUpdateTime metav1.Time `json:"lastUpdateTime,omitempty"`
 
-	// ExpiredTime is the recommendation's suggested expired time, after which .
+	// ExpiredTime is the recommendation's suggested expired time.
 	// +optional
 	ExpiredTime metav1.Time `json:"expiredTime,omitempty"`
 }

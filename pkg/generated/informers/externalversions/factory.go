@@ -8,6 +8,7 @@ import (
 	time "time"
 
 	versioned "github.com/gocrane/api/pkg/generated/clientset/versioned"
+	analysis "github.com/gocrane/api/pkg/generated/informers/externalversions/analysis"
 	autoscaling "github.com/gocrane/api/pkg/generated/informers/externalversions/autoscaling"
 	ensurance "github.com/gocrane/api/pkg/generated/informers/externalversions/ensurance"
 	internalinterfaces "github.com/gocrane/api/pkg/generated/informers/externalversions/internalinterfaces"
@@ -158,9 +159,14 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
+	Analysis() analysis.Interface
 	Autoscaling() autoscaling.Interface
 	Ensurance() ensurance.Interface
 	Prediction() prediction.Interface
+}
+
+func (f *sharedInformerFactory) Analysis() analysis.Interface {
+	return analysis.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Autoscaling() autoscaling.Interface {

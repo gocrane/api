@@ -12,12 +12,20 @@ type FakePredictionV1alpha1 struct {
 	*testing.Fake
 }
 
+func (c *FakePredictionV1alpha1) ClusterNodePredictions(namespace string) v1alpha1.ClusterNodePredictionInterface {
+	return &FakeClusterNodePredictions{c, namespace}
+}
+
 func (c *FakePredictionV1alpha1) NodePredictions() v1alpha1.NodePredictionInterface {
 	return &FakeNodePredictions{c}
 }
 
 func (c *FakePredictionV1alpha1) PodGroupPredictions(namespace string) v1alpha1.PodGroupPredictionInterface {
 	return &FakePodGroupPredictions{c, namespace}
+}
+
+func (c *FakePredictionV1alpha1) TimeSeriesPredictions(namespace string) v1alpha1.TimeSeriesPredictionInterface {
+	return &FakeTimeSeriesPredictions{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

@@ -2,6 +2,14 @@
 
 package v1alpha1
 
+// ClusterNodePredictionListerExpansion allows custom methods to be added to
+// ClusterNodePredictionLister.
+type ClusterNodePredictionListerExpansion interface{}
+
+// ClusterNodePredictionNamespaceListerExpansion allows custom methods to be added to
+// ClusterNodePredictionNamespaceLister.
+type ClusterNodePredictionNamespaceListerExpansion interface{}
+
 // NodePredictionListerExpansion allows custom methods to be added to
 // NodePredictionLister.
 type NodePredictionListerExpansion interface{}
@@ -13,3 +21,11 @@ type PodGroupPredictionListerExpansion interface{}
 // PodGroupPredictionNamespaceListerExpansion allows custom methods to be added to
 // PodGroupPredictionNamespaceLister.
 type PodGroupPredictionNamespaceListerExpansion interface{}
+
+// TimeSeriesPredictionListerExpansion allows custom methods to be added to
+// TimeSeriesPredictionLister.
+type TimeSeriesPredictionListerExpansion interface{}
+
+// TimeSeriesPredictionNamespaceListerExpansion allows custom methods to be added to
+// TimeSeriesPredictionNamespaceLister.
+type TimeSeriesPredictionNamespaceListerExpansion interface{}
