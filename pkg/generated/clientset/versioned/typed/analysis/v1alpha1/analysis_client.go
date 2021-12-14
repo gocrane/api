@@ -10,12 +10,17 @@ import (
 
 type AnalysisV1alpha1Interface interface {
 	RESTClient() rest.Interface
+	AnalyticsesGetter
 	RecommendationsGetter
 }
 
 // AnalysisV1alpha1Client is used to interact with features provided by the analysis.crane.io group.
 type AnalysisV1alpha1Client struct {
 	restClient rest.Interface
+}
+
+func (c *AnalysisV1alpha1Client) Analyticses(namespace string) AnalyticsInterface {
+	return newAnalyticses(c, namespace)
 }
 
 func (c *AnalysisV1alpha1Client) Recommendations(namespace string) RecommendationInterface {

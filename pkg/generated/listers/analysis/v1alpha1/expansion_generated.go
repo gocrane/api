@@ -2,6 +2,14 @@
 
 package v1alpha1
 
+// AnalyticsListerExpansion allows custom methods to be added to
+// AnalyticsLister.
+type AnalyticsListerExpansion interface{}
+
+// AnalyticsNamespaceListerExpansion allows custom methods to be added to
+// AnalyticsNamespaceLister.
+type AnalyticsNamespaceListerExpansion interface{}
+
 // RecommendationListerExpansion allows custom methods to be added to
 // RecommendationLister.
 type RecommendationListerExpansion interface{}
