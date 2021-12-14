@@ -22,13 +22,6 @@ const (
 	CompletionStrategyOnce       CompletionStrategyType = "Once"
 )
 
-type AdoptionStrategy string
-
-const (
-	AdoptionStrategyAuto AdoptionStrategy = "Auto"
-	AdoptionStrategyOff  AdoptionStrategy = "Off"
-)
-
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
@@ -58,14 +51,6 @@ type RecommendationSpec struct {
 	// the default CompletionStrategy is Once.
 	// +optional
 	CompletionStrategy CompletionStrategy `json:"completionStrategy,omitempty"`
-
-	// AdoptionStrategy indicate how to adopt a recommendation to target object.
-	// the default AdoptionStrategy is Off.
-	// +optional
-	// +kubebuilder:validation:Type=string
-	// +kubebuilder:validation:Enum=Auto;Off
-	// +kubebuilder:default=Off
-	AdoptionStrategy AdoptionStrategy `json:"completionStrategy,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -89,10 +74,6 @@ type RecommendationStatus struct {
 	// LastSuccessfulTime is the last time the recommendation successfully completed.
 	// +optional
 	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
-
-	// LastAdoptionTime is the last time adopt recommendation to target successfully.
-	// +optional
-	LastAdoptionTime *metav1.Time `json:"lastAdoptionTime,omitempty"`
 }
 
 type EffectiveHorizontalPodAutoscalerRecommendation struct {
@@ -135,7 +116,6 @@ type RecommendationList struct {
 }
 
 // +genclient
-
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // Analytics represents the configuration of an analytics object.
