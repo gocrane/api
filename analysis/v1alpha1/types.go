@@ -4,13 +4,22 @@ import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 )
 
-type Type string
+type AnalysisType string
 
 const (
-	TypeHPA      Type = "HPA"
-	TypeResource Type = "Resource"
+	AnalysisTypeHPA      AnalysisType = "HPA"
+	AnalysisTypeResource AnalysisType = "Resource"
+)
+
+type CompletionStrategyType string
+
+const (
+	CompletionStrategyPeriodical CompletionStrategyType = "Periodical"
+	CompletionStrategyOnce       CompletionStrategyType = "Once"
 )
 
 // +genclient
@@ -32,15 +41,16 @@ type Recommendation struct {
 type RecommendationSpec struct {
 	// +required
 	// +kubebuilder:validation:Required
-	TargetRef autoscalingv2.CrossVersionObjectReference `json:"targetRef"`
+	TargetRef corev1.ObjectReference `json:"targetRef"`
 
 	// +required
 	// +kubebuilder:validation:Required
-	Type Type `json:"type"`
+	Type AnalysisType `json:"type"`
 
-	// IntervalSeconds is the duration in seconds between two continuous recommendation actions. Setting it to 0 means this is a one-off recommendation.
+	// CompletionStrategy indicate how to complete a recommendation.
+	// the default CompletionStrategy is Once.
 	// +optional
-	IntervalSeconds *int64 `json:"intervalSeconds,omitempty"`
+	CompletionStrategy CompletionStrategy `json:"completionStrategy,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -61,9 +71,9 @@ type RecommendationStatus struct {
 	// +optional
 	LastUpdateTime metav1.Time `json:"lastUpdateTime,omitempty"`
 
-	// ExpiredTime is the recommendation's suggested expired time.
+	// LastSuccessfulTime is the last time the recommendation successfully completed.
 	// +optional
-	ExpiredTime metav1.Time `json:"expiredTime,omitempty"`
+	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
 }
 
 type EffectiveHorizontalPodAutoscalerRecommendation struct {
@@ -72,6 +82,12 @@ type EffectiveHorizontalPodAutoscalerRecommendation struct {
 
 	// +optional
 	MaxReplicas *int32 `json:"maxReplicas,omitempty"`
+
+	// +optional
+	Metrics []autoscalingv2.MetricSpec `json:"metrics,omitempty"`
+
+	// +optional
+	Prediction *autoscalingapi.Prediction `json:"prediction,omitempty"`
 }
 
 type ResourceRequestRecommendation struct {
@@ -100,7 +116,6 @@ type RecommendationList struct {
 }
 
 // +genclient
-
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // Analytics represents the configuration of an analytics object.
@@ -117,27 +132,41 @@ type Analytics struct {
 
 // AnalyticsSpec describes the analytics type, what the analysis is for and how often the analysis routine runs.
 type AnalyticsSpec struct {
-	// Type is the analytics type, including HPA and resource.
+	// Type is the analysis type, including HPA and resource.
 	// +required
 	// +kubebuilder:validation:Required
-	Type Type `json:"type"`
+	Type AnalysisType `json:"type"`
 
-	// ResourceSelector indicates how to select resources(e.g. a set of Deployments) for the analytics.
+	// ResourceSelector indicates how to select resources(e.g. a set of Deployments) for an Analytics.
 	// +required
 	// +kubebuilder:validation:Required
 	ResourceSelectors []ResourceSelector `json:"resourceSelectors"`
 
-	// IntervalSeconds is the duration in seconds between two continuous analysis. Setting it to 0 means this is a one-off analysis.
-	// +required
-	// +kubebuilder:validation:Required
-	IntervalSeconds *int64 `json:"intervalSeconds,omitempty"`
+	// CompletionStrategy indicate how to complete an Analytics.
+	// +optional
+	CompletionStrategy CompletionStrategy `json:"completionStrategy"`
+}
+
+// CompletionStrategy presents how to complete a recommendation or a recommendation request.
+type CompletionStrategy struct {
+	// CompletionStrategy indicate the strategy to request an Analytics or Recommendation, value can be "Once" and "Periodical"
+	// the default CompletionStrategy is Once.
+	// +optional
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=Once;Periodical
+	// +kubebuilder:default=Once
+	CompletionStrategyType CompletionStrategyType `json:"completionStrategyType,omitempty"`
+
+	// PeriodSeconds is the duration in seconds for an Analytics or Recommendation.
+	// +optional
+	PeriodSeconds *int64 `json:"periodSeconds"`
 }
 
 // AnalyticsStatus represents the current state of an analytics item.
 type AnalyticsStatus struct {
-	// LastAnalysisTime indicates the last time to perform analysis.
+	// LastSuccessfulTime is the last time the recommendation successfully completed.
 	// +optional
-	LastAnalysisTime metav1.Time `json:"lastAnalysisTime,omitempty"`
+	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
 
 	// Conditions is an array of current analytics conditions.
 	// +optional
@@ -168,7 +197,7 @@ type ResourceSelector struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// AnalyticsList is a list of analytics items.
+// AnalyticsList is a list of Analytics items.
 type AnalyticsList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`

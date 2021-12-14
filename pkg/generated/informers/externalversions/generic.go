@@ -40,6 +40,8 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=analysis.crane.io, Version=v1alpha1
+	case v1alpha1.SchemeGroupVersion.WithResource("analyticses"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().Analyticses().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("recommendations"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().Recommendations().Informer()}, nil
 
