@@ -172,8 +172,7 @@ type Substitute struct {
 // SubstituteSpec defines the desired spec of Substitute
 type SubstituteSpec struct {
 	// Replicas is used by presents dryRun replicas for SubstituteTargetRef.
-	// +optional
-	Replicas *int32 `json:"replicas,omitempty"`
+	Replicas int32 `json:"replicas,omitempty"`
 
 	// SubstituteTargetRef is the reference to the workload that should be Substituted.
 	SubstituteTargetRef autoscalingv2.CrossVersionObjectReference `json:"substituteTargetRef"`
