@@ -348,7 +348,7 @@ const (
 type PredictionMetric struct {
 	// ResourceIdentifier is a resource to identify the metric, but now it is just an identifier now. reference otlp https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/resource/sdk.md
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
-	// Type is the type of metric, now support ResourceQuery、ExpressionQuery、RawQuery
+	// Type is the type of metric, now support ResourceQuery、MetricQuery、ExpressionQuery
 	Type MetricType `json:"type,omitempty"`
 	// +optional
 	// ResourceQuery is a kubernetes built in metric, only support cpu, memory
@@ -356,11 +356,11 @@ type PredictionMetric struct {
 	// following QueryExpressions depend on your crane system data source configured when the system start.
 	// if you use different sources with your system start params, it is not valid.
 	// +optional
-	// ExpressionQuery is a query expression of non-prometheus style, usually is api style
-	ExpressionQuery *ExpressionQuery `json:"expressionQuery,omitempty"`
+	// MetricQuery is a query against a metric with a set of conditions
+	MetricQuery *MetricQuery `json:"metricQuery,omitempty"`
 	// +optional
-	// RawQuery is a query expression of DSL style, such as prometheus query language
-	RawQuery *RawQuery `json:"rawQuery,omitempty"`
+	// ExpressionQuery is a query with a DSL-style expression, such as prometheus promQL
+	ExpressionQuery *ExpressionQuery `json:"expressionQuery,omitempty"`
 	// Algorithm is the algorithm used by this prediction metric.
 	Algorithm Algorithm `json:"algorithm,omitempty"`
 }
@@ -371,14 +371,14 @@ type MetricType string
 const (
 	// ResourceQueryMetricType is kubernetes built in metric, only support cpu and memory now.
 	ResourceQueryMetricType MetricType = "ResourceQuery"
-	// ExpressionQueryMetricType is an selector style metric, it queried from a system which supports it.
+	// MetricQueryMetricType is an selector style metric, it queried from a system which supports it.
+	MetricQueryMetricType MetricType = "MetricQuery"
+	// ExpressionQueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
 	ExpressionQueryMetricType MetricType = "ExpressionQuery"
-	// RawQueryMetricType is an raw query style metric, it is queried from a system which supports it, such as prometheus
-	RawQueryMetricType MetricType = "RawQuery"
 )
 
-// ExpressionQuery
-type ExpressionQuery struct {
+// MetricQuery
+type MetricQuery struct {
 	// MetricName is the name of the metric.
 	// +required
 	// +kubebuilder:validation:Required
@@ -389,8 +389,8 @@ type ExpressionQuery struct {
 	QueryConditions []QueryCondition `json:"labels,omitempty"`
 }
 
-// RawQuery
-type RawQuery struct {
+// ExpressionQuery
+type ExpressionQuery struct {
 	// Expression is the query expression. For prometheus, it is promQL.
 	Expression string `json:"expression,omitempty"`
 }
