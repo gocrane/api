@@ -12,6 +12,10 @@ type FakeEnsuranceV1alpha1 struct {
 	*testing.Fake
 }
 
+func (c *FakeEnsuranceV1alpha1) AvoidanceActions() v1alpha1.AvoidanceActionInterface {
+	return &FakeAvoidanceActions{c}
+}
+
 func (c *FakeEnsuranceV1alpha1) NodeQOSEnsurancePolicies(namespace string) v1alpha1.NodeQOSEnsurancePolicyInterface {
 	return &FakeNodeQOSEnsurancePolicies{c, namespace}
 }

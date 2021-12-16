@@ -10,6 +10,7 @@ import (
 
 type EnsuranceV1alpha1Interface interface {
 	RESTClient() rest.Interface
+	AvoidanceActionsGetter
 	NodeQOSEnsurancePoliciesGetter
 	PodQOSEnsurancePoliciesGetter
 }
@@ -17,6 +18,10 @@ type EnsuranceV1alpha1Interface interface {
 // EnsuranceV1alpha1Client is used to interact with features provided by the ensurance.crane.io group.
 type EnsuranceV1alpha1Client struct {
 	restClient rest.Interface
+}
+
+func (c *EnsuranceV1alpha1Client) AvoidanceActions() AvoidanceActionInterface {
+	return newAvoidanceActions(c)
 }
 
 func (c *EnsuranceV1alpha1Client) NodeQOSEnsurancePolicies(namespace string) NodeQOSEnsurancePolicyInterface {

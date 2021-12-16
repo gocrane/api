@@ -8,6 +8,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
+	// AvoidanceActions returns a AvoidanceActionInformer.
+	AvoidanceActions() AvoidanceActionInformer
 	// NodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicyInformer.
 	NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInformer
 	// PodQOSEnsurancePolicies returns a PodQOSEnsurancePolicyInformer.
@@ -23,6 +25,11 @@ type version struct {
 // New returns a new Interface.
 func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakListOptions internalinterfaces.TweakListOptionsFunc) Interface {
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
+}
+
+// AvoidanceActions returns a AvoidanceActionInformer.
+func (v *version) AvoidanceActions() AvoidanceActionInformer {
+	return &avoidanceActionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // NodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicyInformer.
