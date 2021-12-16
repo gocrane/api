@@ -2,6 +2,10 @@
 
 package v1alpha1
 
+// AvoidanceActionListerExpansion allows custom methods to be added to
+// AvoidanceActionLister.
+type AvoidanceActionListerExpansion interface{}
+
 // NodeQOSEnsurancePolicyListerExpansion allows custom methods to be added to
 // NodeQOSEnsurancePolicyLister.
 type NodeQOSEnsurancePolicyListerExpansion interface{}
