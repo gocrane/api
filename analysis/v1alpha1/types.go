@@ -4,6 +4,7 @@ import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 )
@@ -24,6 +25,8 @@ const (
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=recommend
 
 // Recommendation represents the configuration of a single recommendation.
 type Recommendation struct {
@@ -51,17 +54,18 @@ type RecommendationSpec struct {
 	// the default CompletionStrategy is Once.
 	// +optional
 	CompletionStrategy CompletionStrategy `json:"completionStrategy,omitempty"`
+
+	// timeoutSeconds specifies the seconds of one recommendation process.
+	// Default value is 600(for 10 minutes).
+	// +optional
+	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
-	// EffectiveHPA is the recommendation for effective HPA.
+	// Proposal is the recommended result object.
 	// +optional
-	EffectiveHPA *EffectiveHorizontalPodAutoscalerRecommendation `json:"effectiveHPA,omitempty"`
-
-	// ResourceRequest is the recommendation for containers' cpu/mem requests.
-	// +optional
-	ResourceRequest *ResourceRequestRecommendation `json:"resourceRequest,omitempty"`
+	Proposal runtime.RawExtension `json:"proposal,omitempty"`
 
 	// Conditions is an array of current recommendation conditions.
 	// +optional
@@ -117,6 +121,8 @@ type RecommendationList struct {
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=analytics
 
 // Analytics represents the configuration of an analytics object.
 type Analytics struct {
@@ -159,7 +165,7 @@ type CompletionStrategy struct {
 
 	// PeriodSeconds is the duration in seconds for an Analytics or Recommendation.
 	// +optional
-	PeriodSeconds *int64 `json:"periodSeconds"`
+	PeriodSeconds *int64 `json:"periodSeconds,omitempty"`
 }
 
 // AnalyticsStatus represents the current state of an analytics item.
