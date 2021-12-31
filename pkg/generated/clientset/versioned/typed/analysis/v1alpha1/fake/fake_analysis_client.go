@@ -16,6 +16,10 @@ func (c *FakeAnalysisV1alpha1) Analyticses(namespace string) v1alpha1.AnalyticsI
 	return &FakeAnalyticses{c, namespace}
 }
 
+func (c *FakeAnalysisV1alpha1) ConfigSets(namespace string) v1alpha1.ConfigSetInterface {
+	return &FakeConfigSets{c, namespace}
+}
+
 func (c *FakeAnalysisV1alpha1) Recommendations(namespace string) v1alpha1.RecommendationInterface {
 	return &FakeRecommendations{c, namespace}
 }

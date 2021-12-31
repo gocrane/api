@@ -11,6 +11,7 @@ import (
 type AnalysisV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	AnalyticsesGetter
+	ConfigSetsGetter
 	RecommendationsGetter
 }
 
@@ -21,6 +22,10 @@ type AnalysisV1alpha1Client struct {
 
 func (c *AnalysisV1alpha1Client) Analyticses(namespace string) AnalyticsInterface {
 	return newAnalyticses(c, namespace)
+}
+
+func (c *AnalysisV1alpha1Client) ConfigSets(namespace string) ConfigSetInterface {
+	return newConfigSets(c, namespace)
 }
 
 func (c *AnalysisV1alpha1Client) Recommendations(namespace string) RecommendationInterface {
