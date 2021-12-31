@@ -210,3 +210,31 @@ type AnalyticsList struct {
 
 	Items []Analytics `json:"items"`
 }
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=cs
+
+// ConfigSet represents the configuration set for recommendation.
+type ConfigSet struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Configs []Config `json:"configs,omitempty"`
+}
+
+type Config struct {
+	// +optional
+	Targets    []Target          `json:"targets,omitempty"`
+	Properties map[string]string `json:"properties,omitempty"`
+}
+
+type Target struct {
+	// +optional
+	Namespace  string `json:"namespace,omitempty"`
+	// +optional
+	Kind       string `json:"kind,omitempty"`
+	// +optional
+	Name       string `json:"names,omitempty"`
+}
