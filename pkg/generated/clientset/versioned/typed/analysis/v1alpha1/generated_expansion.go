@@ -4,4 +4,6 @@ package v1alpha1
 
 type AnalyticsExpansion interface{}
 
+type ConfigSetExpansion interface{}
+
 type RecommendationExpansion interface{}

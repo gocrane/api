@@ -10,6 +10,14 @@ type AnalyticsListerExpansion interface{}
 // AnalyticsNamespaceLister.
 type AnalyticsNamespaceListerExpansion interface{}
 
+// ConfigSetListerExpansion allows custom methods to be added to
+// ConfigSetLister.
+type ConfigSetListerExpansion interface{}
+
+// ConfigSetNamespaceListerExpansion allows custom methods to be added to
+// ConfigSetNamespaceLister.
+type ConfigSetNamespaceListerExpansion interface{}
+
 // RecommendationListerExpansion allows custom methods to be added to
 // RecommendationLister.
 type RecommendationListerExpansion interface{}

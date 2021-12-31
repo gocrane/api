@@ -10,6 +10,8 @@ import (
 type Interface interface {
 	// Analyticses returns a AnalyticsInformer.
 	Analyticses() AnalyticsInformer
+	// ConfigSets returns a ConfigSetInformer.
+	ConfigSets() ConfigSetInformer
 	// Recommendations returns a RecommendationInformer.
 	Recommendations() RecommendationInformer
 }
@@ -28,6 +30,11 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 // Analyticses returns a AnalyticsInformer.
 func (v *version) Analyticses() AnalyticsInformer {
 	return &analyticsInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// ConfigSets returns a ConfigSetInformer.
+func (v *version) ConfigSets() ConfigSetInformer {
+	return &configSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Recommendations returns a RecommendationInformer.

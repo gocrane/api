@@ -221,6 +221,7 @@ type AnalyticsList struct {
 // ConfigSet represents the configuration set for recommendation.
 type ConfigSet struct {
 	metav1.TypeMeta   `json:",inline"`
+	// +optional
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Configs []Config `json:"configs,omitempty"`
@@ -239,4 +240,15 @@ type Target struct {
 	Kind       string `json:"kind,omitempty"`
 	// +optional
 	Name       string `json:"names,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// ConfigSetList is a list of ConfigSet.
+type ConfigSetList struct {
+	metav1.TypeMeta `json:",inline"`
+	// +optional
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+
+	Items []ConfigSet `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
