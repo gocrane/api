@@ -1,12 +1,10 @@
 package v1alpha1
 
 import (
+	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-
-	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 )
 
 type AnalysisType string
@@ -63,9 +61,13 @@ type RecommendationSpec struct {
 
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
-	// Proposal is the recommended result object.
+	// EffectiveHPA is the recommendation for effective HPA.
 	// +optional
-	Proposal runtime.RawExtension `json:"proposal,omitempty"`
+	EffectiveHPA *EffectiveHorizontalPodAutoscalerRecommendation `json:"effectiveHPA,omitempty"`
+
+	// ResourceRequest is the recommendation for containers' cpu/mem requests.
+	// +optional
+	ResourceRequest *ResourceRequestRecommendation `json:"resourceRequest,omitempty"`
 
 	// Conditions is an array of current recommendation conditions.
 	// +optional
