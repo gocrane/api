@@ -239,7 +239,7 @@ type Target struct {
 	// +optional
 	Kind       string `json:"kind,omitempty"`
 	// +optional
-	Name       string `json:"names,omitempty"`
+	Name       string `json:"name,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
