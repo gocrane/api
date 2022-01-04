@@ -4,8 +4,4 @@ package v1alpha1
 
 type ClusterNodePredictionExpansion interface{}
 
-type NodePredictionExpansion interface{}
-
-type PodGroupPredictionExpansion interface{}
-
 type TimeSeriesPredictionExpansion interface{}

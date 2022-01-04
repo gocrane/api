@@ -10,10 +10,6 @@ import (
 type Interface interface {
 	// ClusterNodePredictions returns a ClusterNodePredictionInformer.
 	ClusterNodePredictions() ClusterNodePredictionInformer
-	// NodePredictions returns a NodePredictionInformer.
-	NodePredictions() NodePredictionInformer
-	// PodGroupPredictions returns a PodGroupPredictionInformer.
-	PodGroupPredictions() PodGroupPredictionInformer
 	// TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
 	TimeSeriesPredictions() TimeSeriesPredictionInformer
 }
@@ -32,16 +28,6 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 // ClusterNodePredictions returns a ClusterNodePredictionInformer.
 func (v *version) ClusterNodePredictions() ClusterNodePredictionInformer {
 	return &clusterNodePredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// NodePredictions returns a NodePredictionInformer.
-func (v *version) NodePredictions() NodePredictionInformer {
-	return &nodePredictionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
-}
-
-// PodGroupPredictions returns a PodGroupPredictionInformer.
-func (v *version) PodGroupPredictions() PodGroupPredictionInformer {
-	return &podGroupPredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
