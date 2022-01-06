@@ -10,18 +10,6 @@ type ClusterNodePredictionListerExpansion interface{}
 // ClusterNodePredictionNamespaceLister.
 type ClusterNodePredictionNamespaceListerExpansion interface{}
 
-// NodePredictionListerExpansion allows custom methods to be added to
-// NodePredictionLister.
-type NodePredictionListerExpansion interface{}
-
-// PodGroupPredictionListerExpansion allows custom methods to be added to
-// PodGroupPredictionLister.
-type PodGroupPredictionListerExpansion interface{}
-
-// PodGroupPredictionNamespaceListerExpansion allows custom methods to be added to
-// PodGroupPredictionNamespaceLister.
-type PodGroupPredictionNamespaceListerExpansion interface{}
-
 // TimeSeriesPredictionListerExpansion allows custom methods to be added to
 // TimeSeriesPredictionLister.
 type TimeSeriesPredictionListerExpansion interface{}

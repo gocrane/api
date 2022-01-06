@@ -11,8 +11,6 @@ import (
 type PredictionV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	ClusterNodePredictionsGetter
-	NodePredictionsGetter
-	PodGroupPredictionsGetter
 	TimeSeriesPredictionsGetter
 }
 
@@ -23,14 +21,6 @@ type PredictionV1alpha1Client struct {
 
 func (c *PredictionV1alpha1Client) ClusterNodePredictions(namespace string) ClusterNodePredictionInterface {
 	return newClusterNodePredictions(c, namespace)
-}
-
-func (c *PredictionV1alpha1Client) NodePredictions() NodePredictionInterface {
-	return newNodePredictions(c)
-}
-
-func (c *PredictionV1alpha1Client) PodGroupPredictions(namespace string) PodGroupPredictionInterface {
-	return newPodGroupPredictions(c, namespace)
 }
 
 func (c *PredictionV1alpha1Client) TimeSeriesPredictions(namespace string) TimeSeriesPredictionInterface {
