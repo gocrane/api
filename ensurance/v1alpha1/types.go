@@ -1,9 +1,18 @@
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	corev1 "k8s.io/api/core/v1"
+)
+
+type AvoidanceActionStrategy string
+
+const (
+	// AvoidanceActionStrategyNone do the action when the rules triggered.
+	AvoidanceActionStrategyNone AvoidanceActionStrategy = "None"
+	// AvoidanceActionStrategyPreview is the preview for QosEnsuranceStrategyNone.
+	AvoidanceActionStrategyPreview AvoidanceActionStrategy = "Preview"
 )
 
 // PodQOSEnsurancePolicySpec defines the desired status of PodQOSEnsurancePolicy
@@ -56,6 +65,8 @@ type PodQOSEnsurancePolicyList struct {
 }
 
 // +genclient
+// +genclient:nonNamespaced
+// +kubebuilder:resource:scope=Cluster
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // NodeQOSEnsurancePolicy is the Schema for the nodeqosensurancepolicies API
@@ -78,7 +89,6 @@ type NodeQOSEnsurancePolicySpec struct {
 	// ObjectiveEnsurances is an array of ObjectiveEnsurance
 	ObjectiveEnsurances []ObjectiveEnsurance `json:"objectiveEnsurances,omitempty"`
 }
-
 
 type NodeQualityProbe struct {
 	// HTTPGet specifies the http request to perform.
@@ -103,9 +113,11 @@ type NodeQualityProbe struct {
 type NodeLocalGet struct {
 	// the default LocalCacheTTLSeconds is 60s
 	// +optional
+	// +kubebuilder:default=60
 	LocalCacheTTLSeconds *int32 `json:"localCacheTTLSeconds,omitempty"`
 	// default is 60s
 	// +optional
+	// +kubebuilder:default=60
 	MaxHousekeepingIntervalSeconds *int32 `json:"maxHousekeepingIntervalSeconds,omitempty"`
 }
 
@@ -117,58 +129,36 @@ type ObjectiveEnsurance struct {
 	// Metric rule define the metric identifier and target
 	MetricRule *MetricRule `json:"metricRule,omitempty"`
 
-	// How many times the rule is reach, to trigger action, default is 1
-	ReachedThreshold int32 `json:"reachedThreshold,omitempty"`
+	// How many times the rule is reach, to trigger avoidance action, default is 1
+	// +kubebuilder:default=1
+	AvoidanceThreshold int32 `json:"avoidanceThreshold,omitempty"`
 
 	// How many times the rule can restore, default is 1
-	RestoredThreshold int32 `json:"restoredThreshold,omitempty"`
+	// +kubebuilder:default=1
+	RestoreThreshold int32 `json:"restoreThreshold,omitempty"`
 
 	// Avoidance action when be triggered
 	AvoidanceActionName string `json:"actionName"`
 
-	// Action only dry run,not to do the real action
+	// Action only preview, not to do the real action
+	// the default AvoidanceActionStrategy is None.
 	// +optional
-	DryRun bool `json:"dryRun,omitempty"`
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=None;Preview
+	// +kubebuilder:default=None
+	Strategy AvoidanceActionStrategy `json:"strategy,omitempty"`
 }
 
 type MetricRule struct {
-	// Metric identifies the target metric by name and selector
-	Metric MetricIdentifier `json:"metric"`
-
-	// Target specifies the target value for the given metric
-	Target *MetricTarget `json:"target"`
-}
-
-// MetricIdentifier defines the name and optionally selector for a metric
-type MetricIdentifier struct {
 	// Name is the name of the given metric
 	Name string `json:"name"`
 	// Selector is the selector for the given metric
 	// it is the string-encoded form of a standard kubernetes label selector
 	// +optional
 	Selector *metav1.LabelSelector `json:"selector,omitempty"`
-}
-
-// MetricTarget defines the target value or utilization of a specific metric
-type MetricTarget struct {
-	// Type represents whether the metric type is Value and Utilization
-	Type MetricTargetType `json:"type"`
 	// Value is the target value of the metric (as a quantity).
 	Value *resource.Quantity `json:"value,omitempty"`
-	// Utilization is the target value of a percentage of the resource for pods.
-	Utilization *int32 `json:"utilization,omitempty"`
 }
-
-// MetricTargetType specifies the type of metric being targeted, and should be either
-// "Value", "AverageValue", or "Utilization"
-type MetricTargetType string
-
-const (
-	// UtilizationMetricType is a possible value for MetricTarget.Type.
-	UtilizationMetricType MetricTargetType = "Utilization"
-	// ValueMetricType is a possible value for MetricTarget.Type.
-	ValueMetricType MetricTargetType = "Value"
-)
 
 // NodeQOSEnsurancePolicyStatus defines the observed status of NodeQOSEnsurancePolicy
 type NodeQOSEnsurancePolicyStatus struct {
@@ -187,11 +177,12 @@ type AvoidanceActionSpec struct {
 	// CoolDownSeconds is the seconds for cool down when do avoidance
 	// default is 300s
 	// +optional
+	// +kubebuilder:default=300
 	CoolDownSeconds *int64 `json:"coolDownSeconds,omitempty"`
 
 	// Throttle describes the throttling action
 	// +optional
-	Throttle *ThrottleAction `json:"Throttle,omitempty"`
+	Throttle *ThrottleAction `json:"throttle,omitempty"`
 
 	//Eviction describes the eviction action
 	// +optional
@@ -215,6 +206,7 @@ type CPUThrottle struct {
 	// PeriodSeconds is the interval seconds for each throttle action
 	// the default PeriodSeconds is 10s
 	// +optional
+	// +kubebuilder:default=10
 	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
 
 	// MinCPURatio is the min of cpu ratio for low level pods
@@ -231,6 +223,7 @@ type MemoryThrottle struct {
 	// PeriodSeconds is the interval seconds for each throttle action
 	// the default PeriodSeconds is 10s
 	// +optional
+	// +kubebuilder:default=10
 	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
 
 	// ForceGC means force gc page cache for pods with low priority
