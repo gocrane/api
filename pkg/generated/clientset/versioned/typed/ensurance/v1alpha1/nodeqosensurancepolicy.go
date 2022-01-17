@@ -17,7 +17,7 @@ import (
 // NodeQOSEnsurancePoliciesGetter has a method to return a NodeQOSEnsurancePolicyInterface.
 // A group's client should implement this interface.
 type NodeQOSEnsurancePoliciesGetter interface {
-	NodeQOSEnsurancePolicies(namespace string) NodeQOSEnsurancePolicyInterface
+	NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInterface
 }
 
 // NodeQOSEnsurancePolicyInterface has methods to work with NodeQOSEnsurancePolicy resources.
@@ -37,14 +37,12 @@ type NodeQOSEnsurancePolicyInterface interface {
 // nodeQOSEnsurancePolicies implements NodeQOSEnsurancePolicyInterface
 type nodeQOSEnsurancePolicies struct {
 	client rest.Interface
-	ns     string
 }
 
 // newNodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicies
-func newNodeQOSEnsurancePolicies(c *EnsuranceV1alpha1Client, namespace string) *nodeQOSEnsurancePolicies {
+func newNodeQOSEnsurancePolicies(c *EnsuranceV1alpha1Client) *nodeQOSEnsurancePolicies {
 	return &nodeQOSEnsurancePolicies{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -52,7 +50,6 @@ func newNodeQOSEnsurancePolicies(c *EnsuranceV1alpha1Client, namespace string) *
 func (c *nodeQOSEnsurancePolicies) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	result = &v1alpha1.NodeQOSEnsurancePolicy{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -69,7 +66,6 @@ func (c *nodeQOSEnsurancePolicies) List(ctx context.Context, opts v1.ListOptions
 	}
 	result = &v1alpha1.NodeQOSEnsurancePolicyList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -86,7 +82,6 @@ func (c *nodeQOSEnsurancePolicies) Watch(ctx context.Context, opts v1.ListOption
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -97,7 +92,6 @@ func (c *nodeQOSEnsurancePolicies) Watch(ctx context.Context, opts v1.ListOption
 func (c *nodeQOSEnsurancePolicies) Create(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.CreateOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	result = &v1alpha1.NodeQOSEnsurancePolicy{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(nodeQOSEnsurancePolicy).
@@ -110,7 +104,6 @@ func (c *nodeQOSEnsurancePolicies) Create(ctx context.Context, nodeQOSEnsuranceP
 func (c *nodeQOSEnsurancePolicies) Update(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.UpdateOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	result = &v1alpha1.NodeQOSEnsurancePolicy{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		Name(nodeQOSEnsurancePolicy.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -125,7 +118,6 @@ func (c *nodeQOSEnsurancePolicies) Update(ctx context.Context, nodeQOSEnsuranceP
 func (c *nodeQOSEnsurancePolicies) UpdateStatus(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.UpdateOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	result = &v1alpha1.NodeQOSEnsurancePolicy{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		Name(nodeQOSEnsurancePolicy.Name).
 		SubResource("status").
@@ -139,7 +131,6 @@ func (c *nodeQOSEnsurancePolicies) UpdateStatus(ctx context.Context, nodeQOSEnsu
 // Delete takes name of the nodeQOSEnsurancePolicy and deletes it. Returns an error if one occurs.
 func (c *nodeQOSEnsurancePolicies) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		Name(name).
 		Body(&opts).
@@ -154,7 +145,6 @@ func (c *nodeQOSEnsurancePolicies) DeleteCollection(ctx context.Context, opts v1
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -167,7 +157,6 @@ func (c *nodeQOSEnsurancePolicies) DeleteCollection(ctx context.Context, opts v1
 func (c *nodeQOSEnsurancePolicies) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	result = &v1alpha1.NodeQOSEnsurancePolicy{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("nodeqosensurancepolicies").
 		Name(name).
 		SubResource(subresources...).

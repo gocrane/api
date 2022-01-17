@@ -24,8 +24,8 @@ func (c *EnsuranceV1alpha1Client) AvoidanceActions() AvoidanceActionInterface {
 	return newAvoidanceActions(c)
 }
 
-func (c *EnsuranceV1alpha1Client) NodeQOSEnsurancePolicies(namespace string) NodeQOSEnsurancePolicyInterface {
-	return newNodeQOSEnsurancePolicies(c, namespace)
+func (c *EnsuranceV1alpha1Client) NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInterface {
+	return newNodeQOSEnsurancePolicies(c)
 }
 
 func (c *EnsuranceV1alpha1Client) PodQOSEnsurancePolicies(namespace string) PodQOSEnsurancePolicyInterface {

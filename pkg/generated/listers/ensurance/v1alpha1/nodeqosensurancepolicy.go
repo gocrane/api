@@ -15,8 +15,9 @@ type NodeQOSEnsurancePolicyLister interface {
 	// List lists all NodeQOSEnsurancePolicies in the indexer.
 	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.NodeQOSEnsurancePolicy, err error)
-	// NodeQOSEnsurancePolicies returns an object that can list and get NodeQOSEnsurancePolicies.
-	NodeQOSEnsurancePolicies(namespace string) NodeQOSEnsurancePolicyNamespaceLister
+	// Get retrieves the NodeQOSEnsurancePolicy from the index for a given name.
+	// Objects returned here must be treated as read-only.
+	Get(name string) (*v1alpha1.NodeQOSEnsurancePolicy, error)
 	NodeQOSEnsurancePolicyListerExpansion
 }
 
@@ -38,41 +39,9 @@ func (s *nodeQOSEnsurancePolicyLister) List(selector labels.Selector) (ret []*v1
 	return ret, err
 }
 
-// NodeQOSEnsurancePolicies returns an object that can list and get NodeQOSEnsurancePolicies.
-func (s *nodeQOSEnsurancePolicyLister) NodeQOSEnsurancePolicies(namespace string) NodeQOSEnsurancePolicyNamespaceLister {
-	return nodeQOSEnsurancePolicyNamespaceLister{indexer: s.indexer, namespace: namespace}
-}
-
-// NodeQOSEnsurancePolicyNamespaceLister helps list and get NodeQOSEnsurancePolicies.
-// All objects returned here must be treated as read-only.
-type NodeQOSEnsurancePolicyNamespaceLister interface {
-	// List lists all NodeQOSEnsurancePolicies in the indexer for a given namespace.
-	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.NodeQOSEnsurancePolicy, err error)
-	// Get retrieves the NodeQOSEnsurancePolicy from the indexer for a given namespace and name.
-	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1alpha1.NodeQOSEnsurancePolicy, error)
-	NodeQOSEnsurancePolicyNamespaceListerExpansion
-}
-
-// nodeQOSEnsurancePolicyNamespaceLister implements the NodeQOSEnsurancePolicyNamespaceLister
-// interface.
-type nodeQOSEnsurancePolicyNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all NodeQOSEnsurancePolicies in the indexer for a given namespace.
-func (s nodeQOSEnsurancePolicyNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.NodeQOSEnsurancePolicy, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.NodeQOSEnsurancePolicy))
-	})
-	return ret, err
-}
-
-// Get retrieves the NodeQOSEnsurancePolicy from the indexer for a given namespace and name.
-func (s nodeQOSEnsurancePolicyNamespaceLister) Get(name string) (*v1alpha1.NodeQOSEnsurancePolicy, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
+// Get retrieves the NodeQOSEnsurancePolicy from the index for a given name.
+func (s *nodeQOSEnsurancePolicyLister) Get(name string) (*v1alpha1.NodeQOSEnsurancePolicy, error) {
+	obj, exists, err := s.indexer.GetByKey(name)
 	if err != nil {
 		return nil, err
 	}

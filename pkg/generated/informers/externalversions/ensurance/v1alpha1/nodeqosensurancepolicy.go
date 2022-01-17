@@ -26,33 +26,32 @@ type NodeQOSEnsurancePolicyInformer interface {
 type nodeQOSEnsurancePolicyInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
-	namespace        string
 }
 
 // NewNodeQOSEnsurancePolicyInformer constructs a new informer for NodeQOSEnsurancePolicy type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewNodeQOSEnsurancePolicyInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredNodeQOSEnsurancePolicyInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewNodeQOSEnsurancePolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredNodeQOSEnsurancePolicyInformer(client, resyncPeriod, indexers, nil)
 }
 
 // NewFilteredNodeQOSEnsurancePolicyInformer constructs a new informer for NodeQOSEnsurancePolicy type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredNodeQOSEnsurancePolicyInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredNodeQOSEnsurancePolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.EnsuranceV1alpha1().NodeQOSEnsurancePolicies(namespace).List(context.TODO(), options)
+				return client.EnsuranceV1alpha1().NodeQOSEnsurancePolicies().List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.EnsuranceV1alpha1().NodeQOSEnsurancePolicies(namespace).Watch(context.TODO(), options)
+				return client.EnsuranceV1alpha1().NodeQOSEnsurancePolicies().Watch(context.TODO(), options)
 			},
 		},
 		&ensurancev1alpha1.NodeQOSEnsurancePolicy{},
@@ -62,7 +61,7 @@ func NewFilteredNodeQOSEnsurancePolicyInformer(client versioned.Interface, names
 }
 
 func (f *nodeQOSEnsurancePolicyInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredNodeQOSEnsurancePolicyInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+	return NewFilteredNodeQOSEnsurancePolicyInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
 func (f *nodeQOSEnsurancePolicyInformer) Informer() cache.SharedIndexInformer {
