@@ -34,7 +34,7 @@ func (v *version) AvoidanceActions() AvoidanceActionInformer {
 
 // NodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicyInformer.
 func (v *version) NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInformer {
-	return &nodeQOSEnsurancePolicyInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+	return &nodeQOSEnsurancePolicyInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // PodQOSEnsurancePolicies returns a PodQOSEnsurancePolicyInformer.

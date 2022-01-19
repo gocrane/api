@@ -16,8 +16,8 @@ func (c *FakeEnsuranceV1alpha1) AvoidanceActions() v1alpha1.AvoidanceActionInter
 	return &FakeAvoidanceActions{c}
 }
 
-func (c *FakeEnsuranceV1alpha1) NodeQOSEnsurancePolicies(namespace string) v1alpha1.NodeQOSEnsurancePolicyInterface {
-	return &FakeNodeQOSEnsurancePolicies{c, namespace}
+func (c *FakeEnsuranceV1alpha1) NodeQOSEnsurancePolicies() v1alpha1.NodeQOSEnsurancePolicyInterface {
+	return &FakeNodeQOSEnsurancePolicies{c}
 }
 
 func (c *FakeEnsuranceV1alpha1) PodQOSEnsurancePolicies(namespace string) v1alpha1.PodQOSEnsurancePolicyInterface {

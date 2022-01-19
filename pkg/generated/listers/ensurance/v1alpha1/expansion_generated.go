@@ -10,10 +10,6 @@ type AvoidanceActionListerExpansion interface{}
 // NodeQOSEnsurancePolicyLister.
 type NodeQOSEnsurancePolicyListerExpansion interface{}
 
-// NodeQOSEnsurancePolicyNamespaceListerExpansion allows custom methods to be added to
-// NodeQOSEnsurancePolicyNamespaceLister.
-type NodeQOSEnsurancePolicyNamespaceListerExpansion interface{}
-
 // PodQOSEnsurancePolicyListerExpansion allows custom methods to be added to
 // PodQOSEnsurancePolicyLister.
 type PodQOSEnsurancePolicyListerExpansion interface{}

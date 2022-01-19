@@ -17,7 +17,6 @@ import (
 // FakeNodeQOSEnsurancePolicies implements NodeQOSEnsurancePolicyInterface
 type FakeNodeQOSEnsurancePolicies struct {
 	Fake *FakeEnsuranceV1alpha1
-	ns   string
 }
 
 var nodeqosensurancepoliciesResource = schema.GroupVersionResource{Group: "ensurance.crane.io", Version: "v1alpha1", Resource: "nodeqosensurancepolicies"}
@@ -27,8 +26,7 @@ var nodeqosensurancepoliciesKind = schema.GroupVersionKind{Group: "ensurance.cra
 // Get takes name of the nodeQOSEnsurancePolicy, and returns the corresponding nodeQOSEnsurancePolicy object, and an error if there is any.
 func (c *FakeNodeQOSEnsurancePolicies) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(nodeqosensurancepoliciesResource, c.ns, name), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootGetAction(nodeqosensurancepoliciesResource, name), &v1alpha1.NodeQOSEnsurancePolicy{})
 	if obj == nil {
 		return nil, err
 	}
@@ -38,8 +36,7 @@ func (c *FakeNodeQOSEnsurancePolicies) Get(ctx context.Context, name string, opt
 // List takes label and field selectors, and returns the list of NodeQOSEnsurancePolicies that match those selectors.
 func (c *FakeNodeQOSEnsurancePolicies) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.NodeQOSEnsurancePolicyList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(nodeqosensurancepoliciesResource, nodeqosensurancepoliciesKind, c.ns, opts), &v1alpha1.NodeQOSEnsurancePolicyList{})
-
+		Invokes(testing.NewRootListAction(nodeqosensurancepoliciesResource, nodeqosensurancepoliciesKind, opts), &v1alpha1.NodeQOSEnsurancePolicyList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -60,15 +57,13 @@ func (c *FakeNodeQOSEnsurancePolicies) List(ctx context.Context, opts v1.ListOpt
 // Watch returns a watch.Interface that watches the requested nodeQOSEnsurancePolicies.
 func (c *FakeNodeQOSEnsurancePolicies) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(nodeqosensurancepoliciesResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(nodeqosensurancepoliciesResource, opts))
 }
 
 // Create takes the representation of a nodeQOSEnsurancePolicy and creates it.  Returns the server's representation of the nodeQOSEnsurancePolicy, and an error, if there is any.
 func (c *FakeNodeQOSEnsurancePolicies) Create(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.CreateOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(nodeqosensurancepoliciesResource, c.ns, nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootCreateAction(nodeqosensurancepoliciesResource, nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
 	if obj == nil {
 		return nil, err
 	}
@@ -78,8 +73,7 @@ func (c *FakeNodeQOSEnsurancePolicies) Create(ctx context.Context, nodeQOSEnsura
 // Update takes the representation of a nodeQOSEnsurancePolicy and updates it. Returns the server's representation of the nodeQOSEnsurancePolicy, and an error, if there is any.
 func (c *FakeNodeQOSEnsurancePolicies) Update(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.UpdateOptions) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(nodeqosensurancepoliciesResource, c.ns, nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootUpdateAction(nodeqosensurancepoliciesResource, nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
 	if obj == nil {
 		return nil, err
 	}
@@ -90,8 +84,7 @@ func (c *FakeNodeQOSEnsurancePolicies) Update(ctx context.Context, nodeQOSEnsura
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (c *FakeNodeQOSEnsurancePolicies) UpdateStatus(ctx context.Context, nodeQOSEnsurancePolicy *v1alpha1.NodeQOSEnsurancePolicy, opts v1.UpdateOptions) (*v1alpha1.NodeQOSEnsurancePolicy, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(nodeqosensurancepoliciesResource, "status", c.ns, nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootUpdateSubresourceAction(nodeqosensurancepoliciesResource, "status", nodeQOSEnsurancePolicy), &v1alpha1.NodeQOSEnsurancePolicy{})
 	if obj == nil {
 		return nil, err
 	}
@@ -101,14 +94,13 @@ func (c *FakeNodeQOSEnsurancePolicies) UpdateStatus(ctx context.Context, nodeQOS
 // Delete takes name of the nodeQOSEnsurancePolicy and deletes it. Returns an error if one occurs.
 func (c *FakeNodeQOSEnsurancePolicies) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(nodeqosensurancepoliciesResource, c.ns, name), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootDeleteAction(nodeqosensurancepoliciesResource, name), &v1alpha1.NodeQOSEnsurancePolicy{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeNodeQOSEnsurancePolicies) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(nodeqosensurancepoliciesResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(nodeqosensurancepoliciesResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.NodeQOSEnsurancePolicyList{})
 	return err
@@ -117,8 +109,7 @@ func (c *FakeNodeQOSEnsurancePolicies) DeleteCollection(ctx context.Context, opt
 // Patch applies the patch and returns the patched nodeQOSEnsurancePolicy.
 func (c *FakeNodeQOSEnsurancePolicies) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodeQOSEnsurancePolicy, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(nodeqosensurancepoliciesResource, c.ns, name, pt, data, subresources...), &v1alpha1.NodeQOSEnsurancePolicy{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(nodeqosensurancepoliciesResource, name, pt, data, subresources...), &v1alpha1.NodeQOSEnsurancePolicy{})
 	if obj == nil {
 		return nil, err
 	}
