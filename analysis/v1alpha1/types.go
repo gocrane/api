@@ -1,8 +1,6 @@
 package v1alpha1
 
 import (
-	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
-	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -61,13 +59,8 @@ type RecommendationSpec struct {
 
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
-	// EffectiveHPA is the recommendation for effective HPA.
 	// +optional
-	EffectiveHPA *EffectiveHorizontalPodAutoscalerRecommendation `json:"effectiveHPA,omitempty"`
-
-	// ResourceRequest is the recommendation for containers' cpu/mem requests.
-	// +optional
-	ResourceRequest *ResourceRequestRecommendation `json:"resourceRequest,omitempty"`
+	RecommendedValue string `json:"recommendedValue,omitempty"`
 
 	// Conditions is an array of current recommendation conditions.
 	// +optional
@@ -80,35 +73,6 @@ type RecommendationStatus struct {
 	// LastSuccessfulTime is the last time the recommendation successfully completed.
 	// +optional
 	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
-}
-
-type EffectiveHorizontalPodAutoscalerRecommendation struct {
-	// +optional
-	MinReplicas *int32 `json:"minReplicas,omitempty"`
-
-	// +optional
-	MaxReplicas *int32 `json:"maxReplicas,omitempty"`
-
-	// +optional
-	Metrics []autoscalingv2.MetricSpec `json:"metrics,omitempty"`
-
-	// +optional
-	Prediction *autoscalingapi.Prediction `json:"prediction,omitempty"`
-}
-
-type ResourceRequestRecommendation struct {
-	// +optional
-	Containers []ContainerRecommendation `json:"containers,omitempty"`
-}
-
-type ContainerRecommendation struct {
-	// +required
-	// +kubebuilder:validation:Required
-	ContainerName string `json:"containerName"`
-
-	// +required
-	// +kubebuilder:validation:Required
-	Target corev1.ResourceList `json:"target"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
