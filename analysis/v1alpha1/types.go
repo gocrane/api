@@ -60,7 +60,7 @@ type RecommendationSpec struct {
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
 	// +optional
-	RecommendedValue string `json:"recommendedValue"`
+	RecommendedValue string `json:"recommendedValue,omitempty"`
 
 	// Conditions is an array of current recommendation conditions.
 	// +optional
