@@ -332,7 +332,10 @@ func (in *RecommendationStatus) DeepCopyInto(out *RecommendationStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
-	in.LastUpdateTime.DeepCopyInto(&out.LastUpdateTime)
+	if in.LastUpdateTime != nil {
+		in, out := &in.LastUpdateTime, &out.LastUpdateTime
+		*out = (*in).DeepCopy()
+	}
 	return
 }
 
