@@ -50,11 +50,6 @@ type RecommendationSpec struct {
 	// the default CompletionStrategy is Once.
 	// +optional
 	CompletionStrategy CompletionStrategy `json:"completionStrategy,omitempty"`
-
-	// timeoutSeconds specifies the seconds of one recommendation process.
-	// Default value is 600(for 10 minutes).
-	// +optional
-	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -69,10 +64,6 @@ type RecommendationStatus struct {
 	// LastUpdateTime is last time we got an update on this status.
 	// +optional
 	LastUpdateTime metav1.Time `json:"lastUpdateTime,omitempty"`
-
-	// LastSuccessfulTime is the last time the recommendation successfully completed.
-	// +optional
-	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -136,9 +127,9 @@ type CompletionStrategy struct {
 
 // AnalyticsStatus represents the current state of an analytics item.
 type AnalyticsStatus struct {
-	// LastSuccessfulTime is the last time the recommendation successfully completed.
+	// LastUpdateTime is the last time the status updated.
 	// +optional
-	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
+	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
 
 	// Conditions is an array of current analytics conditions.
 	// +optional
