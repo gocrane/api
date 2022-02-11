@@ -45,7 +45,7 @@ type EffectiveHorizontalPodAutoscalerSpec struct {
 	// If not set, when ScaleStrategy is setting to Preview, it will just stop scaling
 	// +optional
 	// +kubebuilder:validation:Type=integer
-	SpecificReplicas *int32 `json:"specificReplicas"`
+	SpecificReplicas *int32 `json:"specificReplicas,omitempty"`
 	// metrics contains the specifications for which to use to calculate the
 	// desired replica count (the maximum replica count across all metrics will
 	// be used).  The desired replica count is calculated multiplying the
