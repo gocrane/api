@@ -16,6 +16,10 @@ func (c *FakeAutoscalingV1alpha1) EffectiveHorizontalPodAutoscalers(namespace st
 	return &FakeEffectiveHorizontalPodAutoscalers{c, namespace}
 }
 
+func (c *FakeAutoscalingV1alpha1) EffectiveVerticalPodAutoscalers(namespace string) v1alpha1.EffectiveVerticalPodAutoscalerInterface {
+	return &FakeEffectiveVerticalPodAutoscalers{c, namespace}
+}
+
 func (c *FakeAutoscalingV1alpha1) Substitutes(namespace string) v1alpha1.SubstituteInterface {
 	return &FakeSubstitutes{c, namespace}
 }

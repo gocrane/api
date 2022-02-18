@@ -10,6 +10,14 @@ type EffectiveHorizontalPodAutoscalerListerExpansion interface{}
 // EffectiveHorizontalPodAutoscalerNamespaceLister.
 type EffectiveHorizontalPodAutoscalerNamespaceListerExpansion interface{}
 
+// EffectiveVerticalPodAutoscalerListerExpansion allows custom methods to be added to
+// EffectiveVerticalPodAutoscalerLister.
+type EffectiveVerticalPodAutoscalerListerExpansion interface{}
+
+// EffectiveVerticalPodAutoscalerNamespaceListerExpansion allows custom methods to be added to
+// EffectiveVerticalPodAutoscalerNamespaceLister.
+type EffectiveVerticalPodAutoscalerNamespaceListerExpansion interface{}
+
 // SubstituteListerExpansion allows custom methods to be added to
 // SubstituteLister.
 type SubstituteListerExpansion interface{}
