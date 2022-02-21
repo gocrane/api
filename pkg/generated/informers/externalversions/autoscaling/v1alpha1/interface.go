@@ -10,6 +10,8 @@ import (
 type Interface interface {
 	// EffectiveHorizontalPodAutoscalers returns a EffectiveHorizontalPodAutoscalerInformer.
 	EffectiveHorizontalPodAutoscalers() EffectiveHorizontalPodAutoscalerInformer
+	// EffectiveVerticalPodAutoscalers returns a EffectiveVerticalPodAutoscalerInformer.
+	EffectiveVerticalPodAutoscalers() EffectiveVerticalPodAutoscalerInformer
 	// Substitutes returns a SubstituteInformer.
 	Substitutes() SubstituteInformer
 }
@@ -28,6 +30,11 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 // EffectiveHorizontalPodAutoscalers returns a EffectiveHorizontalPodAutoscalerInformer.
 func (v *version) EffectiveHorizontalPodAutoscalers() EffectiveHorizontalPodAutoscalerInformer {
 	return &effectiveHorizontalPodAutoscalerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// EffectiveVerticalPodAutoscalers returns a EffectiveVerticalPodAutoscalerInformer.
+func (v *version) EffectiveVerticalPodAutoscalers() EffectiveVerticalPodAutoscalerInformer {
+	return &effectiveVerticalPodAutoscalerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // Substitutes returns a SubstituteInformer.

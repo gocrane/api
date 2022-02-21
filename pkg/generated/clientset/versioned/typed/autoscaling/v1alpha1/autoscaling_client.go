@@ -11,6 +11,7 @@ import (
 type AutoscalingV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	EffectiveHorizontalPodAutoscalersGetter
+	EffectiveVerticalPodAutoscalersGetter
 	SubstitutesGetter
 }
 
@@ -21,6 +22,10 @@ type AutoscalingV1alpha1Client struct {
 
 func (c *AutoscalingV1alpha1Client) EffectiveHorizontalPodAutoscalers(namespace string) EffectiveHorizontalPodAutoscalerInterface {
 	return newEffectiveHorizontalPodAutoscalers(c, namespace)
+}
+
+func (c *AutoscalingV1alpha1Client) EffectiveVerticalPodAutoscalers(namespace string) EffectiveVerticalPodAutoscalerInterface {
+	return newEffectiveVerticalPodAutoscalers(c, namespace)
 }
 
 func (c *AutoscalingV1alpha1Client) Substitutes(namespace string) SubstituteInterface {

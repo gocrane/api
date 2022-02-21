@@ -199,3 +199,4 @@ type SubstituteList struct {
 
 	Items []Substitute `json:"items"`
 }
+
