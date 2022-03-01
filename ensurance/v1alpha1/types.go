@@ -81,7 +81,8 @@ type NodeQOSEnsurancePolicy struct {
 // NodeQOSEnsurancePolicySpec defines the desired status of NodeQOSEnsurancePolicy
 type NodeQOSEnsurancePolicySpec struct {
 	// Selector is a label query over pods that should match the policy
-	Selector metav1.LabelSelector `json:"selector,omitempty"`
+	// +optional
+	Selector *metav1.LabelSelector `json:"selector,omitempty"`
 
 	// NodeQualityProbe defines the way to probe a node
 	NodeQualityProbe NodeQualityProbe `json:"nodeQualityProbe,omitempty"`
@@ -99,14 +100,10 @@ type NodeQualityProbe struct {
 	// +optional
 	NodeLocalGet *NodeLocalGet `json:"nodeLocalGet,omitempty"`
 
-	// InitialDelaySeconds is the init delay time for handler,
-	// the default InitialDelaySeconds is 5s
-	// +optional
-	InitialDelaySeconds *int32 `json:"initialDelaySeconds,omitempty"`
-
 	// TimeoutSeconds is the timeout for request
-	// The default value is 1 seconds
+	// The default value is 10 seconds
 	// +optional
+	// +kubebuilder:default=10
 	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
 }
 
@@ -115,10 +112,6 @@ type NodeLocalGet struct {
 	// +optional
 	// +kubebuilder:default=60
 	LocalCacheTTLSeconds *int32 `json:"localCacheTTLSeconds,omitempty"`
-	// default is 60s
-	// +optional
-	// +kubebuilder:default=60
-	MaxHousekeepingIntervalSeconds *int32 `json:"maxHousekeepingIntervalSeconds,omitempty"`
 }
 
 // ObjectiveEnsurance defines the policy that
@@ -130,12 +123,14 @@ type ObjectiveEnsurance struct {
 	MetricRule *MetricRule `json:"metricRule,omitempty"`
 
 	// How many times the rule is reach, to trigger avoidance action, default is 1
+	// +optional
 	// +kubebuilder:default=1
-	AvoidanceThreshold int32 `json:"avoidanceThreshold,omitempty"`
+	AvoidanceThreshold *int32 `json:"avoidanceThreshold,omitempty"`
 
 	// How many times the rule can restore, default is 1
+	// +optional
 	// +kubebuilder:default=1
-	RestoreThreshold int32 `json:"restoreThreshold,omitempty"`
+	RestoreThreshold *int32 `json:"restoreThreshold,omitempty"`
 
 	// Avoidance action when be triggered
 	AvoidanceActionName string `json:"actionName"`
@@ -157,7 +152,7 @@ type MetricRule struct {
 	// +optional
 	Selector *metav1.LabelSelector `json:"selector,omitempty"`
 	// Value is the target value of the metric (as a quantity).
-	Value *resource.Quantity `json:"value,omitempty"`
+	Value resource.Quantity `json:"value,omitempty"`
 }
 
 // NodeQOSEnsurancePolicyStatus defines the observed status of NodeQOSEnsurancePolicy
@@ -178,7 +173,7 @@ type AvoidanceActionSpec struct {
 	// default is 300s
 	// +optional
 	// +kubebuilder:default=300
-	CoolDownSeconds *int64 `json:"coolDownSeconds,omitempty"`
+	CoolDownSeconds *int32 `json:"coolDownSeconds,omitempty"`
 
 	// Throttle describes the throttling action
 	// +optional
@@ -191,6 +186,7 @@ type AvoidanceActionSpec struct {
 	// Description is an arbitrary string that usually provides guidelines on
 	// when this action should be used.
 	// +optional
+	// +kubebuilder:validation:MaxLength=1024
 	Description string `json:"description,omitempty"`
 }
 
@@ -203,29 +199,23 @@ type ThrottleAction struct {
 }
 
 type CPUThrottle struct {
-	// PeriodSeconds is the interval seconds for each throttle action
-	// the default PeriodSeconds is 10s
+	// MinCPURatio is the min of cpu ratio for low level pods.
+	// example: the pod limit is 4096, ratio is 10, the minimum is 409.
+	// MinCPURatio range [0,100]
 	// +optional
-	// +kubebuilder:default=10
-	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Maximum=100
+	MinCPURatio int32 `json:"minCPURatio,omitempty"`
 
-	// MinCPURatio is the min of cpu ratio for low level pods
-	//example: the pod limit is 4096, ratio is 10, the min is 409
+	// StepCPURatio is the step of cpu share and limit for once down-size.
+	// StepCPURatio range [0,100]
 	// +optional
-	MinCPURatio uint64 `json:"minCPURatio,omitempty"`
-
-	// StepCPURatio is the step of cpu share and limit for once down-size (1-100)
-	// +optional
-	StepCPURatio uint64 `json:"stepCPURatio,omitempty"`
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Maximum=100
+	StepCPURatio int32 `json:"stepCPURatio,omitempty"`
 }
 
 type MemoryThrottle struct {
-	// PeriodSeconds is the interval seconds for each throttle action
-	// the default PeriodSeconds is 10s
-	// +optional
-	// +kubebuilder:default=10
-	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
-
 	// ForceGC means force gc page cache for pods with low priority
 	// +optional
 	ForceGC bool `json:"forceGC,omitempty"`
@@ -235,6 +225,7 @@ type EvictionAction struct {
 	// TerminationGracePeriodSeconds is the duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
 	// Value must be non-negative integer. The value zero indicates delete immediately.
 	// +optional
+	// +kubebuilder:default=30
 	TerminationGracePeriodSeconds *int32 `json:"terminationGracePeriodSeconds,omitempty"`
 }
 
