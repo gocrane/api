@@ -31,10 +31,12 @@ type QualityProbe struct {
 	// HTTPGet specifies the http request to perform.
 	// +optional
 	HTTPGet *corev1.HTTPGetAction `json:"httpGet,omitempty"`
-	// Init delay time for handler, default is 5s
+	// Init delay time for handler
+	// Defaults to 5
 	// +optional
 	InitialDelaySeconds *int32 `json:"initialDelaySeconds,omitempty"`
-	// Timeout for request, default is 0, instead not timeout
+	// Timeout for request.
+	// Defaults to 0, instead not timeout
 	// +optional
 	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
 }
@@ -101,17 +103,16 @@ type NodeQualityProbe struct {
 	NodeLocalGet *NodeLocalGet `json:"nodeLocalGet,omitempty"`
 
 	// TimeoutSeconds is the timeout for request
-	// The default value is 10 seconds
 	// +optional
-	// +kubebuilder:default=10
-	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
+	TimeoutSeconds int32 `json:"timeoutSeconds,omitempty"`
 }
 
 type NodeLocalGet struct {
-	// the default LocalCacheTTLSeconds is 60s
+	// LocalCacheTTLSeconds is the cache expired time.
+	// Defaults to 60
 	// +optional
 	// +kubebuilder:default=60
-	LocalCacheTTLSeconds *int32 `json:"localCacheTTLSeconds,omitempty"`
+	LocalCacheTTLSeconds int32 `json:"localCacheTTLSeconds,omitempty"`
 }
 
 // ObjectiveEnsurance defines the policy that
@@ -122,21 +123,23 @@ type ObjectiveEnsurance struct {
 	// Metric rule define the metric identifier and target
 	MetricRule *MetricRule `json:"metricRule,omitempty"`
 
-	// How many times the rule is reach, to trigger avoidance action, default is 1
+	// How many times the rule is reach, to trigger avoidance action.
+	// Defaults to 1. Minimum value is 1.
 	// +optional
 	// +kubebuilder:default=1
-	AvoidanceThreshold *int32 `json:"avoidanceThreshold,omitempty"`
+	AvoidanceThreshold int32 `json:"avoidanceThreshold,omitempty"`
 
-	// How many times the rule can restore, default is 1
+	// How many times the rule can restore.
+	// Defaults to 1. Minimum value is 1.
 	// +optional
 	// +kubebuilder:default=1
-	RestoreThreshold *int32 `json:"restoreThreshold,omitempty"`
+	RestoreThreshold int32 `json:"restoreThreshold,omitempty"`
 
-	// Avoidance action when be triggered
+	// Avoidance action to be executed when the rule triggered
 	AvoidanceActionName string `json:"actionName"`
 
-	// Action only preview, not to do the real action
-	// the default AvoidanceActionStrategy is None.
+	// Action only preview, not to do the real action.
+	// Default AvoidanceActionStrategy is None.
 	// +optional
 	// +kubebuilder:validation:Type=string
 	// +kubebuilder:validation:Enum=None;Preview
@@ -169,11 +172,11 @@ type NodeQOSEnsurancePolicyList struct {
 }
 
 type AvoidanceActionSpec struct {
-	// CoolDownSeconds is the seconds for cool down when do avoidance
-	// default is 300s
+	// CoolDownSeconds is the seconds for cool down when do avoidance.
+	// Defaults to 300. Minimum value is 1.
 	// +optional
 	// +kubebuilder:default=300
-	CoolDownSeconds *int32 `json:"coolDownSeconds,omitempty"`
+	CoolDownSeconds int32 `json:"coolDownSeconds,omitempty"`
 
 	// Throttle describes the throttling action
 	// +optional
@@ -199,8 +202,8 @@ type ThrottleAction struct {
 }
 
 type CPUThrottle struct {
-	// MinCPURatio is the min of cpu ratio for low level pods.
-	// example: the pod limit is 4096, ratio is 10, the minimum is 409.
+	// MinCPURatio is the min of cpu ratio for low level pods,
+	// for example: the pod limit is 4096, ratio is 10, the minimum is 409.
 	// MinCPURatio range [0,100]
 	// +optional
 	// +kubebuilder:validation:Minimum=0
@@ -209,7 +212,6 @@ type CPUThrottle struct {
 
 	// StepCPURatio is the step of cpu share and limit for once down-size.
 	// StepCPURatio range [0,100]
-	// +optional
 	// +kubebuilder:validation:Minimum=0
 	// +kubebuilder:validation:Maximum=100
 	StepCPURatio int32 `json:"stepCPURatio,omitempty"`
@@ -223,9 +225,10 @@ type MemoryThrottle struct {
 
 type EvictionAction struct {
 	// TerminationGracePeriodSeconds is the duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
+	// If this value is nil, the pod's terminationGracePeriodSeconds will be used.
+	// Otherwise, this value overrides the value provided by the pod spec.
 	// Value must be non-negative integer. The value zero indicates delete immediately.
 	// +optional
-	// +kubebuilder:default=30
 	TerminationGracePeriodSeconds *int32 `json:"terminationGracePeriodSeconds,omitempty"`
 }
 
