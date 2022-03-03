@@ -3,7 +3,6 @@ package v1alpha1
 import (
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	vpatypes "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
 )
@@ -112,10 +111,9 @@ type ResourceName string
 type ResourceMetricList map[ResourceName]ResourceMetric
 
 type ResourceMetric struct {
-	// averageValue is the target value of the average of the
-	// metric across all relevant pods (as a quantity)
+	// Utilization is the target value of resource recommended ratio.
 	// +optional
-	AverageValue *resource.Quantity `json:"averageValue,omitempty"`
+	Utilization *int32 `json:"utilization,omitempty"`
 }
 
 // ResourceEstimator defines the spec for resource estimator
