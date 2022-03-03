@@ -127,15 +127,11 @@ spec:
                             metricThresholds:
                               additionalProperties:
                                 properties:
-                                  averageValue:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    description: averageValue is the target value
-                                      of the average of the metric across all relevant
-                                      pods (as a quantity)
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
+                                  utilization:
+                                    description: Utilization is the target value of
+                                      resource recommended ratio.
+                                    format: int32
+                                    type: integer
                                 type: object
                               description: MetricThresholds defines resource usages
                                 thresholds for vertical scaling. Only if actual usage
@@ -169,15 +165,11 @@ spec:
                             metricThresholds:
                               additionalProperties:
                                 properties:
-                                  averageValue:
-                                    anyOf:
-                                    - type: integer
-                                    - type: string
-                                    description: averageValue is the target value
-                                      of the average of the metric across all relevant
-                                      pods (as a quantity)
-                                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                    x-kubernetes-int-or-string: true
+                                  utilization:
+                                    description: Utilization is the target value of
+                                      resource recommended ratio.
+                                    format: int32
+                                    type: integer
                                 type: object
                               description: MetricThresholds defines resource usages
                                 thresholds for vertical scaling. Only if actual usage
