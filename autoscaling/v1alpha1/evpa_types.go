@@ -145,12 +145,9 @@ type EffectiveVerticalPodAutoscalerStatus struct {
 	// +optional
 	Recommendation *vpatypes.RecommendedPodResources `json:"recommendation,omitempty"`
 
-	// Conditions is the set of conditions required for this autoscaler to scale its target,
-	// and indicates whether or not those conditions are met.
+	// Conditions is an array of current autoscaler conditions.
 	// +optional
-	// +patchMergeKey=type
-	// +patchStrategy=merge
-	Conditions []vpatypes.VerticalPodAutoscalerCondition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type"`
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // ResourceEstimatorStatus contains state for resource estimator
