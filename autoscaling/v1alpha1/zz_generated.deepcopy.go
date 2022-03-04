@@ -391,7 +391,7 @@ func (in *EffectiveVerticalPodAutoscalerStatus) DeepCopyInto(out *EffectiveVerti
 	}
 	if in.Conditions != nil {
 		in, out := &in.Conditions, &out.Conditions
-		*out = make([]autoscalingk8siov1.VerticalPodAutoscalerCondition, len(*in))
+		*out = make([]metav1.Condition, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
