@@ -19,6 +19,14 @@ const (
 	CompletionStrategyOnce       CompletionStrategyType = "Once"
 )
 
+type AdoptionType string
+
+const (
+	AdoptionTypeStatus              AdoptionType = "Status"
+	AdoptionTypeStatusAndAnnotation AdoptionType = "StatusAndAnnotation"
+	AdoptionTypeAuto                AdoptionType = "Auto"
+)
+
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
@@ -50,6 +58,14 @@ type RecommendationSpec struct {
 	// the default CompletionStrategy is Once.
 	// +optional
 	CompletionStrategy CompletionStrategy `json:"completionStrategy,omitempty"`
+
+	// AdoptionType indicate how to adopt recommendation value to target.
+	// the default AdoptionType is StatusAndAnnotation.
+	// +optional
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=Status;StatusAndAnnotation;Auto
+	// +kubebuilder:default=StatusAndAnnotation
+	AdoptionType AdoptionType `json:"adoptionType,omitempty"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -175,7 +191,7 @@ type AnalyticsList struct {
 
 // ConfigSet represents the configuration set for recommendation.
 type ConfigSet struct {
-	metav1.TypeMeta   `json:",inline"`
+	metav1.TypeMeta `json:",inline"`
 	// +optional
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
@@ -190,11 +206,11 @@ type Config struct {
 
 type Target struct {
 	// +optional
-	Namespace  string `json:"namespace,omitempty"`
+	Namespace string `json:"namespace,omitempty"`
 	// +optional
-	Kind       string `json:"kind,omitempty"`
+	Kind string `json:"kind,omitempty"`
 	// +optional
-	Name       string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
