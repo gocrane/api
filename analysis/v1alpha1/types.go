@@ -158,7 +158,7 @@ type AnalyticsStatus struct {
 }
 
 type RecommendationReference struct {
-	corev1.ObjectReference
+	corev1.ObjectReference `json:",inline"`
 
 	// +optional
 	TargetRef corev1.ObjectReference `json:"targetRef"`
