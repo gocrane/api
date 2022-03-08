@@ -154,7 +154,14 @@ type AnalyticsStatus struct {
 	// Recommendations is a list of pointers to recommendations that are updated by this analytics.
 	// +optional
 	// +listType=atomic
-	Recommendations []corev1.ObjectReference `json:"recommendations,omitempty"`
+	Recommendations []RecommendationReference `json:"recommendations,omitempty"`
+}
+
+type RecommendationReference struct {
+	corev1.ObjectReference `json:",inline"`
+
+	// +optional
+	TargetRef corev1.ObjectReference `json:"targetRef"`
 }
 
 // ResourceSelector describes how the resources will be selected.
