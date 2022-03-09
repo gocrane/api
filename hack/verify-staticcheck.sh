@@ -9,7 +9,7 @@ GOLANGCI_LINT_VER="v1.43.0"
 cd "${REPO_ROOT}"
 source "hack/util.sh"
 util::install_tools ${GOLANGCI_LINT_PKG} ${GOLANGCI_LINT_VER}
-if golangci-lint run --timeout=15m; then
+if golangci-lint run --timeout=20m; then
   echo 'Congratulations!  All Go source files have passed staticcheck.'
 else
   echo # print one empty line, separate from warning messages.
