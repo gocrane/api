@@ -14,20 +14,20 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-// FakeAnalyticses implements AnalyticsInterface
-type FakeAnalyticses struct {
+// FakeAnalytics implements AnalyticsInterface
+type FakeAnalytics struct {
 	Fake *FakeAnalysisV1alpha1
 	ns   string
 }
 
-var analyticsesResource = schema.GroupVersionResource{Group: "analysis.crane.io", Version: "v1alpha1", Resource: "analyticses"}
+var analyticsResource = schema.GroupVersionResource{Group: "analysis.crane.io", Version: "v1alpha1", Resource: "analytics"}
 
-var analyticsesKind = schema.GroupVersionKind{Group: "analysis.crane.io", Version: "v1alpha1", Kind: "Analytics"}
+var analyticsKind = schema.GroupVersionKind{Group: "analysis.crane.io", Version: "v1alpha1", Kind: "Analytics"}
 
 // Get takes name of the analytics, and returns the corresponding analytics object, and an error if there is any.
-func (c *FakeAnalyticses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Analytics, err error) {
+func (c *FakeAnalytics) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Analytics, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(analyticsesResource, c.ns, name), &v1alpha1.Analytics{})
+		Invokes(testing.NewGetAction(analyticsResource, c.ns, name), &v1alpha1.Analytics{})
 
 	if obj == nil {
 		return nil, err
@@ -35,10 +35,10 @@ func (c *FakeAnalyticses) Get(ctx context.Context, name string, options v1.GetOp
 	return obj.(*v1alpha1.Analytics), err
 }
 
-// List takes label and field selectors, and returns the list of Analyticses that match those selectors.
-func (c *FakeAnalyticses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.AnalyticsList, err error) {
+// List takes label and field selectors, and returns the list of Analytics that match those selectors.
+func (c *FakeAnalytics) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.AnalyticsList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(analyticsesResource, analyticsesKind, c.ns, opts), &v1alpha1.AnalyticsList{})
+		Invokes(testing.NewListAction(analyticsResource, analyticsKind, c.ns, opts), &v1alpha1.AnalyticsList{})
 
 	if obj == nil {
 		return nil, err
@@ -57,17 +57,17 @@ func (c *FakeAnalyticses) List(ctx context.Context, opts v1.ListOptions) (result
 	return list, err
 }
 
-// Watch returns a watch.Interface that watches the requested analyticses.
-func (c *FakeAnalyticses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested analytics.
+func (c *FakeAnalytics) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(analyticsesResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchAction(analyticsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a analytics and creates it.  Returns the server's representation of the analytics, and an error, if there is any.
-func (c *FakeAnalyticses) Create(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.CreateOptions) (result *v1alpha1.Analytics, err error) {
+func (c *FakeAnalytics) Create(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.CreateOptions) (result *v1alpha1.Analytics, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(analyticsesResource, c.ns, analytics), &v1alpha1.Analytics{})
+		Invokes(testing.NewCreateAction(analyticsResource, c.ns, analytics), &v1alpha1.Analytics{})
 
 	if obj == nil {
 		return nil, err
@@ -76,9 +76,9 @@ func (c *FakeAnalyticses) Create(ctx context.Context, analytics *v1alpha1.Analyt
 }
 
 // Update takes the representation of a analytics and updates it. Returns the server's representation of the analytics, and an error, if there is any.
-func (c *FakeAnalyticses) Update(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
+func (c *FakeAnalytics) Update(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(analyticsesResource, c.ns, analytics), &v1alpha1.Analytics{})
+		Invokes(testing.NewUpdateAction(analyticsResource, c.ns, analytics), &v1alpha1.Analytics{})
 
 	if obj == nil {
 		return nil, err
@@ -88,9 +88,9 @@ func (c *FakeAnalyticses) Update(ctx context.Context, analytics *v1alpha1.Analyt
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeAnalyticses) UpdateStatus(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (*v1alpha1.Analytics, error) {
+func (c *FakeAnalytics) UpdateStatus(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (*v1alpha1.Analytics, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(analyticsesResource, "status", c.ns, analytics), &v1alpha1.Analytics{})
+		Invokes(testing.NewUpdateSubresourceAction(analyticsResource, "status", c.ns, analytics), &v1alpha1.Analytics{})
 
 	if obj == nil {
 		return nil, err
@@ -99,25 +99,25 @@ func (c *FakeAnalyticses) UpdateStatus(ctx context.Context, analytics *v1alpha1.
 }
 
 // Delete takes name of the analytics and deletes it. Returns an error if one occurs.
-func (c *FakeAnalyticses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeAnalytics) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(analyticsesResource, c.ns, name), &v1alpha1.Analytics{})
+		Invokes(testing.NewDeleteAction(analyticsResource, c.ns, name), &v1alpha1.Analytics{})
 
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeAnalyticses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(analyticsesResource, c.ns, listOpts)
+func (c *FakeAnalytics) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(analyticsResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.AnalyticsList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched analytics.
-func (c *FakeAnalyticses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Analytics, err error) {
+func (c *FakeAnalytics) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Analytics, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(analyticsesResource, c.ns, name, pt, data, subresources...), &v1alpha1.Analytics{})
+		Invokes(testing.NewPatchSubresourceAction(analyticsResource, c.ns, name, pt, data, subresources...), &v1alpha1.Analytics{})
 
 	if obj == nil {
 		return nil, err

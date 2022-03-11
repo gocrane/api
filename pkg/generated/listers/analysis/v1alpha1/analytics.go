@@ -9,14 +9,14 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-// AnalyticsLister helps list Analyticses.
+// AnalyticsLister helps list Analytics.
 // All objects returned here must be treated as read-only.
 type AnalyticsLister interface {
-	// List lists all Analyticses in the indexer.
+	// List lists all Analytics in the indexer.
 	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.Analytics, err error)
-	// Analyticses returns an object that can list and get Analyticses.
-	Analyticses(namespace string) AnalyticsNamespaceLister
+	// Analytics returns an object that can list and get Analytics.
+	Analytics(namespace string) AnalyticsNamespaceLister
 	AnalyticsListerExpansion
 }
 
@@ -30,7 +30,7 @@ func NewAnalyticsLister(indexer cache.Indexer) AnalyticsLister {
 	return &analyticsLister{indexer: indexer}
 }
 
-// List lists all Analyticses in the indexer.
+// List lists all Analytics in the indexer.
 func (s *analyticsLister) List(selector labels.Selector) (ret []*v1alpha1.Analytics, err error) {
 	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
 		ret = append(ret, m.(*v1alpha1.Analytics))
@@ -38,15 +38,15 @@ func (s *analyticsLister) List(selector labels.Selector) (ret []*v1alpha1.Analyt
 	return ret, err
 }
 
-// Analyticses returns an object that can list and get Analyticses.
-func (s *analyticsLister) Analyticses(namespace string) AnalyticsNamespaceLister {
+// Analytics returns an object that can list and get Analytics.
+func (s *analyticsLister) Analytics(namespace string) AnalyticsNamespaceLister {
 	return analyticsNamespaceLister{indexer: s.indexer, namespace: namespace}
 }
 
-// AnalyticsNamespaceLister helps list and get Analyticses.
+// AnalyticsNamespaceLister helps list and get Analytics.
 // All objects returned here must be treated as read-only.
 type AnalyticsNamespaceLister interface {
-	// List lists all Analyticses in the indexer for a given namespace.
+	// List lists all Analytics in the indexer for a given namespace.
 	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.Analytics, err error)
 	// Get retrieves the Analytics from the indexer for a given namespace and name.
@@ -62,7 +62,7 @@ type analyticsNamespaceLister struct {
 	namespace string
 }
 
-// List lists all Analyticses in the indexer for a given namespace.
+// List lists all Analytics in the indexer for a given namespace.
 func (s analyticsNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.Analytics, err error) {
 	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
 		ret = append(ret, m.(*v1alpha1.Analytics))

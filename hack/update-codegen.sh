@@ -16,7 +16,15 @@ CODEGEN_PKG=${CODEGEN_PKG:-$(
   ls -d -1 ./vendor/k8s.io/code-generator
 )}
 
-bash "${CODEGEN_PKG}"/generate-groups.sh "all" \
+bash "${CODEGEN_PKG}"/generate-groups.sh "client,lister,informer" \
+  github.com/gocrane/api/pkg/generated \
+  github.com/gocrane/api \
+  "autoscaling:v1alpha1 ensurance:v1alpha1 prediction:v1alpha1 analysis:v1alpha1" \
+  --output-base "$SCRIPT_ROOT" \
+  --go-header-file "${SCRIPT_ROOT}/hack/boilerplate/boilerplate.go.txt" \
+  --plural-exceptions "Analytics:Analytics"
+
+bash "${CODEGEN_PKG}"/generate-groups.sh "deepcopy" \
   github.com/gocrane/api/pkg/generated \
   github.com/gocrane/api \
   "autoscaling:v1alpha1 ensurance:v1alpha1 prediction:v1alpha1 analysis:v1alpha1" \
