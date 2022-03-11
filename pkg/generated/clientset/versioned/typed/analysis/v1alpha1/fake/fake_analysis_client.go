@@ -12,8 +12,8 @@ type FakeAnalysisV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeAnalysisV1alpha1) Analyticses(namespace string) v1alpha1.AnalyticsInterface {
-	return &FakeAnalyticses{c, namespace}
+func (c *FakeAnalysisV1alpha1) Analytics(namespace string) v1alpha1.AnalyticsInterface {
+	return &FakeAnalytics{c, namespace}
 }
 
 func (c *FakeAnalysisV1alpha1) ConfigSets(namespace string) v1alpha1.ConfigSetInterface {

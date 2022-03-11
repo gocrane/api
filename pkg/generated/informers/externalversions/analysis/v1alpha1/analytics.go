@@ -17,7 +17,7 @@ import (
 )
 
 // AnalyticsInformer provides access to a shared informer and lister for
-// Analyticses.
+// Analytics.
 type AnalyticsInformer interface {
 	Informer() cache.SharedIndexInformer
 	Lister() v1alpha1.AnalyticsLister
@@ -46,13 +46,13 @@ func NewFilteredAnalyticsInformer(client versioned.Interface, namespace string, 
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AnalysisV1alpha1().Analyticses(namespace).List(context.TODO(), options)
+				return client.AnalysisV1alpha1().Analytics(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AnalysisV1alpha1().Analyticses(namespace).Watch(context.TODO(), options)
+				return client.AnalysisV1alpha1().Analytics(namespace).Watch(context.TODO(), options)
 			},
 		},
 		&analysisv1alpha1.Analytics{},

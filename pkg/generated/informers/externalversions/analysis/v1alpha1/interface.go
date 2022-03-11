@@ -8,8 +8,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// Analyticses returns a AnalyticsInformer.
-	Analyticses() AnalyticsInformer
+	// Analytics returns a AnalyticsInformer.
+	Analytics() AnalyticsInformer
 	// ConfigSets returns a ConfigSetInformer.
 	ConfigSets() ConfigSetInformer
 	// Recommendations returns a RecommendationInformer.
@@ -27,8 +27,8 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// Analyticses returns a AnalyticsInformer.
-func (v *version) Analyticses() AnalyticsInformer {
+// Analytics returns a AnalyticsInformer.
+func (v *version) Analytics() AnalyticsInformer {
 	return &analyticsInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 

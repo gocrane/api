@@ -14,10 +14,10 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-// AnalyticsesGetter has a method to return a AnalyticsInterface.
+// AnalyticsGetter has a method to return a AnalyticsInterface.
 // A group's client should implement this interface.
-type AnalyticsesGetter interface {
-	Analyticses(namespace string) AnalyticsInterface
+type AnalyticsGetter interface {
+	Analytics(namespace string) AnalyticsInterface
 }
 
 // AnalyticsInterface has methods to work with Analytics resources.
@@ -34,26 +34,26 @@ type AnalyticsInterface interface {
 	AnalyticsExpansion
 }
 
-// analyticses implements AnalyticsInterface
-type analyticses struct {
+// analytics implements AnalyticsInterface
+type analytics struct {
 	client rest.Interface
 	ns     string
 }
 
-// newAnalyticses returns a Analyticses
-func newAnalyticses(c *AnalysisV1alpha1Client, namespace string) *analyticses {
-	return &analyticses{
+// newAnalytics returns a Analytics
+func newAnalytics(c *AnalysisV1alpha1Client, namespace string) *analytics {
+	return &analytics{
 		client: c.RESTClient(),
 		ns:     namespace,
 	}
 }
 
 // Get takes name of the analytics, and returns the corresponding analytics object, and an error if there is any.
-func (c *analyticses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Analytics, err error) {
+func (c *analytics) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Analytics, err error) {
 	result = &v1alpha1.Analytics{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
 		Do(ctx).
@@ -61,8 +61,8 @@ func (c *analyticses) Get(ctx context.Context, name string, options v1.GetOption
 	return
 }
 
-// List takes label and field selectors, and returns the list of Analyticses that match those selectors.
-func (c *analyticses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.AnalyticsList, err error) {
+// List takes label and field selectors, and returns the list of Analytics that match those selectors.
+func (c *analytics) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.AnalyticsList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -70,7 +70,7 @@ func (c *analyticses) List(ctx context.Context, opts v1.ListOptions) (result *v1
 	result = &v1alpha1.AnalyticsList{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Do(ctx).
@@ -78,8 +78,8 @@ func (c *analyticses) List(ctx context.Context, opts v1.ListOptions) (result *v1
 	return
 }
 
-// Watch returns a watch.Interface that watches the requested analyticses.
-func (c *analyticses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested analytics.
+func (c *analytics) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -87,18 +87,18 @@ func (c *analyticses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Int
 	opts.Watch = true
 	return c.client.Get().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Watch(ctx)
 }
 
 // Create takes the representation of a analytics and creates it.  Returns the server's representation of the analytics, and an error, if there is any.
-func (c *analyticses) Create(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.CreateOptions) (result *v1alpha1.Analytics, err error) {
+func (c *analytics) Create(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.CreateOptions) (result *v1alpha1.Analytics, err error) {
 	result = &v1alpha1.Analytics{}
 	err = c.client.Post().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(analytics).
 		Do(ctx).
@@ -107,11 +107,11 @@ func (c *analyticses) Create(ctx context.Context, analytics *v1alpha1.Analytics,
 }
 
 // Update takes the representation of a analytics and updates it. Returns the server's representation of the analytics, and an error, if there is any.
-func (c *analyticses) Update(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
+func (c *analytics) Update(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
 	result = &v1alpha1.Analytics{}
 	err = c.client.Put().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		Name(analytics.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(analytics).
@@ -122,11 +122,11 @@ func (c *analyticses) Update(ctx context.Context, analytics *v1alpha1.Analytics,
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *analyticses) UpdateStatus(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
+func (c *analytics) UpdateStatus(ctx context.Context, analytics *v1alpha1.Analytics, opts v1.UpdateOptions) (result *v1alpha1.Analytics, err error) {
 	result = &v1alpha1.Analytics{}
 	err = c.client.Put().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		Name(analytics.Name).
 		SubResource("status").
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -137,10 +137,10 @@ func (c *analyticses) UpdateStatus(ctx context.Context, analytics *v1alpha1.Anal
 }
 
 // Delete takes name of the analytics and deletes it. Returns an error if one occurs.
-func (c *analyticses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *analytics) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		Name(name).
 		Body(&opts).
 		Do(ctx).
@@ -148,14 +148,14 @@ func (c *analyticses) Delete(ctx context.Context, name string, opts v1.DeleteOpt
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *analyticses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *analytics) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	var timeout time.Duration
 	if listOpts.TimeoutSeconds != nil {
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Body(&opts).
@@ -164,11 +164,11 @@ func (c *analyticses) DeleteCollection(ctx context.Context, opts v1.DeleteOption
 }
 
 // Patch applies the patch and returns the patched analytics.
-func (c *analyticses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Analytics, err error) {
+func (c *analytics) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.Analytics, err error) {
 	result = &v1alpha1.Analytics{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
-		Resource("analyticses").
+		Resource("analytics").
 		Name(name).
 		SubResource(subresources...).
 		VersionedParams(&opts, scheme.ParameterCodec).
