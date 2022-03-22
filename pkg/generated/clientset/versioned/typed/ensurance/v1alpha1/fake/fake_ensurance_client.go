@@ -24,6 +24,10 @@ func (c *FakeEnsuranceV1alpha1) PodQOSEnsurancePolicies(namespace string) v1alph
 	return &FakePodQOSEnsurancePolicies{c, namespace}
 }
 
+func (c *FakeEnsuranceV1alpha1) ServicePolicies() v1alpha1.ServicePolicyInterface {
+	return &FakeServicePolicies{c}
+}
+
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
 func (c *FakeEnsuranceV1alpha1) RESTClient() rest.Interface {
