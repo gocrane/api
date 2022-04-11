@@ -1,0 +1,137 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.7.0
+  creationTimestamp: null
+  name: servicepolicies.ensurance.crane.io
+spec:
+  group: ensurance.crane.io
+  names:
+    kind: ServicePolicy
+    listKind: ServicePolicyList
+    plural: servicepolicies
+    shortNames:
+    - sp
+    singular: servicepolicy
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ServicePolicy defines the behaviours for the pods which have
+          the same priority class
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              avoidanceStrategy:
+                description: AvoidanceStrategy defines the avoidance strategy for
+                  pods
+                properties:
+                  allowEvict:
+                    type: boolean
+                  allowThrottle:
+                    type: boolean
+                type: object
+              priorityClassName:
+                description: PriorityClassName is the priority class name used in
+                  the pods.
+                type: string
+              resourceMutation:
+                description: ResourcetMutation defines if the service need to mutate
+                  resource to expand resource
+                properties:
+                  limitMutations:
+                    items:
+                      properties:
+                        mutatingResourceName:
+                          description: MutatingResourceName is the resource name mutate
+                          type: string
+                        resourceName:
+                          description: ResourceName is the origin resource name which
+                            to be mutated
+                          enum:
+                          - cpu
+                          - memory
+                          type: string
+                      type: object
+                    type: array
+                  requestMutations:
+                    items:
+                      properties:
+                        mutatingResourceName:
+                          description: MutatingResourceName is the resource name mutate
+                          type: string
+                        resourceName:
+                          description: ResourceName is the origin resource name which
+                            to be mutated
+                          enum:
+                          - cpu
+                          - memory
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              resourcePriority:
+                description: ResourcePriority defines the priority for various resources
+                properties:
+                  cpuPriority:
+                    description: CPUPriority define the cpu priority for the pods.
+                      CPUPriority range [0,7], 0 is the highest level. When the cpu
+                      resource is shortage, the low level pods would be throttled
+                    format: int32
+                    maximum: 7
+                    minimum: 0
+                    type: integer
+                  memoryPriority:
+                    description: MemoryPriority define the memory priority for the
+                      pods. MemoryPriority range [0,7], 0 is the highest level When
+                      the memory is shortage, the low level pods would priority be
+                      killed
+                    format: int32
+                    maximum: 7
+                    minimum: 0
+                    type: integer
+                  networkIOPriority:
+                    description: NetworkIOPriority define the network IO priority
+                      for the pods. NetworkIOPriority range [0,7], 0 is the highest
+                      level. When the network device is busy, the low level pods would
+                      be throttled
+                    format: int32
+                    maximum: 7
+                    minimum: 0
+                    type: integer
+                type: object
+            required:
+            - priorityClassName
+            type: object
+          status:
+            description: ServicePolicyStatus defines the desired status of ServicePolicy
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
