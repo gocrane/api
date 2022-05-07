@@ -124,6 +124,10 @@ type AnalyticsSpec struct {
 	// CompletionStrategy indicate how to complete an Analytics.
 	// +optional
 	CompletionStrategy CompletionStrategy `json:"completionStrategy"`
+
+	// Override Recommendation configs
+	// +optional
+	Config map[string]string `json:"config,omitempty"`
 }
 
 // CompletionStrategy presents how to complete a recommendation or a recommendation request.
@@ -151,17 +155,25 @@ type AnalyticsStatus struct {
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 
-	// Recommendations is a list of pointers to recommendations that are updated by this analytics.
+	// Recommendations is a list of RecommendationMission that run parallel.
 	// +optional
 	// +listType=atomic
-	Recommendations []RecommendationReference `json:"recommendations,omitempty"`
+	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
 }
 
-type RecommendationReference struct {
+type RecommendationMission struct {
 	corev1.ObjectReference `json:",inline"`
 
 	// +optional
 	TargetRef corev1.ObjectReference `json:"targetRef"`
+
+	// LastStartTime is last time we start a recommendation mission.
+	// +optional
+	LastStartTime *metav1.Time `json:"lastStartTime,omitempty"`
+
+	// Message presents the running message for this mission
+	// +optional
+	Message string `json:"message,omitempty"`
 }
 
 // ResourceSelector describes how the resources will be selected.
