@@ -8,7 +8,7 @@ import (
 type AnalysisType string
 
 const (
-	AnalysisTypeHPA      AnalysisType = "HPA"
+	AnalysisTypeReplicas AnalysisType = "Replicas"
 	AnalysisTypeResource AnalysisType = "Resource"
 )
 
