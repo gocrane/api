@@ -94,13 +94,14 @@ type FFTEstimator struct {
 }
 
 type Percentile struct {
-	Aggregated      bool            `json:"aggregated,omitempty"`
-	HistoryLength   string          `json:"historyLength,omitempty"`
-	SampleInterval  string          `json:"sampleInterval,omitempty"`
-	Histogram       HistogramConfig `json:"histogram,omitempty"`
-	MinSampleWeight string          `json:"minSampleWeight,omitempty"`
-	MarginFraction  string          `json:"marginFraction,omitempty"`
-	Percentile      string          `json:"percentile,omitempty"`
+	Aggregated        bool            `json:"aggregated,omitempty"`
+	HistoryLength     string          `json:"historyLength,omitempty"`
+	SampleInterval    string          `json:"sampleInterval,omitempty"`
+	Histogram         HistogramConfig `json:"histogram,omitempty"`
+	MinSampleWeight   string          `json:"minSampleWeight,omitempty"`
+	MarginFraction    string          `json:"marginFraction,omitempty"`
+	Percentile        string          `json:"percentile,omitempty"`
+	TargetUtilization string          `json:"targetUtilization,omitempty"`
 }
 
 type HistogramConfig struct {
