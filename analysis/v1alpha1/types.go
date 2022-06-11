@@ -31,6 +31,13 @@ const (
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:shortName=recommend
+// +kubebuilder:printcolumn:name="Type",type=string,JSONPath=`.spec.type`
+// +kubebuilder:printcolumn:name="TargetKind",type=string,JSONPath=`.spec.targetRef.kind`
+// +kubebuilder:printcolumn:name="TargetNamespace",type=string,JSONPath=`.spec.targetRef.namespace`
+// +kubebuilder:printcolumn:name="TargetName",type=string,JSONPath=`.spec.targetRef.name`
+// +kubebuilder:printcolumn:name="Strategy",type=string,JSONPath=`.spec.completionStrategy.completionStrategyType`
+// +kubebuilder:printcolumn:name="PeriodSeconds",type=string,JSONPath=`.spec.completionStrategy.periodSeconds`
+// +kubebuilder:printcolumn:name="AdoptionType",type=string,JSONPath=`.spec.adoptionType`
 
 // Recommendation represents the configuration of a single recommendation.
 type Recommendation struct {
@@ -96,6 +103,9 @@ type RecommendationList struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:shortName=analytics
+// +kubebuilder:printcolumn:name="Type",type=string,JSONPath=`.spec.type`
+// +kubebuilder:printcolumn:name="Strategy",type=string,JSONPath=`.spec.completionStrategy.completionStrategyType`
+// +kubebuilder:printcolumn:name="PeriodSeconds",type=string,JSONPath=`.spec.completionStrategy.periodSeconds`
 
 // Analytics represents the configuration of an analytics object.
 type Analytics struct {
