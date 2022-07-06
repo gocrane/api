@@ -257,6 +257,8 @@ type PredictionMetricStatus struct {
 	ResourceIdentifier string `json:"resourceIdentifier,omitempty"`
 	// Prediction is the predicted time series data of the metric
 	Prediction []*MetricTimeSeries `json:"prediction,omitempty"`
+	// Specifies whether the prediction is Ready.
+	Ready bool `json:"ready"`
 }
 
 // MetricTimeSeries is a stream of samples that belong to a metric with a set of labels
