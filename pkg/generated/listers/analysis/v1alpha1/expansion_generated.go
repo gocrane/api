@@ -25,3 +25,11 @@ type RecommendationListerExpansion interface{}
 // RecommendationNamespaceListerExpansion allows custom methods to be added to
 // RecommendationNamespaceLister.
 type RecommendationNamespaceListerExpansion interface{}
+
+// RecommendationRuleListerExpansion allows custom methods to be added to
+// RecommendationRuleLister.
+type RecommendationRuleListerExpansion interface{}
+
+// RecommendationRuleNamespaceListerExpansion allows custom methods to be added to
+// RecommendationRuleNamespaceLister.
+type RecommendationRuleNamespaceListerExpansion interface{}

@@ -13,6 +13,7 @@ type AnalysisV1alpha1Interface interface {
 	AnalyticsGetter
 	ConfigSetsGetter
 	RecommendationsGetter
+	RecommendationRulesGetter
 }
 
 // AnalysisV1alpha1Client is used to interact with features provided by the analysis.crane.io group.
@@ -30,6 +31,10 @@ func (c *AnalysisV1alpha1Client) ConfigSets(namespace string) ConfigSetInterface
 
 func (c *AnalysisV1alpha1Client) Recommendations(namespace string) RecommendationInterface {
 	return newRecommendations(c, namespace)
+}
+
+func (c *AnalysisV1alpha1Client) RecommendationRules(namespace string) RecommendationRuleInterface {
+	return newRecommendationRules(c, namespace)
 }
 
 // NewForConfig creates a new AnalysisV1alpha1Client for the given config.

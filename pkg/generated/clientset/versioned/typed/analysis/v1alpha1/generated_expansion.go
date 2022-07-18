@@ -7,3 +7,5 @@ type AnalyticsExpansion interface{}
 type ConfigSetExpansion interface{}
 
 type RecommendationExpansion interface{}
+
+type RecommendationRuleExpansion interface{}
