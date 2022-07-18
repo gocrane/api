@@ -290,8 +290,8 @@ type RecommendationRuleSpec struct {
 // Recommender referring to the Recommender in RecommendationConfiguration
 type Recommender struct {
 
-	// Recommender's Type
-	Type string `json:"type"`
+	// Recommender's Name
+	Name string `json:"name"`
 }
 
 // NamespaceSelector describes how to select namespaces for recommend

@@ -58,11 +58,11 @@ spec:
                 items:
                   description: Recommender referring to the Recommender in RecommendationConfiguration
                   properties:
-                    type:
-                      description: Recommender's Type
+                    name:
+                      description: Recommender's Name
                       type: string
                   required:
-                  - type
+                  - name
                   type: object
                 type: array
               resourceSelectors:
