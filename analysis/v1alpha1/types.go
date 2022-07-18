@@ -253,11 +253,10 @@ type ConfigSetList struct {
 	Items []ConfigSet `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
-
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:shortName=rr
+// +kubebuilder:resource:scope=Cluster,shortName=rr
 
 // RecommendationRule represents the configuration of an RecommendationRule object.
 type RecommendationRule struct {
@@ -283,6 +282,16 @@ type RecommendationRuleSpec struct {
 
 	// RunInterval between two recommendation
 	RunInterval string `json:"runInterval,omitempty"`
+
+	// List of recommender type to run
+	Recommenders []Recommender `json:"recommenders"`
+}
+
+// Recommender referring to the Recommender in RecommendationConfiguration
+type Recommender struct {
+
+	// Recommender's Type
+	Type string `json:"type"`
 }
 
 // NamespaceSelector describes how to select namespaces for recommend
@@ -298,6 +307,11 @@ type RecommendationRuleStatus struct {
 	// LastUpdateTime is the last time the status updated.
 	// +optional
 	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
+
+	// Recommendations is a list of RecommendationMission that run parallel.
+	// +optional
+	// +listType=atomic
+	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
