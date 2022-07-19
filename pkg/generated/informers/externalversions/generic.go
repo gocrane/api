@@ -46,6 +46,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().ConfigSets().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("recommendations"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().Recommendations().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("recommendationrules"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Analysis().V1alpha1().RecommendationRules().Informer()}, nil
 
 		// Group=autoscaling.crane.io, Version=v1alpha1
 	case autoscalingv1alpha1.SchemeGroupVersion.WithResource("effectivehorizontalpodautoscalers"):

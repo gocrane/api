@@ -24,6 +24,10 @@ func (c *FakeAnalysisV1alpha1) Recommendations(namespace string) v1alpha1.Recomm
 	return &FakeRecommendations{c, namespace}
 }
 
+func (c *FakeAnalysisV1alpha1) RecommendationRules(namespace string) v1alpha1.RecommendationRuleInterface {
+	return &FakeRecommendationRules{c, namespace}
+}
+
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
 func (c *FakeAnalysisV1alpha1) RESTClient() rest.Interface {

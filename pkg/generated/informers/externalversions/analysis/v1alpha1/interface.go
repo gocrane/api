@@ -14,6 +14,8 @@ type Interface interface {
 	ConfigSets() ConfigSetInformer
 	// Recommendations returns a RecommendationInformer.
 	Recommendations() RecommendationInformer
+	// RecommendationRules returns a RecommendationRuleInformer.
+	RecommendationRules() RecommendationRuleInformer
 }
 
 type version struct {
@@ -40,4 +42,9 @@ func (v *version) ConfigSets() ConfigSetInformer {
 // Recommendations returns a RecommendationInformer.
 func (v *version) Recommendations() RecommendationInformer {
 	return &recommendationInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// RecommendationRules returns a RecommendationRuleInformer.
+func (v *version) RecommendationRules() RecommendationRuleInformer {
+	return &recommendationRuleInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

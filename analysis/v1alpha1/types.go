@@ -252,3 +252,74 @@ type ConfigSetList struct {
 
 	Items []ConfigSet `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
+
+// +genclient
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster,shortName=rr
+
+// RecommendationRule represents the configuration of an RecommendationRule object.
+type RecommendationRule struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	// +optional
+	Spec RecommendationRuleSpec `json:"spec"`
+
+	// +optional
+	Status RecommendationRuleStatus `json:"status,omitempty"`
+}
+
+// RecommendationRuleSpec defines resources and runInterval to recommend
+type RecommendationRuleSpec struct {
+	// ResourceSelector indicates how to select resources(e.g. a set of Deployments) for a Recommendation.
+	// +required
+	// +kubebuilder:validation:Required
+	ResourceSelectors []ResourceSelector `json:"resourceSelectors"`
+
+	// NamespaceSelector indicates resource namespaces to select from
+	NamespaceSelector NamespaceSelector `json:"namespaceSelector"`
+
+	// RunInterval between two recommendation
+	RunInterval string `json:"runInterval,omitempty"`
+
+	// List of recommender type to run
+	Recommenders []Recommender `json:"recommenders"`
+}
+
+// Recommender referring to the Recommender in RecommendationConfiguration
+type Recommender struct {
+
+	// Recommender's Name
+	Name string `json:"name"`
+}
+
+// NamespaceSelector describes how to select namespaces for recommend
+type NamespaceSelector struct {
+	// Select all namespace if true
+	Any bool `json:"any,omitempty"`
+	// List of namespace names to select from.
+	MatchNames []string `json:"matchNames,omitempty"`
+}
+
+// RecommendationRuleStatus represents the current state of an RecommendationRule item.
+type RecommendationRuleStatus struct {
+	// LastUpdateTime is the last time the status updated.
+	// +optional
+	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
+
+	// Recommendations is a list of RecommendationMission that run parallel.
+	// +optional
+	// +listType=atomic
+	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// RecommendationRuleList is a list of RecommendationRule items.
+type RecommendationRuleList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []RecommendationRule `json:"items"`
+}
