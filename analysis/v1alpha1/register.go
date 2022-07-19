@@ -35,6 +35,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&RecommendationList{},
 		&Analytics{},
 		&AnalyticsList{},
+		&RecommendationRule{},
+		&RecommendationRuleList{},
 	)
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil
