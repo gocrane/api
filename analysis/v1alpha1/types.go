@@ -193,14 +193,14 @@ type ResourceSelector struct {
 
 	// API version of the resource, e.g. "apps/v1"
 	// +optional
-	APIVersion string `json:"apiVersion,omitempty"`
+	APIVersion string `json:"apiVersion"`
 
 	// Name of the resource.
 	// +optional
 	Name string `json:"name,omitempty"`
 
 	// +optional
-	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
+	LabelSelector *metav1.LabelSelector `json:"labelSelector,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
