@@ -77,8 +77,7 @@ type RecommendationSpec struct {
 
 // RecommendationStatus represents the current state of a recommendation.
 type RecommendationStatus struct {
-	// +optional
-	RecommendedValue string `json:"recommendedValue,omitempty"`
+	RecommendationContent `json:",inline"`
 
 	// Conditions is an array of current recommendation conditions.
 	// +optional
@@ -87,6 +86,22 @@ type RecommendationStatus struct {
 	// LastUpdateTime is last time we got an update on this status.
 	// +optional
 	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
+}
+
+// RecommendationContent contains results for one recommendation
+type RecommendationContent struct {
+	// +optional
+	RecommendedValue string `json:"recommendedValue,omitempty"`
+	// +optional
+	TargetRef corev1.ObjectReference `json:"targetRef"`
+	// +optional
+	RecommendedInfo string `json:"recommendedInfo,omitempty"`
+	// +optional
+	CurrentInfo string `json:"currentInfo,omitempty"`
+	// +optional
+	Action string `json:"action,omitempty"`
+	// +optional
+	Description string `json:"description,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
