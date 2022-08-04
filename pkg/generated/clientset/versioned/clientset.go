@@ -9,6 +9,7 @@ import (
 	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
 	ensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
+	topologyv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/topology/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
@@ -20,6 +21,7 @@ type Interface interface {
 	AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface
 	EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Interface
 	PredictionV1alpha1() predictionv1alpha1.PredictionV1alpha1Interface
+	TopologyV1alpha1() topologyv1alpha1.TopologyV1alpha1Interface
 }
 
 // Clientset contains the clients for groups. Each group has exactly one
@@ -30,6 +32,7 @@ type Clientset struct {
 	autoscalingV1alpha1 *autoscalingv1alpha1.AutoscalingV1alpha1Client
 	ensuranceV1alpha1   *ensurancev1alpha1.EnsuranceV1alpha1Client
 	predictionV1alpha1  *predictionv1alpha1.PredictionV1alpha1Client
+	topologyV1alpha1    *topologyv1alpha1.TopologyV1alpha1Client
 }
 
 // AnalysisV1alpha1 retrieves the AnalysisV1alpha1Client
@@ -50,6 +53,11 @@ func (c *Clientset) EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Inter
 // PredictionV1alpha1 retrieves the PredictionV1alpha1Client
 func (c *Clientset) PredictionV1alpha1() predictionv1alpha1.PredictionV1alpha1Interface {
 	return c.predictionV1alpha1
+}
+
+// TopologyV1alpha1 retrieves the TopologyV1alpha1Client
+func (c *Clientset) TopologyV1alpha1() topologyv1alpha1.TopologyV1alpha1Interface {
+	return c.topologyV1alpha1
 }
 
 // Discovery retrieves the DiscoveryClient
@@ -89,6 +97,10 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	cs.topologyV1alpha1, err = topologyv1alpha1.NewForConfig(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
 
 	cs.DiscoveryClient, err = discovery.NewDiscoveryClientForConfig(&configShallowCopy)
 	if err != nil {
@@ -105,6 +117,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.NewForConfigOrDie(c)
 	cs.ensuranceV1alpha1 = ensurancev1alpha1.NewForConfigOrDie(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.NewForConfigOrDie(c)
+	cs.topologyV1alpha1 = topologyv1alpha1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
 	return &cs
@@ -117,6 +130,7 @@ func New(c rest.Interface) *Clientset {
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.New(c)
 	cs.ensuranceV1alpha1 = ensurancev1alpha1.New(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.New(c)
+	cs.topologyV1alpha1 = topologyv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)
 	return &cs

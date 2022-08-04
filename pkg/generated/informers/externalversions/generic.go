@@ -9,6 +9,7 @@ import (
 	autoscalingv1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
 	ensurancev1alpha1 "github.com/gocrane/api/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
+	topologyv1alpha1 "github.com/gocrane/api/topology/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -72,6 +73,10 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().ClusterNodePredictions().Informer()}, nil
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("timeseriespredictions"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().TimeSeriesPredictions().Informer()}, nil
+
+		// Group=topology.crane.io, Version=v1alpha1
+	case topologyv1alpha1.SchemeGroupVersion.WithResource("noderesourcetopologies"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Topology().V1alpha1().NodeResourceTopologies().Informer()}, nil
 
 	}
 
