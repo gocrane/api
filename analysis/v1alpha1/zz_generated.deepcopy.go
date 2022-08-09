@@ -342,6 +342,7 @@ func (in *RecommendationMission) DeepCopyInto(out *RecommendationMission) {
 		in, out := &in.LastStartTime, &out.LastStartTime
 		*out = (*in).DeepCopy()
 	}
+	out.RecommenderRef = in.RecommenderRef
 	return
 }
 

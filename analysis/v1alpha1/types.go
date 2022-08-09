@@ -184,6 +184,10 @@ type RecommendationMission struct {
 	// Message presents the running message for this mission
 	// +optional
 	Message string `json:"message,omitempty"`
+
+	// RecommenderRef presents recommender info for recommendation mission.
+	// +optional
+	RecommenderRef Recommender `json:"recommenderRef"`
 }
 
 // ResourceSelector describes how the resources will be selected.
