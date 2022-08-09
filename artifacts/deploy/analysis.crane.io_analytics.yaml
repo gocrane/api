@@ -262,6 +262,16 @@ spec:
                     namespace:
                       description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                       type: string
+                    recommenderRef:
+                      description: RecommenderRef presents recommender info for recommendation
+                        mission.
+                      properties:
+                        name:
+                          description: Recommender's Name
+                          type: string
+                      required:
+                      - name
+                      type: object
                     resourceVersion:
                       description: 'Specific resourceVersion to which this reference
                         is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
