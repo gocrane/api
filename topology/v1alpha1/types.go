@@ -50,9 +50,9 @@ type NodeResourceTopology struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	// CraneAgentConfiguration describes the associated configuration of crane agent.
+	// CraneManagerPolicy describes the associated manager policy of crane agent.
 	// +required
-	CraneAgentConfiguration AgentConfiguration `json:"craneAgentConfiguration"`
+	CraneManagerPolicy ManagerPolicy `json:"craneManagerPolicy"`
 
 	// Reserved describes resources reserved for system and kubernetes components.
 	// +optional
@@ -67,8 +67,8 @@ type NodeResourceTopology struct {
 	Attributes map[string]string `json:"attributes,omitempty"`
 }
 
-// AgentConfiguration describes the associated configuration of crane agent.
-type AgentConfiguration struct {
+// ManagerPolicy describes the associated manager policy.
+type ManagerPolicy struct {
 	// CPUManagerPolicy represents policy of the crane agent cpu manager.
 	// +kubebuilder:validation:Enum=None;Static
 	// +required

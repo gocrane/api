@@ -48,8 +48,8 @@ spec:
               type: string
             description: Attributes represents node attributes if any.
             type: object
-          craneAgentConfiguration:
-            description: CraneAgentConfiguration describes the associated configuration
+          craneManagerPolicy:
+            description: CraneManagerPolicy describes the associated manager policy
               of crane agent.
             properties:
               cpuManagerPolicy:
@@ -167,7 +167,7 @@ spec:
               type: object
             type: array
         required:
-        - craneAgentConfiguration
+        - craneManagerPolicy
         type: object
     served: true
     storage: true
