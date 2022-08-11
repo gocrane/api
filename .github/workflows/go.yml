@@ -1,6 +1,6 @@
 name: Go
 
-on: [pull_request]
+on: [pull_request, push]
 
 
 jobs:
@@ -15,5 +15,27 @@ jobs:
         with:
           go-version: 1.17
 
+      - name: Remove old artifacts
+        run: rm -rf artifacts/deploy
+
       - name: Build
         run: make all
+
+      - name: Concat artifacts yaml
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo ${GITHUB_REF##*/}
+          for i in artifacts/deploy/*; do cat $i >> artifacts/deploy/all.yaml; done;
+      
+      - id: git-branch
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo "::set-output name=git-branch::$(echo ${GITHUB_REF##*/} | tr '[A-Z]' '[a-z]')"
+
+      - name: Publish to Dist Branch
+        if: ${{ github.event_name == 'push' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: dist
+          folder: artifacts/deploy
+          target-folder: ${{steps.git-branch.outputs.git-branch}}
