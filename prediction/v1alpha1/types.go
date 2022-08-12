@@ -64,7 +64,6 @@ type PredictionTemplate struct {
 	Spec              TimeSeriesPredictionSpec `json:"spec,omitempty"`
 }
 
-
 type DSP struct {
 	// SampleInterval is the sampling interval of metrics.
 	SampleInterval string `json:"sampleInterval,omitempty"`

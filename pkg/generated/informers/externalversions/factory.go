@@ -13,6 +13,7 @@ import (
 	ensurance "github.com/gocrane/api/pkg/generated/informers/externalversions/ensurance"
 	internalinterfaces "github.com/gocrane/api/pkg/generated/informers/externalversions/internalinterfaces"
 	prediction "github.com/gocrane/api/pkg/generated/informers/externalversions/prediction"
+	topology "github.com/gocrane/api/pkg/generated/informers/externalversions/topology"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -163,6 +164,7 @@ type SharedInformerFactory interface {
 	Autoscaling() autoscaling.Interface
 	Ensurance() ensurance.Interface
 	Prediction() prediction.Interface
+	Topology() topology.Interface
 }
 
 func (f *sharedInformerFactory) Analysis() analysis.Interface {
@@ -179,4 +181,8 @@ func (f *sharedInformerFactory) Ensurance() ensurance.Interface {
 
 func (f *sharedInformerFactory) Prediction() prediction.Interface {
 	return prediction.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Topology() topology.Interface {
+	return topology.New(f, f.namespace, f.tweakListOptions)
 }

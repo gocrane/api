@@ -60,7 +60,7 @@ type EffectiveHorizontalPodAutoscalerSpec struct {
 	Metrics []autoscalingv2.MetricSpec `json:"metrics,omitempty"`
 	// Crons contains cron specs to use crontab to scale workloads
 	// +optional
-	Crons  []CronSpec `json:"crons,omitempty"`
+	Crons []CronSpec `json:"crons,omitempty"`
 	// behavior configures the scaling behavior of the target
 	// in both Up and Down directions (scaleUp and scaleDown fields respectively).
 	// If not set, the default HPAScalingRules for scale up and scale down are used.
@@ -75,27 +75,27 @@ type EffectiveHorizontalPodAutoscalerSpec struct {
 type CronSpec struct {
 	// Name is the identifier of this cron scale. name must be unique in the same ehpa
 	// +kubebuilder:validation:Type=string
-	Name 			string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
 	// Description is the description of the cron
 	// +optional
 	// +kubebuilder:validation:Type=string
-	Description     string 	`json:"description,omitempty"`
+	Description string `json:"description,omitempty"`
 	// TimeZone is the time zone of this cron schedule running in, default is UTC time.
 	// +optional
 	// +kubebuilder:validation:Type=string
-	TimeZone		*string `json:"timezone,omitempty"`
+	TimeZone *string `json:"timezone,omitempty"`
 	// Start is a crontab format, see https://en.wikipedia.org/wiki/Cron
 	// Define the cron schedule start, when the cron start is triggered, hpa will reconcile targetRef to scale to the TargetReplicas continuously.
 	// +kubebuilder:validation:Type=string
-	Start  		string	`json:"start,omitempty"`
+	Start string `json:"start,omitempty"`
 	// End is a crontab format, see https://en.wikipedia.org/wiki/Cron
 	// Define the cron schedule end, when it ended, EHPA will stop to trigger hpa to scale.
 	// Between the start and end, EHPA will keep replicas of the targetRef to equal to TargetReplicas, a scaling is a process rather than a instant action, make it as a final consistent system.
 	// +kubebuilder:validation:Type=string
-	End 		string	`json:"end,omitempty"`
+	End string `json:"end,omitempty"`
 	// TargetReplicas is the target replicas when it is time to do scale between cron start and end
 	// +kubebuilder:validation:Type=integer
-	TargetReplicas  int32	`json:"targetReplicas,omitempty"`
+	TargetReplicas int32 `json:"targetReplicas,omitempty"`
 }
 
 // Prediction defines configurations for predict resources
@@ -231,4 +231,3 @@ type SubstituteList struct {
 
 	Items []Substitute `json:"items"`
 }
-
