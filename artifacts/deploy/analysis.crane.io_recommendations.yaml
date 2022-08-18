@@ -40,6 +40,11 @@ spec:
     - jsonPath: .spec.adoptionType
       name: AdoptionType
       type: string
+    - description: CreationTimestamp is a timestamp representing the server time when
+        this object was created.
+      jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:
