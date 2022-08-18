@@ -38,6 +38,7 @@ const (
 // +kubebuilder:printcolumn:name="Strategy",type=string,JSONPath=`.spec.completionStrategy.completionStrategyType`
 // +kubebuilder:printcolumn:name="PeriodSeconds",type=string,JSONPath=`.spec.completionStrategy.periodSeconds`
 // +kubebuilder:printcolumn:name="AdoptionType",type=string,JSONPath=`.spec.adoptionType`
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
 // Recommendation represents the configuration of a single recommendation.
 type Recommendation struct {
@@ -276,6 +277,8 @@ type ConfigSetList struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster,shortName=rr
+// +kubebuilder:printcolumn:name="RunInterval",type=string,JSONPath=`.spec.runInterval`
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
 // RecommendationRule represents the configuration of an RecommendationRule object.
 type RecommendationRule struct {
