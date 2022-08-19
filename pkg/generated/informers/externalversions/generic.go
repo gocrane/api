@@ -61,12 +61,10 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		// Group=ensurance.crane.io, Version=v1alpha1
 	case ensurancev1alpha1.SchemeGroupVersion.WithResource("avoidanceactions"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().AvoidanceActions().Informer()}, nil
-	case ensurancev1alpha1.SchemeGroupVersion.WithResource("nodeqosensurancepolicies"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().NodeQOSEnsurancePolicies().Informer()}, nil
-	case ensurancev1alpha1.SchemeGroupVersion.WithResource("podqosensurancepolicies"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().PodQOSEnsurancePolicies().Informer()}, nil
-	case ensurancev1alpha1.SchemeGroupVersion.WithResource("servicepolicies"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().ServicePolicies().Informer()}, nil
+	case ensurancev1alpha1.SchemeGroupVersion.WithResource("nodeqoss"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().NodeQOSs().Informer()}, nil
+	case ensurancev1alpha1.SchemeGroupVersion.WithResource("podqoss"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Ensurance().V1alpha1().PodQOSs().Informer()}, nil
 
 		// Group=prediction.crane.io, Version=v1alpha1
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("clusternodepredictions"):
