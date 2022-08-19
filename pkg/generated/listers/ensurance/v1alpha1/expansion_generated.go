@@ -6,18 +6,10 @@ package v1alpha1
 // AvoidanceActionLister.
 type AvoidanceActionListerExpansion interface{}
 
-// NodeQOSEnsurancePolicyListerExpansion allows custom methods to be added to
-// NodeQOSEnsurancePolicyLister.
-type NodeQOSEnsurancePolicyListerExpansion interface{}
+// NodeQOSListerExpansion allows custom methods to be added to
+// NodeQOSLister.
+type NodeQOSListerExpansion interface{}
 
-// PodQOSEnsurancePolicyListerExpansion allows custom methods to be added to
-// PodQOSEnsurancePolicyLister.
-type PodQOSEnsurancePolicyListerExpansion interface{}
-
-// PodQOSEnsurancePolicyNamespaceListerExpansion allows custom methods to be added to
-// PodQOSEnsurancePolicyNamespaceLister.
-type PodQOSEnsurancePolicyNamespaceListerExpansion interface{}
-
-// ServicePolicyListerExpansion allows custom methods to be added to
-// ServicePolicyLister.
-type ServicePolicyListerExpansion interface{}
+// PodQOSListerExpansion allows custom methods to be added to
+// PodQOSLister.
+type PodQOSListerExpansion interface{}

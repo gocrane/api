@@ -10,12 +10,10 @@ import (
 type Interface interface {
 	// AvoidanceActions returns a AvoidanceActionInformer.
 	AvoidanceActions() AvoidanceActionInformer
-	// NodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicyInformer.
-	NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInformer
-	// PodQOSEnsurancePolicies returns a PodQOSEnsurancePolicyInformer.
-	PodQOSEnsurancePolicies() PodQOSEnsurancePolicyInformer
-	// ServicePolicies returns a ServicePolicyInformer.
-	ServicePolicies() ServicePolicyInformer
+	// NodeQOSs returns a NodeQOSInformer.
+	NodeQOSs() NodeQOSInformer
+	// PodQOSs returns a PodQOSInformer.
+	PodQOSs() PodQOSInformer
 }
 
 type version struct {
@@ -34,17 +32,12 @@ func (v *version) AvoidanceActions() AvoidanceActionInformer {
 	return &avoidanceActionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
-// NodeQOSEnsurancePolicies returns a NodeQOSEnsurancePolicyInformer.
-func (v *version) NodeQOSEnsurancePolicies() NodeQOSEnsurancePolicyInformer {
-	return &nodeQOSEnsurancePolicyInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+// NodeQOSs returns a NodeQOSInformer.
+func (v *version) NodeQOSs() NodeQOSInformer {
+	return &nodeQOSInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
-// PodQOSEnsurancePolicies returns a PodQOSEnsurancePolicyInformer.
-func (v *version) PodQOSEnsurancePolicies() PodQOSEnsurancePolicyInformer {
-	return &podQOSEnsurancePolicyInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
-}
-
-// ServicePolicies returns a ServicePolicyInformer.
-func (v *version) ServicePolicies() ServicePolicyInformer {
-	return &servicePolicyInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+// PodQOSs returns a PodQOSInformer.
+func (v *version) PodQOSs() PodQOSInformer {
+	return &podQOSInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }

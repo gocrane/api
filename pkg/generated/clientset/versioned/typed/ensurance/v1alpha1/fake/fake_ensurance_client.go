@@ -16,16 +16,12 @@ func (c *FakeEnsuranceV1alpha1) AvoidanceActions() v1alpha1.AvoidanceActionInter
 	return &FakeAvoidanceActions{c}
 }
 
-func (c *FakeEnsuranceV1alpha1) NodeQOSEnsurancePolicies() v1alpha1.NodeQOSEnsurancePolicyInterface {
-	return &FakeNodeQOSEnsurancePolicies{c}
+func (c *FakeEnsuranceV1alpha1) NodeQOSs() v1alpha1.NodeQOSInterface {
+	return &FakeNodeQOSs{c}
 }
 
-func (c *FakeEnsuranceV1alpha1) PodQOSEnsurancePolicies(namespace string) v1alpha1.PodQOSEnsurancePolicyInterface {
-	return &FakePodQOSEnsurancePolicies{c, namespace}
-}
-
-func (c *FakeEnsuranceV1alpha1) ServicePolicies() v1alpha1.ServicePolicyInterface {
-	return &FakeServicePolicies{c}
+func (c *FakeEnsuranceV1alpha1) PodQOSs() v1alpha1.PodQOSInterface {
+	return &FakePodQOSs{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
