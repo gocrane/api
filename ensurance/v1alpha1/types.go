@@ -31,7 +31,7 @@ type PodQOS struct {
 
 type PodQOSSpec struct {
 	// LabelSelector is a label query over pods that should match the PodQOS
-	LabelSelector metav1.LabelSelector `json:"labelselector,omitempty"`
+	LabelSelector metav1.LabelSelector `json:"labelSelector,omitempty"`
 
 	// A scope selector represents the AND of the selectors represented
 	// by the scoped-resource selector requirements.
