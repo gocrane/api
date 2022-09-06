@@ -42,7 +42,7 @@ spec:
                 items:
                   type: string
                 type: array
-              labelselector:
+              labelSelector:
                 description: LabelSelector is a label query over pods that should
                   match the PodQOS
                 properties:
