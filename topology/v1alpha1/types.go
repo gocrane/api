@@ -41,8 +41,8 @@ const (
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:resource:scope="Cluster",shortName=nrt
-// +kubebuilder:printcolumn:name="CRANE CPU MANAGER POLICY",type=string,JSONPath=".craneAgentConfiguration.cpuManagerPolicy",description="CPUManagerPolicy represents policy of the crane agent cpu manager."
-// +kubebuilder:printcolumn:name="CRANE TOPOLOGY MANAGER POLICY",type=string,JSONPath=".craneAgentConfiguration.topologyManagerPolicy",description="TopologyManagerPolicy represents policy of the crane agent resource management component. Defaults to SingleNUMANodePodLevel."
+// +kubebuilder:printcolumn:name="CRANE CPU MANAGER POLICY",type=string,JSONPath=".craneManagerPolicy.cpuManagerPolicy",description="CPUManagerPolicy represents policy of the crane agent cpu manager."
+// +kubebuilder:printcolumn:name="CRANE TOPOLOGY MANAGER POLICY",type=string,JSONPath=".craneManagerPolicy.topologyManagerPolicy",description="TopologyManagerPolicy represents policy of the crane agent resource management component. Defaults to SingleNUMANodePodLevel."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
 
 // NodeResourceTopology describes node resources and their topology.
