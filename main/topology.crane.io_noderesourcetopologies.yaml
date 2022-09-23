@@ -20,12 +20,12 @@ spec:
   versions:
   - additionalPrinterColumns:
     - description: CPUManagerPolicy represents policy of the crane agent cpu manager.
-      jsonPath: .craneAgentConfiguration.cpuManagerPolicy
+      jsonPath: .craneManagerPolicy.cpuManagerPolicy
       name: CRANE CPU MANAGER POLICY
       type: string
     - description: TopologyManagerPolicy represents policy of the crane agent resource
         management component. Defaults to SingleNUMANodePodLevel.
-      jsonPath: .craneAgentConfiguration.topologyManagerPolicy
+      jsonPath: .craneManagerPolicy.topologyManagerPolicy
       name: CRANE TOPOLOGY MANAGER POLICY
       type: string
     - description: CreationTimestamp is a timestamp representing the server time when
