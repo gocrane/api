@@ -381,3 +381,29 @@ type ContainerRecommendation struct {
 }
 
 type ResourceList map[corev1.ResourceName]string
+
+type PatchReplicas struct {
+	Spec PatchReplicasSpec `json:"spec,omitempty"`
+}
+
+type PatchReplicasSpec struct {
+	Replicas *int32 `json:"replicas,omitempty"`
+}
+
+type PatchResource struct {
+	Spec PatchResourceSpec `json:"spec,omitempty"`
+}
+
+type PatchResourceSpec struct {
+	Template PatchResourcePodTemplateSpec `json:"template"`
+}
+
+type PatchResourcePodTemplateSpec struct {
+	Spec PatchResourcePodSpec `json:"spec,omitempty"`
+}
+
+type PatchResourcePodSpec struct {
+	// +patchMergeKey=name
+	// +patchStrategy=merge
+	Containers []corev1.Container `json:"containers" patchStrategy:"merge" patchMergeKey:"name"`
+}
