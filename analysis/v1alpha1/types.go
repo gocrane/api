@@ -1,10 +1,11 @@
 package v1alpha1
 
 import (
-	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 	autoscalingv2 "k8s.io/api/autoscaling/v2beta2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	autoscalingapi "github.com/gocrane/api/autoscaling/v1alpha1"
 )
 
 type AnalysisType string
@@ -27,6 +28,20 @@ const (
 	AdoptionTypeStatus              AdoptionType = "Status"
 	AdoptionTypeStatusAndAnnotation AdoptionType = "StatusAndAnnotation"
 	AdoptionTypeAuto                AdoptionType = "Auto"
+)
+
+const (
+	// ReplicasRecommender name
+	ReplicasRecommender string = "Replicas"
+
+	// ResourceRecommender name
+	ResourceRecommender string = "Resource"
+
+	// HPARecommender name
+	HPARecommender string = "HPA"
+
+	// IdleNodeRecommender name
+	IdleNodeRecommender string = "IdleNode"
 )
 
 // +genclient
