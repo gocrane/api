@@ -313,14 +313,9 @@ type RecommendationRuleSpec struct {
 
 // Recommender referring to the Recommender in RecommendationConfiguration
 type Recommender struct {
-	// ResourceSelector indicates which resources(e.g. a set of Deployments) are accepted for plugin.
-	// Override the accepted resources from recommender's interface
-	AcceptedResourceSelectors []ResourceSelector `json:"acceptedResources"`
-	// Name should be existed in all predefined recommenders
+
+	// Recommender's Name
 	Name string `json:"name"`
-	// Override Recommender configs
-	// +optional
-	Config map[string]string `json:"config,omitempty"`
 }
 
 // NamespaceSelector describes how to select namespaces for recommend
