@@ -15,8 +15,9 @@ type RecommendationRuleLister interface {
 	// List lists all RecommendationRules in the indexer.
 	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.RecommendationRule, err error)
-	// RecommendationRules returns an object that can list and get RecommendationRules.
-	RecommendationRules(namespace string) RecommendationRuleNamespaceLister
+	// Get retrieves the RecommendationRule from the index for a given name.
+	// Objects returned here must be treated as read-only.
+	Get(name string) (*v1alpha1.RecommendationRule, error)
 	RecommendationRuleListerExpansion
 }
 
@@ -38,41 +39,9 @@ func (s *recommendationRuleLister) List(selector labels.Selector) (ret []*v1alph
 	return ret, err
 }
 
-// RecommendationRules returns an object that can list and get RecommendationRules.
-func (s *recommendationRuleLister) RecommendationRules(namespace string) RecommendationRuleNamespaceLister {
-	return recommendationRuleNamespaceLister{indexer: s.indexer, namespace: namespace}
-}
-
-// RecommendationRuleNamespaceLister helps list and get RecommendationRules.
-// All objects returned here must be treated as read-only.
-type RecommendationRuleNamespaceLister interface {
-	// List lists all RecommendationRules in the indexer for a given namespace.
-	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.RecommendationRule, err error)
-	// Get retrieves the RecommendationRule from the indexer for a given namespace and name.
-	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1alpha1.RecommendationRule, error)
-	RecommendationRuleNamespaceListerExpansion
-}
-
-// recommendationRuleNamespaceLister implements the RecommendationRuleNamespaceLister
-// interface.
-type recommendationRuleNamespaceLister struct {
-	indexer   cache.Indexer
-	namespace string
-}
-
-// List lists all RecommendationRules in the indexer for a given namespace.
-func (s recommendationRuleNamespaceLister) List(selector labels.Selector) (ret []*v1alpha1.RecommendationRule, err error) {
-	err = cache.ListAllByNamespace(s.indexer, s.namespace, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.RecommendationRule))
-	})
-	return ret, err
-}
-
-// Get retrieves the RecommendationRule from the indexer for a given namespace and name.
-func (s recommendationRuleNamespaceLister) Get(name string) (*v1alpha1.RecommendationRule, error) {
-	obj, exists, err := s.indexer.GetByKey(s.namespace + "/" + name)
+// Get retrieves the RecommendationRule from the index for a given name.
+func (s *recommendationRuleLister) Get(name string) (*v1alpha1.RecommendationRule, error) {
+	obj, exists, err := s.indexer.GetByKey(name)
 	if err != nil {
 		return nil, err
 	}

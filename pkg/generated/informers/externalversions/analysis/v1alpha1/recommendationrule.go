@@ -26,33 +26,32 @@ type RecommendationRuleInformer interface {
 type recommendationRuleInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
-	namespace        string
 }
 
 // NewRecommendationRuleInformer constructs a new informer for RecommendationRule type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewRecommendationRuleInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredRecommendationRuleInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewRecommendationRuleInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredRecommendationRuleInformer(client, resyncPeriod, indexers, nil)
 }
 
 // NewFilteredRecommendationRuleInformer constructs a new informer for RecommendationRule type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredRecommendationRuleInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredRecommendationRuleInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AnalysisV1alpha1().RecommendationRules(namespace).List(context.TODO(), options)
+				return client.AnalysisV1alpha1().RecommendationRules().List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AnalysisV1alpha1().RecommendationRules(namespace).Watch(context.TODO(), options)
+				return client.AnalysisV1alpha1().RecommendationRules().Watch(context.TODO(), options)
 			},
 		},
 		&analysisv1alpha1.RecommendationRule{},
@@ -62,7 +61,7 @@ func NewFilteredRecommendationRuleInformer(client versioned.Interface, namespace
 }
 
 func (f *recommendationRuleInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredRecommendationRuleInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+	return NewFilteredRecommendationRuleInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
 func (f *recommendationRuleInformer) Informer() cache.SharedIndexInformer {

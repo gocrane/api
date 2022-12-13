@@ -17,7 +17,6 @@ import (
 // FakeRecommendationRules implements RecommendationRuleInterface
 type FakeRecommendationRules struct {
 	Fake *FakeAnalysisV1alpha1
-	ns   string
 }
 
 var recommendationrulesResource = schema.GroupVersionResource{Group: "analysis.crane.io", Version: "v1alpha1", Resource: "recommendationrules"}
@@ -27,8 +26,7 @@ var recommendationrulesKind = schema.GroupVersionKind{Group: "analysis.crane.io"
 // Get takes name of the recommendationRule, and returns the corresponding recommendationRule object, and an error if there is any.
 func (c *FakeRecommendationRules) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.RecommendationRule, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(recommendationrulesResource, c.ns, name), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootGetAction(recommendationrulesResource, name), &v1alpha1.RecommendationRule{})
 	if obj == nil {
 		return nil, err
 	}
@@ -38,8 +36,7 @@ func (c *FakeRecommendationRules) Get(ctx context.Context, name string, options 
 // List takes label and field selectors, and returns the list of RecommendationRules that match those selectors.
 func (c *FakeRecommendationRules) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.RecommendationRuleList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(recommendationrulesResource, recommendationrulesKind, c.ns, opts), &v1alpha1.RecommendationRuleList{})
-
+		Invokes(testing.NewRootListAction(recommendationrulesResource, recommendationrulesKind, opts), &v1alpha1.RecommendationRuleList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -60,15 +57,13 @@ func (c *FakeRecommendationRules) List(ctx context.Context, opts v1.ListOptions)
 // Watch returns a watch.Interface that watches the requested recommendationRules.
 func (c *FakeRecommendationRules) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(recommendationrulesResource, c.ns, opts))
-
+		InvokesWatch(testing.NewRootWatchAction(recommendationrulesResource, opts))
 }
 
 // Create takes the representation of a recommendationRule and creates it.  Returns the server's representation of the recommendationRule, and an error, if there is any.
 func (c *FakeRecommendationRules) Create(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.CreateOptions) (result *v1alpha1.RecommendationRule, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(recommendationrulesResource, c.ns, recommendationRule), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootCreateAction(recommendationrulesResource, recommendationRule), &v1alpha1.RecommendationRule{})
 	if obj == nil {
 		return nil, err
 	}
@@ -78,8 +73,7 @@ func (c *FakeRecommendationRules) Create(ctx context.Context, recommendationRule
 // Update takes the representation of a recommendationRule and updates it. Returns the server's representation of the recommendationRule, and an error, if there is any.
 func (c *FakeRecommendationRules) Update(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.UpdateOptions) (result *v1alpha1.RecommendationRule, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(recommendationrulesResource, c.ns, recommendationRule), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootUpdateAction(recommendationrulesResource, recommendationRule), &v1alpha1.RecommendationRule{})
 	if obj == nil {
 		return nil, err
 	}
@@ -90,8 +84,7 @@ func (c *FakeRecommendationRules) Update(ctx context.Context, recommendationRule
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (c *FakeRecommendationRules) UpdateStatus(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.UpdateOptions) (*v1alpha1.RecommendationRule, error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateSubresourceAction(recommendationrulesResource, "status", c.ns, recommendationRule), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootUpdateSubresourceAction(recommendationrulesResource, "status", recommendationRule), &v1alpha1.RecommendationRule{})
 	if obj == nil {
 		return nil, err
 	}
@@ -101,14 +94,13 @@ func (c *FakeRecommendationRules) UpdateStatus(ctx context.Context, recommendati
 // Delete takes name of the recommendationRule and deletes it. Returns an error if one occurs.
 func (c *FakeRecommendationRules) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(recommendationrulesResource, c.ns, name), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootDeleteAction(recommendationrulesResource, name), &v1alpha1.RecommendationRule{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
 func (c *FakeRecommendationRules) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(recommendationrulesResource, c.ns, listOpts)
+	action := testing.NewRootDeleteCollectionAction(recommendationrulesResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.RecommendationRuleList{})
 	return err
@@ -117,8 +109,7 @@ func (c *FakeRecommendationRules) DeleteCollection(ctx context.Context, opts v1.
 // Patch applies the patch and returns the patched recommendationRule.
 func (c *FakeRecommendationRules) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.RecommendationRule, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(recommendationrulesResource, c.ns, name, pt, data, subresources...), &v1alpha1.RecommendationRule{})
-
+		Invokes(testing.NewRootPatchSubresourceAction(recommendationrulesResource, name, pt, data, subresources...), &v1alpha1.RecommendationRule{})
 	if obj == nil {
 		return nil, err
 	}

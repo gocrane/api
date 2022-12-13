@@ -33,8 +33,8 @@ func (c *AnalysisV1alpha1Client) Recommendations(namespace string) Recommendatio
 	return newRecommendations(c, namespace)
 }
 
-func (c *AnalysisV1alpha1Client) RecommendationRules(namespace string) RecommendationRuleInterface {
-	return newRecommendationRules(c, namespace)
+func (c *AnalysisV1alpha1Client) RecommendationRules() RecommendationRuleInterface {
+	return newRecommendationRules(c)
 }
 
 // NewForConfig creates a new AnalysisV1alpha1Client for the given config.
