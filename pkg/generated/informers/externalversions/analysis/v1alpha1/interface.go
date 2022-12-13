@@ -46,5 +46,5 @@ func (v *version) Recommendations() RecommendationInformer {
 
 // RecommendationRules returns a RecommendationRuleInformer.
 func (v *version) RecommendationRules() RecommendationRuleInformer {
-	return &recommendationRuleInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+	return &recommendationRuleInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }

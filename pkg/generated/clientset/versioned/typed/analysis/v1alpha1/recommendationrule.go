@@ -17,7 +17,7 @@ import (
 // RecommendationRulesGetter has a method to return a RecommendationRuleInterface.
 // A group's client should implement this interface.
 type RecommendationRulesGetter interface {
-	RecommendationRules(namespace string) RecommendationRuleInterface
+	RecommendationRules() RecommendationRuleInterface
 }
 
 // RecommendationRuleInterface has methods to work with RecommendationRule resources.
@@ -37,14 +37,12 @@ type RecommendationRuleInterface interface {
 // recommendationRules implements RecommendationRuleInterface
 type recommendationRules struct {
 	client rest.Interface
-	ns     string
 }
 
 // newRecommendationRules returns a RecommendationRules
-func newRecommendationRules(c *AnalysisV1alpha1Client, namespace string) *recommendationRules {
+func newRecommendationRules(c *AnalysisV1alpha1Client) *recommendationRules {
 	return &recommendationRules{
 		client: c.RESTClient(),
-		ns:     namespace,
 	}
 }
 
@@ -52,7 +50,6 @@ func newRecommendationRules(c *AnalysisV1alpha1Client, namespace string) *recomm
 func (c *recommendationRules) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.RecommendationRule, err error) {
 	result = &v1alpha1.RecommendationRule{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
@@ -69,7 +66,6 @@ func (c *recommendationRules) List(ctx context.Context, opts v1.ListOptions) (re
 	}
 	result = &v1alpha1.RecommendationRuleList{}
 	err = c.client.Get().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -86,7 +82,6 @@ func (c *recommendationRules) Watch(ctx context.Context, opts v1.ListOptions) (w
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -97,7 +92,6 @@ func (c *recommendationRules) Watch(ctx context.Context, opts v1.ListOptions) (w
 func (c *recommendationRules) Create(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.CreateOptions) (result *v1alpha1.RecommendationRule, err error) {
 	result = &v1alpha1.RecommendationRule{}
 	err = c.client.Post().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(recommendationRule).
@@ -110,7 +104,6 @@ func (c *recommendationRules) Create(ctx context.Context, recommendationRule *v1
 func (c *recommendationRules) Update(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.UpdateOptions) (result *v1alpha1.RecommendationRule, err error) {
 	result = &v1alpha1.RecommendationRule{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		Name(recommendationRule.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
@@ -125,7 +118,6 @@ func (c *recommendationRules) Update(ctx context.Context, recommendationRule *v1
 func (c *recommendationRules) UpdateStatus(ctx context.Context, recommendationRule *v1alpha1.RecommendationRule, opts v1.UpdateOptions) (result *v1alpha1.RecommendationRule, err error) {
 	result = &v1alpha1.RecommendationRule{}
 	err = c.client.Put().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		Name(recommendationRule.Name).
 		SubResource("status").
@@ -139,7 +131,6 @@ func (c *recommendationRules) UpdateStatus(ctx context.Context, recommendationRu
 // Delete takes name of the recommendationRule and deletes it. Returns an error if one occurs.
 func (c *recommendationRules) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		Name(name).
 		Body(&opts).
@@ -154,7 +145,6 @@ func (c *recommendationRules) DeleteCollection(ctx context.Context, opts v1.Dele
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
@@ -167,7 +157,6 @@ func (c *recommendationRules) DeleteCollection(ctx context.Context, opts v1.Dele
 func (c *recommendationRules) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.RecommendationRule, err error) {
 	result = &v1alpha1.RecommendationRule{}
 	err = c.client.Patch(pt).
-		Namespace(c.ns).
 		Resource("recommendationrules").
 		Name(name).
 		SubResource(subresources...).
