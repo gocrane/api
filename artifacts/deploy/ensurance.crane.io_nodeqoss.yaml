@@ -42,9 +42,6 @@ spec:
                 description: ElasticCpuLimit is the cpu limit for workloads using
                   elastic cpu in the node
                 properties:
-                  btSuppressPercent:
-                    description: Enable BT Suppress
-                    type: boolean
                   elasticCoreCpuLimit:
                     description: Limit the amount of single core CPU that can be used
                       by workloads which use extended resource

@@ -315,9 +315,6 @@ type ElasticCpuLimit struct {
 
 	// Workloads which use extended resource only run on CPUs where high priority tasks are not running
 	ElasticCpuAvoidance ElasticCpuAvoidance `json:"elasticCpuAvoidance,omitempty"`
-
-	// Enable BT Suppress
-	BTSuppressPercent bool `json:"btSuppressPercent,omitempty"`
 }
 
 type ElasticNodeCpuLimit struct {
