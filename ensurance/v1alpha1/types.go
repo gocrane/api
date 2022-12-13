@@ -144,6 +144,14 @@ type CPUBurst struct {
 }
 
 type MemoryQOS struct {
+	// MemoryPriority define the memory priority for the pods.
+	// MemoryPriority range [0,7], 0 is the highest level.
+	// When the memory resource is shortage, the low level pods would be OOM Killed earlier
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Maximum=7
+	// +optional
+	MemoryPriority *int32 `json:"memPriority,omitempty"`
+
 	MemAsyncReclaim   MemAsyncReclaim   `json:"memAsyncReclaim,omitempty"`
 	MemWatermark      MemWatermark      `json:"memWatermark,omitempty"`
 	MemPageCacheLimit MemPageCacheLimit `json:"memPageCacheLimit,omitempty"`
