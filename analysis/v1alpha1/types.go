@@ -44,6 +44,17 @@ const (
 	IdleNodeRecommender string = "IdleNode"
 )
 
+var (
+	AllRecommenderType []string
+)
+
+func init() {
+	AllRecommenderType = append(AllRecommenderType, ReplicasRecommender)
+	AllRecommenderType = append(AllRecommenderType, ResourceRecommender)
+	AllRecommenderType = append(AllRecommenderType, HPARecommender)
+	AllRecommenderType = append(AllRecommenderType, IdleNodeRecommender)
+}
+
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
