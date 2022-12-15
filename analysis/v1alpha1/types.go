@@ -343,6 +343,9 @@ type Recommender struct {
 
 	// Recommender's Name
 	Name string `json:"name"`
+	// Override Recommendation configs
+	// +optional
+	Config map[string]string `json:"config,omitempty"`
 }
 
 // NamespaceSelector describes how to select namespaces for recommend
