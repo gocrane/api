@@ -378,7 +378,7 @@ type MetricRule struct {
 	Value resource.Quantity `json:"value,omitempty"`
 }
 
-// NodeQOSEnsurancePolicyStatus defines the observed status of NodeQOSEnsurancePolicy
+// NodeQOSStatus defines the observed status of NodeQOS
 type NodeQOSStatus struct {
 }
 
