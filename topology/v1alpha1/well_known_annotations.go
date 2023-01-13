@@ -9,6 +9,9 @@ const (
 
 	// AnnotationPodTopologyResultKey is the pod scheduling annotation key of topology-result.
 	AnnotationPodTopologyResultKey = "topology.crane.io/topology-result"
+
+	// AnnotationPodExcludeReservedCPUs is the pod annotation key of exclude reserved cpus
+	AnnotationPodExcludeReservedCPUs = "topology.crane.io/exclude-reserved-cpus"
 )
 
 const (
