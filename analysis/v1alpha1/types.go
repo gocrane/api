@@ -366,6 +366,10 @@ type RecommendationRuleStatus struct {
 	// +optional
 	// +listType=atomic
 	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
+
+	// RunNumber is the numbers of runs
+	// +optional
+	RunNumber int32 `json:"runNumber,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
