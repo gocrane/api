@@ -10,6 +10,7 @@ import (
 	versioned "github.com/gocrane/api/pkg/generated/clientset/versioned"
 	analysis "github.com/gocrane/api/pkg/generated/informers/externalversions/analysis"
 	autoscaling "github.com/gocrane/api/pkg/generated/informers/externalversions/autoscaling"
+	co2e "github.com/gocrane/api/pkg/generated/informers/externalversions/co2e"
 	ensurance "github.com/gocrane/api/pkg/generated/informers/externalversions/ensurance"
 	internalinterfaces "github.com/gocrane/api/pkg/generated/informers/externalversions/internalinterfaces"
 	prediction "github.com/gocrane/api/pkg/generated/informers/externalversions/prediction"
@@ -162,6 +163,7 @@ type SharedInformerFactory interface {
 
 	Analysis() analysis.Interface
 	Autoscaling() autoscaling.Interface
+	Co2e() co2e.Interface
 	Ensurance() ensurance.Interface
 	Prediction() prediction.Interface
 	Topology() topology.Interface
@@ -173,6 +175,10 @@ func (f *sharedInformerFactory) Analysis() analysis.Interface {
 
 func (f *sharedInformerFactory) Autoscaling() autoscaling.Interface {
 	return autoscaling.New(f, f.namespace, f.tweakListOptions)
+}
+
+func (f *sharedInformerFactory) Co2e() co2e.Interface {
+	return co2e.New(f, f.namespace, f.tweakListOptions)
 }
 
 func (f *sharedInformerFactory) Ensurance() ensurance.Interface {

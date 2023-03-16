@@ -7,6 +7,7 @@ import (
 
 	v1alpha1 "github.com/gocrane/api/analysis/v1alpha1"
 	autoscalingv1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
+	co2ev1alpha1 "github.com/gocrane/api/co2e/v1alpha1"
 	ensurancev1alpha1 "github.com/gocrane/api/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
 	topologyv1alpha1 "github.com/gocrane/api/topology/v1alpha1"
@@ -57,6 +58,10 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().EffectiveVerticalPodAutoscalers().Informer()}, nil
 	case autoscalingv1alpha1.SchemeGroupVersion.WithResource("substitutes"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Autoscaling().V1alpha1().Substitutes().Informer()}, nil
+
+		// Group=co2e.crane.io, Version=v1alpha1
+	case co2ev1alpha1.SchemeGroupVersion.WithResource("cloudcarbonfootprints"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Co2e().V1alpha1().CloudCarbonFootprints().Informer()}, nil
 
 		// Group=ensurance.crane.io, Version=v1alpha1
 	case ensurancev1alpha1.SchemeGroupVersion.WithResource("avoidanceactions"):

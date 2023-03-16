@@ -7,6 +7,7 @@ import (
 
 	analysisv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/analysis/v1alpha1"
 	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
+	co2ev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/co2e/v1alpha1"
 	ensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
 	predictionv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
 	topologyv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/topology/v1alpha1"
@@ -19,6 +20,7 @@ type Interface interface {
 	Discovery() discovery.DiscoveryInterface
 	AnalysisV1alpha1() analysisv1alpha1.AnalysisV1alpha1Interface
 	AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface
+	Co2eV1alpha1() co2ev1alpha1.Co2eV1alpha1Interface
 	EnsuranceV1alpha1() ensurancev1alpha1.EnsuranceV1alpha1Interface
 	PredictionV1alpha1() predictionv1alpha1.PredictionV1alpha1Interface
 	TopologyV1alpha1() topologyv1alpha1.TopologyV1alpha1Interface
@@ -30,6 +32,7 @@ type Clientset struct {
 	*discovery.DiscoveryClient
 	analysisV1alpha1    *analysisv1alpha1.AnalysisV1alpha1Client
 	autoscalingV1alpha1 *autoscalingv1alpha1.AutoscalingV1alpha1Client
+	co2eV1alpha1        *co2ev1alpha1.Co2eV1alpha1Client
 	ensuranceV1alpha1   *ensurancev1alpha1.EnsuranceV1alpha1Client
 	predictionV1alpha1  *predictionv1alpha1.PredictionV1alpha1Client
 	topologyV1alpha1    *topologyv1alpha1.TopologyV1alpha1Client
@@ -43,6 +46,11 @@ func (c *Clientset) AnalysisV1alpha1() analysisv1alpha1.AnalysisV1alpha1Interfac
 // AutoscalingV1alpha1 retrieves the AutoscalingV1alpha1Client
 func (c *Clientset) AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface {
 	return c.autoscalingV1alpha1
+}
+
+// Co2eV1alpha1 retrieves the Co2eV1alpha1Client
+func (c *Clientset) Co2eV1alpha1() co2ev1alpha1.Co2eV1alpha1Interface {
+	return c.co2eV1alpha1
 }
 
 // EnsuranceV1alpha1 retrieves the EnsuranceV1alpha1Client
@@ -89,6 +97,10 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	if err != nil {
 		return nil, err
 	}
+	cs.co2eV1alpha1, err = co2ev1alpha1.NewForConfig(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
 	cs.ensuranceV1alpha1, err = ensurancev1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
@@ -115,6 +127,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
 	cs.analysisV1alpha1 = analysisv1alpha1.NewForConfigOrDie(c)
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.NewForConfigOrDie(c)
+	cs.co2eV1alpha1 = co2ev1alpha1.NewForConfigOrDie(c)
 	cs.ensuranceV1alpha1 = ensurancev1alpha1.NewForConfigOrDie(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.NewForConfigOrDie(c)
 	cs.topologyV1alpha1 = topologyv1alpha1.NewForConfigOrDie(c)
@@ -128,6 +141,7 @@ func New(c rest.Interface) *Clientset {
 	var cs Clientset
 	cs.analysisV1alpha1 = analysisv1alpha1.New(c)
 	cs.autoscalingV1alpha1 = autoscalingv1alpha1.New(c)
+	cs.co2eV1alpha1 = co2ev1alpha1.New(c)
 	cs.ensuranceV1alpha1 = ensurancev1alpha1.New(c)
 	cs.predictionV1alpha1 = predictionv1alpha1.New(c)
 	cs.topologyV1alpha1 = topologyv1alpha1.New(c)
