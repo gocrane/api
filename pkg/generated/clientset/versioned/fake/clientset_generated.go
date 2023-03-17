@@ -8,6 +8,8 @@ import (
 	fakeanalysisv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/analysis/v1alpha1/fake"
 	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
 	fakeautoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1/fake"
+	co2ev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/co2e/v1alpha1"
+	fakeco2ev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/co2e/v1alpha1/fake"
 	ensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1"
 	fakeensurancev1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/ensurance/v1alpha1/fake"
 	predictionv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/prediction/v1alpha1"
@@ -79,6 +81,11 @@ func (c *Clientset) AnalysisV1alpha1() analysisv1alpha1.AnalysisV1alpha1Interfac
 // AutoscalingV1alpha1 retrieves the AutoscalingV1alpha1Client
 func (c *Clientset) AutoscalingV1alpha1() autoscalingv1alpha1.AutoscalingV1alpha1Interface {
 	return &fakeautoscalingv1alpha1.FakeAutoscalingV1alpha1{Fake: &c.Fake}
+}
+
+// Co2eV1alpha1 retrieves the Co2eV1alpha1Client
+func (c *Clientset) Co2eV1alpha1() co2ev1alpha1.Co2eV1alpha1Interface {
+	return &fakeco2ev1alpha1.FakeCo2eV1alpha1{Fake: &c.Fake}
 }
 
 // EnsuranceV1alpha1 retrieves the EnsuranceV1alpha1Client
