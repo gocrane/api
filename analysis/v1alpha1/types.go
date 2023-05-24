@@ -102,6 +102,10 @@ type RecommendationSpec struct {
 	// +kubebuilder:validation:Enum=Status;StatusAndAnnotation;Auto
 	// +kubebuilder:default=StatusAndAnnotation
 	AdoptionType AdoptionType `json:"adoptionType,omitempty"`
+
+	// RecommenderRef presents recommender info for recommendation mission.
+	// +optional
+	RecommenderRef Recommender `json:"recommenderRef"`
 }
 
 // RecommendationStatus represents the current state of a recommendation.
@@ -361,11 +365,6 @@ type RecommendationRuleStatus struct {
 	// LastUpdateTime is the last time the status updated.
 	// +optional
 	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
-
-	// Recommendations is a list of RecommendationMission that run parallel.
-	// +optional
-	// +listType=atomic
-	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
 
 	// RunNumber is the numbers of runs
 	// +optional
