@@ -195,6 +195,14 @@ spec:
                           enable:
                             type: boolean
                         type: object
+                      limitExceed:
+                        properties:
+                          time:
+                            format: int64
+                            type: integer
+                          value:
+                            type: string
+                        type: object
                       rdt:
                         properties:
                           l3:

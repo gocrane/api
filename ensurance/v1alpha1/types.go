@@ -116,6 +116,13 @@ type CPUQOS struct {
 	RDT RDT `json:"rdt,omitempty"`
 
 	ContainerRDT map[string]RDT `json:"containerRdt,omitempty"`
+
+	LimitExceed LimitExceed `json:"limitExceed,omitempty"`
+}
+
+type LimitExceed struct {
+	Value string `json:"value,omitempty"`
+	Time  int64  `json:"time,omitempty"`
 }
 
 type RDTValue map[string]string
