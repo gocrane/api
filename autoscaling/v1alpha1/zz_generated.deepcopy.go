@@ -7,7 +7,7 @@ package v1alpha1
 
 import (
 	predictionv1alpha1 "github.com/gocrane/api/prediction/v1alpha1"
-	v2beta2 "k8s.io/api/autoscaling/v2beta2"
+	v2 "k8s.io/api/autoscaling/v2"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -203,7 +203,7 @@ func (in *EffectiveHorizontalPodAutoscalerSpec) DeepCopyInto(out *EffectiveHoriz
 	}
 	if in.Metrics != nil {
 		in, out := &in.Metrics, &out.Metrics
-		*out = make([]v2beta2.MetricSpec, len(*in))
+		*out = make([]v2.MetricSpec, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
@@ -217,7 +217,7 @@ func (in *EffectiveHorizontalPodAutoscalerSpec) DeepCopyInto(out *EffectiveHoriz
 	}
 	if in.Behavior != nil {
 		in, out := &in.Behavior, &out.Behavior
-		*out = new(v2beta2.HorizontalPodAutoscalerBehavior)
+		*out = new(v2.HorizontalPodAutoscalerBehavior)
 		(*in).DeepCopyInto(*out)
 	}
 	if in.Prediction != nil {
@@ -341,7 +341,7 @@ func (in *EffectiveVerticalPodAutoscalerSpec) DeepCopyInto(out *EffectiveVertica
 	*out = *in
 	if in.TargetRef != nil {
 		in, out := &in.TargetRef, &out.TargetRef
-		*out = new(v2beta2.CrossVersionObjectReference)
+		*out = new(v2.CrossVersionObjectReference)
 		**out = **in
 	}
 	if in.UpdatePolicy != nil {

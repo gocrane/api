@@ -101,7 +101,7 @@ func (c *FakeRecommendations) UpdateStatus(ctx context.Context, recommendation *
 // Delete takes name of the recommendation and deletes it. Returns an error if one occurs.
 func (c *FakeRecommendations) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(recommendationsResource, c.ns, name), &v1alpha1.Recommendation{})
+		Invokes(testing.NewDeleteActionWithOptions(recommendationsResource, c.ns, name, opts), &v1alpha1.Recommendation{})
 
 	return err
 }

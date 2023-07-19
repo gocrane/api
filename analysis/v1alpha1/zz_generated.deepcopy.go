@@ -7,7 +7,7 @@ package v1alpha1
 
 import (
 	autoscalingv1alpha1 "github.com/gocrane/api/autoscaling/v1alpha1"
-	v2beta2 "k8s.io/api/autoscaling/v2beta2"
+	v2 "k8s.io/api/autoscaling/v2"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -292,7 +292,7 @@ func (in *EffectiveHorizontalPodAutoscalerRecommendation) DeepCopyInto(out *Effe
 	}
 	if in.Metrics != nil {
 		in, out := &in.Metrics, &out.Metrics
-		*out = make([]v2beta2.MetricSpec, len(*in))
+		*out = make([]v2.MetricSpec, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

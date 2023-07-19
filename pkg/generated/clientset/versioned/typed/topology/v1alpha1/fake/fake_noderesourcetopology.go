@@ -83,7 +83,7 @@ func (c *FakeNodeResourceTopologies) Update(ctx context.Context, nodeResourceTop
 // Delete takes name of the nodeResourceTopology and deletes it. Returns an error if one occurs.
 func (c *FakeNodeResourceTopologies) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(noderesourcetopologiesResource, name), &v1alpha1.NodeResourceTopology{})
+		Invokes(testing.NewRootDeleteActionWithOptions(noderesourcetopologiesResource, name, opts), &v1alpha1.NodeResourceTopology{})
 	return err
 }
 
