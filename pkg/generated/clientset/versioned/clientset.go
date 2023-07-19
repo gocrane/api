@@ -4,6 +4,7 @@ package versioned
 
 import (
 	"fmt"
+	"net/http"
 
 	analysisv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/analysis/v1alpha1"
 	autoscalingv1alpha1 "github.com/gocrane/api/pkg/generated/clientset/versioned/typed/autoscaling/v1alpha1"
@@ -79,7 +80,25 @@ func (c *Clientset) Discovery() discovery.DiscoveryInterface {
 // NewForConfig creates a new Clientset for the given config.
 // If config's RateLimiter is not set and QPS and Burst are acceptable,
 // NewForConfig will generate a rate-limiter in configShallowCopy.
+// NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
+// where httpClient was generated with rest.HTTPClientFor(c).
 func NewForConfig(c *rest.Config) (*Clientset, error) {
+	configShallowCopy := *c
+
+	// share the transport between all clients
+	httpClient, err := rest.HTTPClientFor(&configShallowCopy)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewForConfigAndClient(&configShallowCopy, httpClient)
+}
+
+// NewForConfigAndClient creates a new Clientset for the given config and http client.
+// Note the http client provided takes precedence over the configured transport values.
+// If config's RateLimiter is not set and QPS and Burst are acceptable,
+// NewForConfigAndClient will generate a rate-limiter in configShallowCopy.
+func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset, error) {
 	configShallowCopy := *c
 	if configShallowCopy.RateLimiter == nil && configShallowCopy.QPS > 0 {
 		if configShallowCopy.Burst <= 0 {
@@ -87,34 +106,35 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 		}
 		configShallowCopy.RateLimiter = flowcontrol.NewTokenBucketRateLimiter(configShallowCopy.QPS, configShallowCopy.Burst)
 	}
+
 	var cs Clientset
 	var err error
-	cs.analysisV1alpha1, err = analysisv1alpha1.NewForConfig(&configShallowCopy)
+	cs.analysisV1alpha1, err = analysisv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.autoscalingV1alpha1, err = autoscalingv1alpha1.NewForConfig(&configShallowCopy)
+	cs.autoscalingV1alpha1, err = autoscalingv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.co2eV1alpha1, err = co2ev1alpha1.NewForConfig(&configShallowCopy)
+	cs.co2eV1alpha1, err = co2ev1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.ensuranceV1alpha1, err = ensurancev1alpha1.NewForConfig(&configShallowCopy)
+	cs.ensuranceV1alpha1, err = ensurancev1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.predictionV1alpha1, err = predictionv1alpha1.NewForConfig(&configShallowCopy)
+	cs.predictionV1alpha1, err = predictionv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.topologyV1alpha1, err = topologyv1alpha1.NewForConfig(&configShallowCopy)
+	cs.topologyV1alpha1, err = topologyv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
 
-	cs.DiscoveryClient, err = discovery.NewDiscoveryClientForConfig(&configShallowCopy)
+	cs.DiscoveryClient, err = discovery.NewDiscoveryClientForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
@@ -124,16 +144,11 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // NewForConfigOrDie creates a new Clientset for the given config and
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
-	var cs Clientset
-	cs.analysisV1alpha1 = analysisv1alpha1.NewForConfigOrDie(c)
-	cs.autoscalingV1alpha1 = autoscalingv1alpha1.NewForConfigOrDie(c)
-	cs.co2eV1alpha1 = co2ev1alpha1.NewForConfigOrDie(c)
-	cs.ensuranceV1alpha1 = ensurancev1alpha1.NewForConfigOrDie(c)
-	cs.predictionV1alpha1 = predictionv1alpha1.NewForConfigOrDie(c)
-	cs.topologyV1alpha1 = topologyv1alpha1.NewForConfigOrDie(c)
-
-	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
-	return &cs
+	cs, err := NewForConfig(c)
+	if err != nil {
+		panic(err)
+	}
+	return cs
 }
 
 // New creates a new Clientset for the given RESTClient.

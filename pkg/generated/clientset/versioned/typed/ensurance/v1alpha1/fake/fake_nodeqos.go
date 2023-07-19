@@ -94,7 +94,7 @@ func (c *FakeNodeQOSs) UpdateStatus(ctx context.Context, nodeQOS *v1alpha1.NodeQ
 // Delete takes name of the nodeQOS and deletes it. Returns an error if one occurs.
 func (c *FakeNodeQOSs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(nodeqossResource, name), &v1alpha1.NodeQOS{})
+		Invokes(testing.NewRootDeleteActionWithOptions(nodeqossResource, name, opts), &v1alpha1.NodeQOS{})
 	return err
 }
 

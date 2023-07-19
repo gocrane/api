@@ -94,7 +94,7 @@ func (c *FakeCloudCarbonFootprints) UpdateStatus(ctx context.Context, cloudCarbo
 // Delete takes name of the cloudCarbonFootprint and deletes it. Returns an error if one occurs.
 func (c *FakeCloudCarbonFootprints) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(cloudcarbonfootprintsResource, name), &v1alpha1.CloudCarbonFootprint{})
+		Invokes(testing.NewRootDeleteActionWithOptions(cloudcarbonfootprintsResource, name, opts), &v1alpha1.CloudCarbonFootprint{})
 	return err
 }
 

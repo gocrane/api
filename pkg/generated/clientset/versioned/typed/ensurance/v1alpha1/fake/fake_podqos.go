@@ -94,7 +94,7 @@ func (c *FakePodQOSs) UpdateStatus(ctx context.Context, podQOS *v1alpha1.PodQOS,
 // Delete takes name of the podQOS and deletes it. Returns an error if one occurs.
 func (c *FakePodQOSs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(podqossResource, name), &v1alpha1.PodQOS{})
+		Invokes(testing.NewRootDeleteActionWithOptions(podqossResource, name, opts), &v1alpha1.PodQOS{})
 	return err
 }
 

@@ -101,7 +101,7 @@ func (c *FakeEffectiveVerticalPodAutoscalers) UpdateStatus(ctx context.Context, 
 // Delete takes name of the effectiveVerticalPodAutoscaler and deletes it. Returns an error if one occurs.
 func (c *FakeEffectiveVerticalPodAutoscalers) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(effectiveverticalpodautoscalersResource, c.ns, name), &v1alpha1.EffectiveVerticalPodAutoscaler{})
+		Invokes(testing.NewDeleteActionWithOptions(effectiveverticalpodautoscalersResource, c.ns, name, opts), &v1alpha1.EffectiveVerticalPodAutoscaler{})
 
 	return err
 }
