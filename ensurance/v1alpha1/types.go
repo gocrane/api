@@ -40,7 +40,7 @@ type PodQOSSpec struct {
 	// ResourceQOS describe the QOS limit for cpu,memory,netIO,diskIO and so on.
 	ResourceQOS ResourceQOS `json:"resourceQOS,omitempty"`
 
-	//QualityProbe defines the way to probe a pod
+	// QualityProbe defines the way to probe a pod
 	PodQualityProbe PodQualityProbe `json:"podQualityProbe,omitempty"`
 
 	// AllowedActions limits the set of actions that the pods is allowed to perform by NodeQOS
@@ -94,6 +94,43 @@ type ResourceQOS struct {
 	MemoryQOS *MemoryQOS `json:"memoryQOS,omitempty"`
 	NetIOQOS  *NetIOQOS  `json:"netIOQOS,omitempty"`
 	DiskIOQOS *DiskIOQOS `json:"diskIOQOS,omitempty"`
+}
+
+// CompressionPreference provides a quick way to set the frequency, ratio and size of compression.
+type CompressionPreference string
+
+type CompressionOversold string
+
+const (
+	PreferenceTiny     CompressionPreference = "Tiny"
+	PreferenceNormal   CompressionPreference = "Normal"
+	PreferenceFileOnly CompressionPreference = "FileOnly"
+	PreferenceAnonOnly CompressionPreference = "AnonOnly"
+
+	OversoldTransparent CompressionOversold = "Transparent"
+	OversoldNone        CompressionOversold = "None"
+	OversoldAllow       CompressionOversold = "Allow"
+)
+
+type MemoryCompression struct {
+	// +kubebuilder:validation:Default=false
+	Enable bool `json:"enable,omitempty"`
+
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Maximum=4
+	CompressionLevel int `json:"compressionLevel,omitempty"`
+
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=Tiny;Normal;FileOnly;AnonOnly
+	// +kubebuilder:default=Tiny
+	// +optional
+	Preference CompressionPreference `json:"preference"`
+
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Enum=Transparent;None;Allow
+	// +kubebuilder:default=Allow
+	// +optional
+	Oversold CompressionOversold `json:"oversold"`
 }
 
 type CPUQOS struct {
@@ -155,6 +192,8 @@ type MemoryQOS struct {
 	MemAsyncReclaim   MemAsyncReclaim   `json:"memAsyncReclaim,omitempty"`
 	MemWatermark      MemWatermark      `json:"memWatermark,omitempty"`
 	MemPageCacheLimit MemPageCacheLimit `json:"memPageCacheLimit,omitempty"`
+
+	MemoryCompression MemoryCompression `json:"memoryCompression,omitempty"`
 }
 
 type MemPageCacheLimit struct {
@@ -258,8 +297,15 @@ type NodeQOSSpec struct {
 	// MemoryLimit is the mem limit in the node
 	MemoryLimit MemLimit `json:"memLimit,omitempty"`
 
+	MemoryCompression NodeMemoryCompression `json:"memoryCompression,omitempty"`
+
 	// NetLimits is the net IO limit in the node
 	NetLimits NetLimits `json:"netLimits,omitempty"`
+}
+
+type NodeMemoryCompression struct {
+	// +kubebuilder:validation:Default=false
+	Enable bool `json:"enable,omitempty"`
 }
 
 type NetLimits struct {
@@ -402,7 +448,7 @@ type AvoidanceActionSpec struct {
 	// +optional
 	Throttle *ThrottleAction `json:"throttle,omitempty"`
 
-	//Eviction describes the eviction action
+	// Eviction describes the eviction action
 	// +optional
 	Eviction *EvictionAction `json:"eviction,omitempty"`
 

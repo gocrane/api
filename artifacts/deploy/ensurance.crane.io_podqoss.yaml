@@ -274,6 +274,32 @@ spec:
                         required:
                         - watermarkRatio
                         type: object
+                      memoryCompression:
+                        properties:
+                          compressionLevel:
+                            maximum: 4
+                            minimum: 0
+                            type: integer
+                          enable:
+                            type: boolean
+                          oversold:
+                            default: Allow
+                            enum:
+                            - Transparent
+                            - None
+                            - Allow
+                            type: string
+                          preference:
+                            default: Tiny
+                            description: CompressionPreference provides a quick way
+                              to set the frequency, ratio and size of compression.
+                            enum:
+                            - Tiny
+                            - Normal
+                            - FileOnly
+                            - AnonOnly
+                            type: string
+                        type: object
                     type: object
                   netIOQOS:
                     properties:
