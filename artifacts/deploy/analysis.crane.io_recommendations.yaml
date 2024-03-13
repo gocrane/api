@@ -238,6 +238,11 @@ spec:
                 type: string
               description:
                 type: string
+              expirationTime:
+                description: ExpirationTime is the time when the recommendation will
+                  be expired.
+                format: date-time
+                type: string
               lastUpdateTime:
                 description: LastUpdateTime is last time we got an update on this
                   status.

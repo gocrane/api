@@ -732,6 +732,10 @@ func (in *RecommendationStatus) DeepCopyInto(out *RecommendationStatus) {
 		in, out := &in.LastUpdateTime, &out.LastUpdateTime
 		*out = (*in).DeepCopy()
 	}
+	if in.ExpirationTime != nil {
+		in, out := &in.ExpirationTime, &out.ExpirationTime
+		*out = (*in).DeepCopy()
+	}
 	return
 }
 

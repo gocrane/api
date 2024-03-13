@@ -115,6 +115,10 @@ type RecommendationStatus struct {
 	// LastUpdateTime is last time we got an update on this status.
 	// +optional
 	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
+
+	// ExpirationTime is the time when the recommendation will be expired.
+	// +optional
+	ExpirationTime *metav1.Time `json:"expirationTime,omitempty"`
 }
 
 // RecommendationContent contains results for one recommendation
