@@ -94,7 +94,7 @@ func (c *FakeAvoidanceActions) UpdateStatus(ctx context.Context, avoidanceAction
 // Delete takes name of the avoidanceAction and deletes it. Returns an error if one occurs.
 func (c *FakeAvoidanceActions) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(avoidanceactionsResource, name), &v1alpha1.AvoidanceAction{})
+		Invokes(testing.NewRootDeleteActionWithOptions(avoidanceactionsResource, name, opts), &v1alpha1.AvoidanceAction{})
 	return err
 }
 

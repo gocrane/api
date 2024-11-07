@@ -101,7 +101,7 @@ func (c *FakeClusterNodePredictions) UpdateStatus(ctx context.Context, clusterNo
 // Delete takes name of the clusterNodePrediction and deletes it. Returns an error if one occurs.
 func (c *FakeClusterNodePredictions) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(clusternodepredictionsResource, c.ns, name), &v1alpha1.ClusterNodePrediction{})
+		Invokes(testing.NewDeleteActionWithOptions(clusternodepredictionsResource, c.ns, name, opts), &v1alpha1.ClusterNodePrediction{})
 
 	return err
 }

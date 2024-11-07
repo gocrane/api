@@ -101,7 +101,7 @@ func (c *FakeAnalytics) UpdateStatus(ctx context.Context, analytics *v1alpha1.An
 // Delete takes name of the analytics and deletes it. Returns an error if one occurs.
 func (c *FakeAnalytics) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(analyticsResource, c.ns, name), &v1alpha1.Analytics{})
+		Invokes(testing.NewDeleteActionWithOptions(analyticsResource, c.ns, name, opts), &v1alpha1.Analytics{})
 
 	return err
 }
