@@ -95,6 +95,11 @@ spec:
                     format: int64
                     type: integer
                 type: object
+              memoryCompression:
+                properties:
+                  enable:
+                    type: boolean
+                type: object
               netLimits:
                 description: NetLimits is the net IO limit in the node
                 properties:
