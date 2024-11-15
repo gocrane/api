@@ -101,7 +101,7 @@ func (c *FakeSubstitutes) UpdateStatus(ctx context.Context, substitute *v1alpha1
 // Delete takes name of the substitute and deletes it. Returns an error if one occurs.
 func (c *FakeSubstitutes) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(substitutesResource, c.ns, name), &v1alpha1.Substitute{})
+		Invokes(testing.NewDeleteActionWithOptions(substitutesResource, c.ns, name, opts), &v1alpha1.Substitute{})
 
 	return err
 }

@@ -101,7 +101,7 @@ func (c *FakeTimeSeriesPredictions) UpdateStatus(ctx context.Context, timeSeries
 // Delete takes name of the timeSeriesPrediction and deletes it. Returns an error if one occurs.
 func (c *FakeTimeSeriesPredictions) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(timeseriespredictionsResource, c.ns, name), &v1alpha1.TimeSeriesPrediction{})
+		Invokes(testing.NewDeleteActionWithOptions(timeseriespredictionsResource, c.ns, name, opts), &v1alpha1.TimeSeriesPrediction{})
 
 	return err
 }
