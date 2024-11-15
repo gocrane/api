@@ -3515,9 +3515,6 @@ spec:
                           asyncRatio:
                             format: int64
                             type: integer
-                        required:
-                        - asyncDistanceFactor
-                        - asyncRatio
                         type: object
                       memPageCacheLimit:
                         properties:
@@ -3527,9 +3524,6 @@ spec:
                           pageCacheReclaimRatio:
                             format: int64
                             type: integer
-                        required:
-                        - pageCacheMaxRatio
-                        - pageCacheReclaimRatio
                         type: object
                       memPriority:
                         description: MemoryPriority define the memory priority for
@@ -3545,8 +3539,6 @@ spec:
                         properties:
                           watermarkRatio:
                             type: integer
-                        required:
-                        - watermarkRatio
                         type: object
                       memoryCompression:
                         properties:
