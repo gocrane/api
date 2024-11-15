@@ -197,18 +197,18 @@ type MemoryQOS struct {
 }
 
 type MemPageCacheLimit struct {
-	PageCacheMaxRatio     *int64 `json:"pageCacheMaxRatio"`
-	PageCacheReclaimRatio *int64 `json:"pageCacheReclaimRatio"`
+	PageCacheMaxRatio     *int64 `json:"pageCacheMaxRatio,omitempty"`
+	PageCacheReclaimRatio *int64 `json:"pageCacheReclaimRatio,omitempty"`
 }
 
 type MemAsyncReclaim struct {
-	AsyncRatio          *int64 `json:"asyncRatio"`
-	AsyncDistanceFactor *int64 `json:"asyncDistanceFactor"`
+	AsyncRatio          *int64 `json:"asyncRatio,omitempty"`
+	AsyncDistanceFactor *int64 `json:"asyncDistanceFactor,omitempty"`
 }
 
 // MemWatermark to set memory watermark priority
 type MemWatermark struct {
-	WatermarkRatio *int `json:"watermarkRatio"`
+	WatermarkRatio *int `json:"watermarkRatio,omitempty"`
 }
 
 type NetIOQOS struct {
