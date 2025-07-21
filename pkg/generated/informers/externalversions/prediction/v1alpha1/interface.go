@@ -12,6 +12,8 @@ type Interface interface {
 	ClusterNodePredictions() ClusterNodePredictionInformer
 	// TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
 	TimeSeriesPredictions() TimeSeriesPredictionInformer
+	// TimeSeriesPredictionRules returns a TimeSeriesPredictionRuleInformer.
+	TimeSeriesPredictionRules() TimeSeriesPredictionRuleInformer
 }
 
 type version struct {
@@ -33,4 +35,9 @@ func (v *version) ClusterNodePredictions() ClusterNodePredictionInformer {
 // TimeSeriesPredictions returns a TimeSeriesPredictionInformer.
 func (v *version) TimeSeriesPredictions() TimeSeriesPredictionInformer {
 	return &timeSeriesPredictionInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// TimeSeriesPredictionRules returns a TimeSeriesPredictionRuleInformer.
+func (v *version) TimeSeriesPredictionRules() TimeSeriesPredictionRuleInformer {
+	return &timeSeriesPredictionRuleInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }

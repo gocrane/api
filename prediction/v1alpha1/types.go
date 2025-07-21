@@ -8,8 +8,9 @@ import (
 type AlgorithmType string
 
 const (
-	AlgorithmTypePercentile AlgorithmType = "percentile"
-	AlgorithmTypeDSP        AlgorithmType = "dsp"
+	AlgorithmTypePercentile          AlgorithmType = "percentile"
+	AlgorithmTypeDSP                 AlgorithmType = "dsp"
+	AlgorithmTypeSegmentedPercentile AlgorithmType = "sp"
 )
 
 // PredictionMode represents the prediction time series mode.
@@ -93,6 +94,17 @@ type FFTEstimator struct {
 }
 
 type Percentile struct {
+	Aggregated        bool            `json:"aggregated,omitempty"`
+	HistoryLength     string          `json:"historyLength,omitempty"`
+	SampleInterval    string          `json:"sampleInterval,omitempty"`
+	Histogram         HistogramConfig `json:"histogram,omitempty"`
+	MinSampleWeight   string          `json:"minSampleWeight,omitempty"`
+	MarginFraction    string          `json:"marginFraction,omitempty"`
+	Percentile        string          `json:"percentile,omitempty"`
+	TargetUtilization string          `json:"targetUtilization,omitempty"`
+}
+
+type SP struct {
 	Aggregated        bool            `json:"aggregated,omitempty"`
 	HistoryLength     string          `json:"historyLength,omitempty"`
 	SampleInterval    string          `json:"sampleInterval,omitempty"`
@@ -245,6 +257,9 @@ type Algorithm struct {
 	// +optional
 	// Percentile is an algorithm which use exponential time decay histogram, it can predict a reasonable value according your history time series
 	Percentile *Percentile `json:"percentile,omitempty"`
+	// +optional
+	// SP is an algorithm which use exponential time decay histogram, it can predict a 24 reasonable value according your history time series
+	SP *SP `json:"sp,omitempty"`
 }
 
 type MetricTimeSeriesList []*MetricTimeSeries
@@ -291,4 +306,121 @@ type TimeSeriesPredictionList struct {
 	metav1.ListMeta `json:"metadata"`
 
 	Items []TimeSeriesPrediction `json:"items"`
+}
+
+// +genclient
+// +genclient:nonNamespaced
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster,shortName=tspr
+// +kubebuilder:printcolumn:name="RunInterval",type=string,JSONPath=`.spec.runInterval`
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
+
+// TimeSeriesPredictionRule represents the configuration of an TimeSeriesPredictionRule object.
+type TimeSeriesPredictionRule struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	// +optional
+	Spec TimeSeriesPredictionRuleSpec `json:"spec"`
+
+	// +optional
+	Status TimeSeriesPredictionRuleStatus `json:"status,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// TimeSeriesPredictionRuleList is a list of TimeSeriesPredictionRule items.
+type TimeSeriesPredictionRuleList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+
+	Items []TimeSeriesPredictionRule `json:"items"`
+}
+
+// TimeSeriesPredictionRuleSpec defines resources and runInterval to recommend
+type TimeSeriesPredictionRuleSpec struct {
+	// ResourceSelector indicates how to select resources(e.g. a set of Deployments) for a Recommendation.
+	// +required
+	// +kubebuilder:validation:Required
+	ResourceSelectors []ResourceSelector `json:"resourceSelectors"`
+
+	// NamespaceSelector indicates resource namespaces to select from
+	NamespaceSelector NamespaceSelector `json:"namespaceSelector"`
+
+	// RunInterval between two recommendation
+	RunInterval string `json:"runInterval,omitempty"`
+
+	// List of recommender type to run
+	Recommenders []Recommender `json:"recommenders"`
+}
+
+// ResourceSelector describes how the resources will be selected.
+type ResourceSelector struct {
+	// Kind of the resource, e.g. Deployment
+	Kind string `json:"kind"`
+
+	// API version of the resource, e.g. "apps/v1"
+	// +optional
+	APIVersion string `json:"apiVersion"`
+
+	// Name of the resource.
+	// +optional
+	Name string `json:"name,omitempty"`
+
+	// +optional
+	LabelSelector *metav1.LabelSelector `json:"labelSelector,omitempty"`
+}
+
+// NamespaceSelector describes how to select namespaces for recommend
+type NamespaceSelector struct {
+	// Select all namespace if true
+	Any bool `json:"any,omitempty"`
+	// List of namespace names to select from.
+	MatchNames []string `json:"matchNames,omitempty"`
+}
+
+// Recommender referring to the Recommender in RecommendationConfiguration
+type Recommender struct {
+
+	// Recommender's Name
+	Name string `json:"name"`
+	// Override Recommendation configs
+	// +optional
+	Config map[string]string `json:"config,omitempty"`
+}
+
+// TimeSeriesPredictionRuleStatus represents the current state of an TimeSeriesPredictionRule item.
+type TimeSeriesPredictionRuleStatus struct {
+	// LastUpdateTime is the last time the status updated.
+	// +optional
+	LastUpdateTime *metav1.Time `json:"lastUpdateTime,omitempty"`
+
+	// Recommendations is a list of RecommendationMission that run parallel.
+	// +optional
+	// +listType=atomic
+	Recommendations []RecommendationMission `json:"recommendations,omitempty"`
+
+	// RunNumber is the numbers of runs
+	// +optional
+	RunNumber int32 `json:"runNumber,omitempty"`
+}
+
+type RecommendationMission struct {
+	v1.ObjectReference `json:",inline"`
+
+	// +optional
+	TargetRef v1.ObjectReference `json:"targetRef"`
+
+	// LastStartTime is last time we start a recommendation mission.
+	// +optional
+	LastStartTime *metav1.Time `json:"lastStartTime,omitempty"`
+
+	// Message presents the running message for this mission
+	// +optional
+	Message string `json:"message,omitempty"`
+
+	// RecommenderRef presents recommender info for recommendation mission.
+	// +optional
+	RecommenderRef Recommender `json:"recommenderRef"`
 }

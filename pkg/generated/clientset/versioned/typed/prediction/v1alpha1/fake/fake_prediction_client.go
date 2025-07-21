@@ -20,6 +20,10 @@ func (c *FakePredictionV1alpha1) TimeSeriesPredictions(namespace string) v1alpha
 	return &FakeTimeSeriesPredictions{c, namespace}
 }
 
+func (c *FakePredictionV1alpha1) TimeSeriesPredictionRules() v1alpha1.TimeSeriesPredictionRuleInterface {
+	return &FakeTimeSeriesPredictionRules{c}
+}
+
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
 func (c *FakePredictionV1alpha1) RESTClient() rest.Interface {

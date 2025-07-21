@@ -12,6 +12,7 @@ type PredictionV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	ClusterNodePredictionsGetter
 	TimeSeriesPredictionsGetter
+	TimeSeriesPredictionRulesGetter
 }
 
 // PredictionV1alpha1Client is used to interact with features provided by the prediction.crane.io group.
@@ -25,6 +26,10 @@ func (c *PredictionV1alpha1Client) ClusterNodePredictions(namespace string) Clus
 
 func (c *PredictionV1alpha1Client) TimeSeriesPredictions(namespace string) TimeSeriesPredictionInterface {
 	return newTimeSeriesPredictions(c, namespace)
+}
+
+func (c *PredictionV1alpha1Client) TimeSeriesPredictionRules() TimeSeriesPredictionRuleInterface {
+	return newTimeSeriesPredictionRules(c)
 }
 
 // NewForConfig creates a new PredictionV1alpha1Client for the given config.
