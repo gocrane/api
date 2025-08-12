@@ -315,6 +315,7 @@ type TimeSeriesPredictionList struct {
 // +kubebuilder:resource:scope=Cluster,shortName=tspr
 // +kubebuilder:printcolumn:name="RunInterval",type=string,JSONPath=`.spec.runInterval`
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created."
+// +kubebuilder:subresource:status
 
 // TimeSeriesPredictionRule represents the configuration of an TimeSeriesPredictionRule object.
 type TimeSeriesPredictionRule struct {
