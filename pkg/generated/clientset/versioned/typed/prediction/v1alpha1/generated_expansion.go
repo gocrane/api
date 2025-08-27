@@ -5,3 +5,5 @@ package v1alpha1
 type ClusterNodePredictionExpansion interface{}
 
 type TimeSeriesPredictionExpansion interface{}
+
+type TimeSeriesPredictionRuleExpansion interface{}

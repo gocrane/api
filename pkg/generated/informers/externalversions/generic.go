@@ -76,6 +76,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().ClusterNodePredictions().Informer()}, nil
 	case predictionv1alpha1.SchemeGroupVersion.WithResource("timeseriespredictions"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().TimeSeriesPredictions().Informer()}, nil
+	case predictionv1alpha1.SchemeGroupVersion.WithResource("timeseriespredictionrules"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Prediction().V1alpha1().TimeSeriesPredictionRules().Informer()}, nil
 
 		// Group=topology.crane.io, Version=v1alpha1
 	case topologyv1alpha1.SchemeGroupVersion.WithResource("noderesourcetopologies"):

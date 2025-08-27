@@ -17,3 +17,7 @@ type TimeSeriesPredictionListerExpansion interface{}
 // TimeSeriesPredictionNamespaceListerExpansion allows custom methods to be added to
 // TimeSeriesPredictionNamespaceLister.
 type TimeSeriesPredictionNamespaceListerExpansion interface{}
+
+// TimeSeriesPredictionRuleListerExpansion allows custom methods to be added to
+// TimeSeriesPredictionRuleLister.
+type TimeSeriesPredictionRuleListerExpansion interface{}
